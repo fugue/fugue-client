@@ -4,7 +4,7 @@ BINARY=fugue
 SWAGGER=swagger.yaml
 SWAGGER_URL=https://api.riskmanager.fugue.co/v0/swagger
 SOURCES=$(shell find . -name '*.go')
-GOPATH?=$(shell echo "$$HOME")/go
+GOPATH?=$(shell go env GOPATH)
 
 $(BINARY): $(SOURCES)
 	$(GO) build -v -o fugue
