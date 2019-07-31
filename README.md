@@ -1,9 +1,9 @@
 # Fugue API Client
 
-This is a command line client for the Fugue API.
+This is a command line client for the [Fugue](https://riskmanager.fugue.co/) API.
 
 For information about enabling a client in your account, see
-[the documenation](https://riskmanagerdocs.fugue.co/api.html). More details of the underlying Swagger API are available
+[the documentation](https://riskmanagerdocs.fugue.co/api.html). More details of the underlying Swagger API are available
 [here](https://riskmanagerdocs.fugue.co/Resources/API/swagger.html).
 
 This project is under active development and is not yet stable. Commands will
@@ -18,12 +18,18 @@ Currently only MacOS builds are available.
 
 Place the `fugue` binary in your $PATH, for example in `/usr/local/bin`.
 
+Change file permissions:
+
+```
+chmod 755 /usr/local/bin/fugue
+```
+
 ## Environment Variables
 
 The client uses the following *required* environment variables:
 
-* `FUGUE_API_ID` - your API client ID
-* `FUGUE_API_SECRET` - your API client secret
+* `FUGUE_API_ID` - your API [client ID](https://riskmanagerdocs.fugue.co/api.html#HowtoUsetheAPI)
+* `FUGUE_API_SECRET` - your API [client secret](https://riskmanagerdocs.fugue.co/api.html#HowtoUsetheAPI)
 
 ## Build from Source
 
