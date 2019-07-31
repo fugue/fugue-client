@@ -9,6 +9,15 @@ For information about enabling a client in your account, see
 This project is under active development and is not yet stable. Commands will
 change as we incorporate feedback.
 
+## Install
+
+The easiest way to install the client is to download a prebuilt binary
+from [the releases page](https://github.com/fugue/fugue-client/releases).
+
+Currently only MacOS builds are available.
+
+Place the `fugue` binary in your $PATH, for example in `/usr/local/bin`.
+
 ## Environment Variables
 
 The client uses the following *required* environment variables:
@@ -16,7 +25,13 @@ The client uses the following *required* environment variables:
 * `FUGUE_API_ID` - your API client ID
 * `FUGUE_API_SECRET` - your API client secret
 
-## Build
+## Build from Source
+
+Install Go:
+
+```
+brew install go
+```
 
 Build the client executable:
 
