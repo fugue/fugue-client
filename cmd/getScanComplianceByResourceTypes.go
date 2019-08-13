@@ -16,6 +16,13 @@ type getScanComplianceByResourceTypesOptions struct {
 	Columns       []string
 }
 
+type scanComplianceByResourceTypesItem struct {
+	ResourceType string
+	Compliant    int
+	Noncompliant int
+	Total        int
+}
+
 // NewGetScanComplianceByResourceTypesCommand returns a command that retrives
 // compliance by resource types
 func NewGetScanComplianceByResourceTypesCommand() *cobra.Command {
@@ -52,7 +59,12 @@ func NewGetScanComplianceByResourceTypesCommand() *cobra.Command {
 			rtypes := resp.Payload.Items
 			rows := make([]interface{}, len(rtypes))
 			for i, rtype := range rtypes {
-				rows[i] = rtype
+				rows[i] = scanComplianceByResourceTypesItem{
+					ResourceType: rtype.ResourceType,
+					Compliant:    int(rtype.Compliant),
+					Noncompliant: len(rtype.Noncompliant),
+					Total:        int(rtype.Total),
+				}
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -72,7 +84,7 @@ func NewGetScanComplianceByResourceTypesCommand() *cobra.Command {
 	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 0, "Max items")
 	cmd.Flags().StringSliceVar(&opts.ResourceTypes, "resource-type", nil, "Resource type filter")
 	cmd.Flags().StringSliceVar(&opts.Families, "family", nil, "Compliance family filter")
-	cmd.Flags().StringSliceVar(&opts.Columns, "columns", []string{"ResourceType", "Compliant", "Total"}, "columns to show")
+	cmd.Flags().StringSliceVar(&opts.Columns, "columns", []string{"ResourceType", "Compliant", "Noncompliant", "Total"}, "columns to show")
 
 	return cmd
 }
