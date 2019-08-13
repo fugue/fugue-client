@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/format"
@@ -16,6 +17,7 @@ type listEnvironmentsOptions struct {
 	OrderDirection string
 	Columns        []string
 	Provider       string
+	NameFilter     string
 }
 
 // NewListEnvironmentsCommand returns a command that lists environments in Fugue
@@ -55,11 +57,25 @@ func NewListEnvironmentsCommand() *cobra.Command {
 				return environments[i].Name < environments[j].Name
 			})
 
+			nameFilter := strings.ToLower(opts.NameFilter)
+
 			var rows []interface{}
 			for _, env := range environments {
-				if opts.Provider != "" && env.Provider != opts.Provider {
-					continue
+
+				// Optionally filter by provider
+				if opts.Provider != "" {
+					if env.Provider != opts.Provider {
+						continue
+					}
 				}
+
+				// Optionally filter by name (substring match, case insensitive)
+				if nameFilter != "" {
+					if !strings.Contains(strings.ToLower(env.Name), nameFilter) {
+						continue
+					}
+				}
+
 				rows = append(rows, env)
 			}
 
@@ -81,6 +97,7 @@ func NewListEnvironmentsCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "", "order by attribute")
 	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "", "order by direction [asc | desc]")
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider filter")
+	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", []string{"ID", "Name", "Provider", "ScanStatus"}, "columns to show")
 
 	return cmd
