@@ -15,6 +15,7 @@ type listEnvironmentsOptions struct {
 	OrderBy        string
 	OrderDirection string
 	Columns        []string
+	Provider       string
 }
 
 // NewListEnvironmentsCommand returns a command that lists environments in Fugue
@@ -54,9 +55,12 @@ func NewListEnvironmentsCommand() *cobra.Command {
 				return environments[i].Name < environments[j].Name
 			})
 
-			rows := make([]interface{}, len(environments))
-			for i, env := range environments {
-				rows[i] = env
+			var rows []interface{}
+			for _, env := range environments {
+				if opts.Provider != "" && env.Provider != opts.Provider {
+					continue
+				}
+				rows = append(rows, env)
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -76,6 +80,7 @@ func NewListEnvironmentsCommand() *cobra.Command {
 	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 0, "max items to return")
 	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "", "order by attribute")
 	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "", "order by direction [asc | desc]")
+	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider filter")
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", []string{"ID", "Name", "Provider", "ScanStatus"}, "columns to show")
 
 	return cmd
