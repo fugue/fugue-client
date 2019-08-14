@@ -32,7 +32,15 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			params.EnvironmentID = args[0]
 
 			resp, err := client.Environments.GetEnvironment(params, auth)
-			CheckErr(err)
+			if err != nil {
+				switch respError := err.(type) {
+				case *environments.GetEnvironmentNotFound:
+					Fatal(respError.Payload.Message, DefaultErrorExitCode)
+				default:
+					CheckErr(err)
+				}
+			}
+
 			env := resp.Payload
 
 			maxItems := int64(1)

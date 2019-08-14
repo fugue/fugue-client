@@ -24,7 +24,14 @@ func NewGetScanCommand() *cobra.Command {
 			params.ScanID = args[0]
 
 			resp, err := client.Scans.GetScan(params, auth)
-			CheckErr(err)
+			if err != nil {
+				switch respError := err.(type) {
+				case *scans.GetScanNotFound:
+					Fatal(respError.Payload.Message, DefaultErrorExitCode)
+				default:
+					CheckErr(err)
+				}
+			}
 
 			scan := resp.Payload
 			summary := resp.Payload.ResourceSummary
