@@ -20,54 +20,54 @@ import (
 type Environment struct {
 
 	// Scan ID of the baseline if baseline is enabled.
-	BaselineID string `json:"baseline_id"`
+	BaselineID string `json:"baseline_id,omitempty"`
 
 	// List of compliance families validated against the environment.
 	ComplianceFamilies []string `json:"compliance_families"`
 
 	// Indicates whether drift detection is enabled for the environment.
-	Drift bool `json:"drift"`
+	Drift bool `json:"drift,omitempty"`
 
 	// ID of the environment.
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 
 	// Time the current or most recently completed scan for the environment started.
-	LastScanAt int64 `json:"last_scan_at"`
+	LastScanAt int64 `json:"last_scan_at,omitempty"`
 
 	// Name of the environment.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	// Time the next scan will start.
-	NextScanAt int64 `json:"next_scan_at"`
+	NextScanAt int64 `json:"next_scan_at,omitempty"`
 
 	// Name of the cloud service provider for the environment.
 	// Enum: [aws aws_govcloud azure]
-	Provider string `json:"provider"`
+	Provider string `json:"provider,omitempty"`
 
 	// provider options
-	ProviderOptions *ProviderOptions `json:"provider_options"`
+	ProviderOptions *ProviderOptions `json:"provider_options,omitempty"`
 
 	// List of resource types remediated for the environment if remediation is enabled.
 	RemediateResourceTypes []string `json:"remediate_resource_types"`
 
 	// Indicates whether remediation is enabled for the environment.
-	Remediation bool `json:"remediation"`
+	Remediation bool `json:"remediation,omitempty"`
 
 	// Time in seconds between the end of one scan to the start of the next.
-	ScanInterval int64 `json:"scan_interval"`
+	ScanInterval int64 `json:"scan_interval,omitempty"`
 
 	// Indicates whether the environment should have scans run on a schedule.
-	ScanScheduleEnabled bool `json:"scan_schedule_enabled"`
+	ScanScheduleEnabled bool `json:"scan_schedule_enabled,omitempty"`
 
 	// Status of the current or most recently completed scan for the environment.
 	// Enum: [CREATED QUEUED IN_PROGRESS ERROR SUCCESS CANCELED]
-	ScanStatus string `json:"scan_status"`
+	ScanStatus string `json:"scan_status,omitempty"`
 
 	// List of resource types surveyed for the environment.
 	SurveyResourceTypes []string `json:"survey_resource_types"`
 
 	// ID of the tenant that owns the environment.
-	TenantID string `json:"tenant_id"`
+	TenantID string `json:"tenant_id,omitempty"`
 }
 
 // Validate validates this environment

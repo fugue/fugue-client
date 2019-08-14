@@ -16,7 +16,7 @@ import (
 type ProviderOptionsAwsUpdateInput struct {
 
 	// AWS IAM Role ARN that will be assumed to scan and remediate infrastructure.
-	RoleArn string `json:"role_arn"`
+	RoleArn string `json:"role_arn,omitempty"`
 }
 
 // Validate validates this provider options aws update input

@@ -20,14 +20,14 @@ import (
 type BadRequestError struct {
 
 	// HTTP status code for the error.
-	Code int64 `json:"code"`
+	Code int64 `json:"code,omitempty"`
 
 	// Detailed human-readable message about the bad request.
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 
 	// Type of bad request.
 	// Enum: [BadRequest AlreadyAttachedToDifferentTenantError AlreadyAttachedToTenantError AlreadyInvitedError InvalidCredential InvalidJSON InvalidParameterValue MissingParameter RoleNotAssumable WorkAlreadyStartedException]
-	Type string `json:"type"`
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this bad request error

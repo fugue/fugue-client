@@ -18,7 +18,7 @@ type EnvironmentWithSummary struct {
 	Environment
 
 	// resource summary
-	ResourceSummary *ResourceSummary `json:"resource_summary"`
+	ResourceSummary *ResourceSummary `json:"resource_summary,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -32,7 +32,7 @@ func (m *EnvironmentWithSummary) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		ResourceSummary *ResourceSummary `json:"resource_summary"`
+		ResourceSummary *ResourceSummary `json:"resource_summary,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
@@ -54,7 +54,7 @@ func (m EnvironmentWithSummary) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, aO0)
 
 	var dataAO1 struct {
-		ResourceSummary *ResourceSummary `json:"resource_summary"`
+		ResourceSummary *ResourceSummary `json:"resource_summary,omitempty"`
 	}
 
 	dataAO1.ResourceSummary = m.ResourceSummary

@@ -21,7 +21,7 @@ type ScanWithSummary struct {
 	Scan
 
 	// resource summary
-	ResourceSummary *ResourceSummary `json:"resource_summary"`
+	ResourceSummary *ResourceSummary `json:"resource_summary,omitempty"`
 
 	// resource type errors
 	ResourceTypeErrors []*ScanWithSummaryResourceTypeErrorsItems0 `json:"resource_type_errors"`
@@ -38,7 +38,7 @@ func (m *ScanWithSummary) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		ResourceSummary *ResourceSummary `json:"resource_summary"`
+		ResourceSummary *ResourceSummary `json:"resource_summary,omitempty"`
 
 		ResourceTypeErrors []*ScanWithSummaryResourceTypeErrorsItems0 `json:"resource_type_errors"`
 	}
@@ -64,7 +64,7 @@ func (m ScanWithSummary) MarshalJSON() ([]byte, error) {
 	_parts = append(_parts, aO0)
 
 	var dataAO1 struct {
-		ResourceSummary *ResourceSummary `json:"resource_summary"`
+		ResourceSummary *ResourceSummary `json:"resource_summary,omitempty"`
 
 		ResourceTypeErrors []*ScanWithSummaryResourceTypeErrorsItems0 `json:"resource_type_errors"`
 	}

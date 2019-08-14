@@ -20,14 +20,14 @@ import (
 type AuthorizationError struct {
 
 	// HTTP status code for the error.
-	Code int64 `json:"code"`
+	Code int64 `json:"code,omitempty"`
 
 	// Detailed human-readable message about the authorization error.
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 
 	// Type of authorization error.
 	// Enum: [AuthorizationError EnvironmentAccessDenied]
-	Type string `json:"type"`
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this authorization error

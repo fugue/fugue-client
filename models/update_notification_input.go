@@ -25,10 +25,10 @@ type UpdateNotificationInput struct {
 	Events []string `json:"events"`
 
 	// Human readable name of the notification.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	// AWS SNS topic arn the notification is delivered to.
-	TopicArn string `json:"topic_arn"`
+	TopicArn string `json:"topic_arn,omitempty"`
 }
 
 // Validate validates this update notification input

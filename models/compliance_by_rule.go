@@ -27,14 +27,14 @@ type ComplianceByRule struct {
 	FailedResources []*ComplianceByRuleFailedResourcesItems0 `json:"failed_resources"`
 
 	// Name of the compliance family.
-	Family string `json:"family"`
+	Family string `json:"family,omitempty"`
 
 	// Result of the rule.
 	// Enum: [PASS FAIL UNKNOWN]
-	Result string `json:"result"`
+	Result string `json:"result,omitempty"`
 
 	// Name of the compliance rule.
-	Rule string `json:"rule"`
+	Rule string `json:"rule,omitempty"`
 
 	// List of resource types that were not surveyed and caused the result to be unknown.
 	UnsurveyedResourceTypes []string `json:"unsurveyed_resource_types"`
@@ -184,7 +184,7 @@ type ComplianceByRuleFailedResourceTypesItems0 struct {
 	Messages []string `json:"messages"`
 
 	// Resource type that failed to satisfy the rule.
-	ResourceType string `json:"resource_type"`
+	ResourceType string `json:"resource_type,omitempty"`
 }
 
 // Validate validates this compliance by rule failed resource types items0
@@ -218,7 +218,7 @@ type ComplianceByRuleFailedResourcesItems0 struct {
 	Messages []string `json:"messages"`
 
 	// resource
-	Resource *Resource `json:"resource"`
+	Resource *Resource `json:"resource,omitempty"`
 }
 
 // Validate validates this compliance by rule failed resources items0

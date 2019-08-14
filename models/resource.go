@@ -16,10 +16,10 @@ import (
 type Resource struct {
 
 	// Resource ID.
-	ResourceID string `json:"resource_id"`
+	ResourceID string `json:"resource_id,omitempty"`
 
 	// Resource type.
-	ResourceType string `json:"resource_type"`
+	ResourceType string `json:"resource_type,omitempty"`
 }
 
 // Validate validates this resource

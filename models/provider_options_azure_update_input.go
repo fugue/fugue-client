@@ -16,10 +16,10 @@ import (
 type ProviderOptionsAzureUpdateInput struct {
 
 	// The application ID/client ID of the service principal to be used
-	ApplicationID string `json:"application_id"`
+	ApplicationID string `json:"application_id,omitempty"`
 
 	// The client secret of the service principal to be used
-	ClientSecret string `json:"client_secret"`
+	ClientSecret string `json:"client_secret,omitempty"`
 
 	// The resource groups to be remediated
 	RemediateResourceGroups []string `json:"remediate_resource_groups"`

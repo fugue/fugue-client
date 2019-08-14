@@ -16,25 +16,25 @@ import (
 type Attribute struct {
 
 	// Indicates whether the attribute type is input or output.
-	AttrType string `json:"attr_type"`
+	AttrType string `json:"attr_type,omitempty"`
 
 	// Name of the attribute.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	// Value of the attribute as a result of the event.
-	New string `json:"new"`
+	New string `json:"new,omitempty"`
 
 	// Value of the attribute before the event.
-	Old string `json:"old"`
+	Old string `json:"old,omitempty"`
 
 	// Indicates whether the attribute was removed.
-	Removed bool `json:"removed"`
+	Removed bool `json:"removed,omitempty"`
 
 	// Indicates whether the attribute needed to be deleted and recreated.
-	RequiresNew bool `json:"requires_new"`
+	RequiresNew bool `json:"requires_new,omitempty"`
 
 	// Indicates whether the attribute contains sensitive data.
-	Sensitive bool `json:"sensitive"`
+	Sensitive bool `json:"sensitive,omitempty"`
 }
 
 // Validate validates this attribute

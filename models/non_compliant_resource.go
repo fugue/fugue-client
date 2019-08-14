@@ -22,7 +22,7 @@ type NonCompliantResource struct {
 	FailedRules []*NonCompliantResourceFailedRulesItems0 `json:"failed_rules"`
 
 	// ID of the failing resource.
-	ResourceID string `json:"resource_id"`
+	ResourceID string `json:"resource_id,omitempty"`
 }
 
 // Validate validates this non compliant resource
@@ -87,13 +87,13 @@ func (m *NonCompliantResource) UnmarshalBinary(b []byte) error {
 type NonCompliantResourceFailedRulesItems0 struct {
 
 	// Compliance family the violated rule belongs to.
-	Family string `json:"family"`
+	Family string `json:"family,omitempty"`
 
 	// Reasons the resource was found in violation of a rule.
 	Messages []string `json:"messages"`
 
 	// ID of the violated rule.
-	Rule string `json:"rule"`
+	Rule string `json:"rule,omitempty"`
 }
 
 // Validate validates this non compliant resource failed rules items0

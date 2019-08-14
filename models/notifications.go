@@ -19,16 +19,16 @@ import (
 type Notifications struct {
 
 	// Count of all found notifications.
-	Count int64 `json:"count"`
+	Count int64 `json:"count,omitempty"`
 
 	// Indicates whether there are more items at the next offset.
-	IsTruncated bool `json:"is_truncated"`
+	IsTruncated bool `json:"is_truncated,omitempty"`
 
 	// List of notification configurations.
 	Items []*Notification `json:"items"`
 
 	// Next offset to use to get the next page of items.
-	NextOffset int64 `json:"next_offset"`
+	NextOffset int64 `json:"next_offset,omitempty"`
 }
 
 // Validate validates this notifications

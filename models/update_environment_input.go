@@ -20,33 +20,33 @@ import (
 type UpdateEnvironmentInput struct {
 
 	// Scan ID of the baseline if baseline is enabled.
-	BaselineID string `json:"baseline_id"`
+	BaselineID string `json:"baseline_id,omitempty"`
 
 	// List of compliance families validated against the environment.
 	ComplianceFamilies []string `json:"compliance_families"`
 
 	// Name of the environment.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	// Name of the cloud service provider for the environment.
 	// Enum: [aws aws_govcloud azure]
-	Provider string `json:"provider"`
+	Provider string `json:"provider,omitempty"`
 
 	// provider options
-	ProviderOptions *ProviderOptionsUpdateInput `json:"provider_options"`
+	ProviderOptions *ProviderOptionsUpdateInput `json:"provider_options,omitempty"`
 
 	// List of resource types remediated for the environment if remediation is enabled.
 	RemediateResourceTypes []string `json:"remediate_resource_types"`
 
 	// Indicates whether remediation is enabled for the environment.
-	Remediation bool `json:"remediation"`
+	Remediation bool `json:"remediation,omitempty"`
 
 	// Time in seconds between the end of one scan to the start of the next. Must also set scan_schedule_enabled to true.
 	// Minimum: 300
-	ScanInterval int64 `json:"scan_interval"`
+	ScanInterval int64 `json:"scan_interval,omitempty"`
 
 	// Indicates whether an environment is scanned on a schedule.
-	ScanScheduleEnabled bool `json:"scan_schedule_enabled"`
+	ScanScheduleEnabled bool `json:"scan_schedule_enabled,omitempty"`
 
 	// List of resource types surveyed for the environment.
 	SurveyResourceTypes []string `json:"survey_resource_types"`

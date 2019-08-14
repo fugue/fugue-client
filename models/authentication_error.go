@@ -20,14 +20,14 @@ import (
 type AuthenticationError struct {
 
 	// HTTP status code for the error.
-	Code int64 `json:"code"`
+	Code int64 `json:"code,omitempty"`
 
 	// Detailed human-readable message about the authentication error.
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 
 	// Type of authentication error.
 	// Enum: [AuthenticationError InvalidOrMissingToken]
-	Type string `json:"type"`
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this authentication error

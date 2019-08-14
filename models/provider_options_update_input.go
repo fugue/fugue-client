@@ -17,13 +17,13 @@ import (
 type ProviderOptionsUpdateInput struct {
 
 	// aws
-	Aws *ProviderOptionsAwsUpdateInput `json:"aws"`
+	Aws *ProviderOptionsAwsUpdateInput `json:"aws,omitempty"`
 
 	// aws govcloud
-	AwsGovcloud *ProviderOptionsAwsUpdateInput `json:"aws_govcloud"`
+	AwsGovcloud *ProviderOptionsAwsUpdateInput `json:"aws_govcloud,omitempty"`
 
 	// azure
-	Azure *ProviderOptionsAzureUpdateInput `json:"azure"`
+	Azure *ProviderOptionsAzureUpdateInput `json:"azure,omitempty"`
 }
 
 // Validate validates this provider options update input

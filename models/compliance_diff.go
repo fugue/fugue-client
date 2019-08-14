@@ -19,16 +19,16 @@ import (
 type ComplianceDiff struct {
 
 	// The resource's compliance state after an event.
-	NewState string `json:"new_state"`
+	NewState string `json:"new_state,omitempty"`
 
 	// The resource's compliance state before an event.
-	OldState string `json:"old_state"`
+	OldState string `json:"old_state,omitempty"`
 
 	// ID of the resource given by the provider.
-	ResourceID string `json:"resource_id"`
+	ResourceID string `json:"resource_id,omitempty"`
 
 	// Resource type.
-	ResourceType string `json:"resource_type"`
+	ResourceType string `json:"resource_type,omitempty"`
 
 	// List of rule evaluations that changed state after an event.
 	Rules []*ComplianceDiffRulesItems0 `json:"rules"`
@@ -102,19 +102,19 @@ type ComplianceDiffRulesItems0 struct {
 	Controls []string `json:"controls"`
 
 	// The rule's error message after an event.
-	NewMessage string `json:"new_message"`
+	NewMessage string `json:"new_message,omitempty"`
 
 	// The rule's evaluation state after an event.
-	NewState string `json:"new_state"`
+	NewState string `json:"new_state,omitempty"`
 
 	// The rule's error message before an event.
-	OldMessage string `json:"old_message"`
+	OldMessage string `json:"old_message,omitempty"`
 
 	// The rule's evaluation state before an event.
-	OldState string `json:"old_state"`
+	OldState string `json:"old_state,omitempty"`
 
 	// Summary of the rule a resource was evaluated against.
-	Summary string `json:"summary"`
+	Summary string `json:"summary,omitempty"`
 }
 
 // Validate validates this compliance diff rules items0

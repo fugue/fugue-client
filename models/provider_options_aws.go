@@ -16,10 +16,10 @@ import (
 type ProviderOptionsAws struct {
 
 	// The AWS region to scan and remediate infrastructure in.
-	Region string `json:"region"`
+	Region string `json:"region,omitempty"`
 
 	// AWS IAM Role ARN that will be assumed to scan and remediate infrastructure.
-	RoleArn string `json:"role_arn"`
+	RoleArn string `json:"role_arn,omitempty"`
 }
 
 // Validate validates this provider options aws

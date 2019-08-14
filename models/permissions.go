@@ -17,7 +17,7 @@ import (
 type Permissions struct {
 
 	// aws
-	Aws *PermissionsAws `json:"aws"`
+	Aws *PermissionsAws `json:"aws,omitempty"`
 }
 
 // Validate validates this permissions

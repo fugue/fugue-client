@@ -20,23 +20,23 @@ import (
 type Event struct {
 
 	// Difference between the old and new compliance state of the resource.
-	ComplianceDiff *ComplianceDiff `json:"compliance_diff"`
+	ComplianceDiff *ComplianceDiff `json:"compliance_diff,omitempty"`
 
 	// Time the event occurred.
-	CreatedAt int64 `json:"created_at"`
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Error message.
-	Error string `json:"error"`
+	Error string `json:"error,omitempty"`
 
 	// Type of event - drift, remediation, or compliance.
 	// Enum: [DRIFT REMEDIATION COMPLIANCE]
-	EventType string `json:"event_type"`
+	EventType string `json:"event_type,omitempty"`
 
 	// ID of event
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 
 	// Difference between the old and new state of the resource.
-	ResourceDiff *ResourceDiff `json:"resource_diff"`
+	ResourceDiff *ResourceDiff `json:"resource_diff,omitempty"`
 }
 
 // Validate validates this event

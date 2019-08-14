@@ -20,14 +20,14 @@ import (
 type NotFoundError struct {
 
 	// HTTP status code for the error.
-	Code int64 `json:"code"`
+	Code int64 `json:"code,omitempty"`
 
 	// Detailed human-readable message about the not found error.
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 
 	// Type of not found error.
 	// Enum: [NotFound]
-	Type string `json:"type"`
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this not found error

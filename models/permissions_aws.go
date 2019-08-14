@@ -16,10 +16,10 @@ import (
 type PermissionsAws struct {
 
 	// JSON policy for surveying and remediating the desired resource types.
-	Policy interface{} `json:"policy"`
+	Policy interface{} `json:"policy,omitempty"`
 
 	// JSON trust relationship for IAM role
-	TrustRelationship interface{} `json:"trust_relationship"`
+	TrustRelationship interface{} `json:"trust_relationship,omitempty"`
 }
 
 // Validate validates this permissions aws

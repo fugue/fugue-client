@@ -16,10 +16,10 @@ import (
 type Notification struct {
 
 	// The date and time the notification was created.
-	CreatedAt int64 `json:"created_at"`
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Principal the created the notification.
-	CreatedBy string `json:"created_by"`
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// List of email address the notification is delivered to.
 	Emails []string `json:"emails"`
@@ -31,22 +31,22 @@ type Notification struct {
 	Events []string `json:"events"`
 
 	// Last error recorded while processing notification. If the last notification processed had no error this field will be empty.
-	LastError string `json:"last_error"`
+	LastError string `json:"last_error,omitempty"`
 
 	// Human readable name of the notification.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	// ID of the notification.
-	NotificationID string `json:"notification_id"`
+	NotificationID string `json:"notification_id,omitempty"`
 
 	// AWS SNS topic arn the notification is delivered to.
-	TopicArn string `json:"topic_arn"`
+	TopicArn string `json:"topic_arn,omitempty"`
 
 	// AWS The date and time the notification was last updated.
-	UpdatedAt int64 `json:"updated_at"`
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 
 	// Principal that last updated the notification.
-	UpdatedBy string `json:"updated_by"`
+	UpdatedBy string `json:"updated_by,omitempty"`
 }
 
 // Validate validates this notification

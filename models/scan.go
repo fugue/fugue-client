@@ -20,29 +20,29 @@ import (
 type Scan struct {
 
 	// Time the scan was created.
-	CreatedAt int64 `json:"created_at"`
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// ID of the environment the scan belongs to.
-	EnvironmentID string `json:"environment_id"`
+	EnvironmentID string `json:"environment_id,omitempty"`
 
 	// Time the scan was finished.
-	FinishedAt int64 `json:"finished_at"`
+	FinishedAt int64 `json:"finished_at,omitempty"`
 
 	// ID of the scan.
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 
 	// Message related to the scan.
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 
 	// Indicates whether there were any remediation errors on the scan.
-	RemediationError bool `json:"remediation_error"`
+	RemediationError bool `json:"remediation_error,omitempty"`
 
 	// Status of the scan.
 	// Enum: [CREATED QUEUED IN_PROGRESS ERROR SUCCESS CANCELED]
-	Status string `json:"status"`
+	Status string `json:"status,omitempty"`
 
 	// Time the scan was last updated.
-	UpdatedAt int64 `json:"updated_at"`
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 }
 
 // Validate validates this scan

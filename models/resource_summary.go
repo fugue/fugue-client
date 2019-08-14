@@ -19,25 +19,25 @@ import (
 type ResourceSummary struct {
 
 	// Number of compliant resources.
-	Compliant int64 `json:"compliant"`
+	Compliant int64 `json:"compliant,omitempty"`
 
 	// Compliance summary for the compliance families run against resources for the scan.
 	Families []*ResourceSummaryFamiliesItems0 `json:"families"`
 
 	// Number of noncompliant resources.
-	Noncompliant int64 `json:"noncompliant"`
+	Noncompliant int64 `json:"noncompliant,omitempty"`
 
 	// Number of resource types in the scan.
-	ResourceTypes int64 `json:"resource_types"`
+	ResourceTypes int64 `json:"resource_types,omitempty"`
 
 	// Number of compliance rules failed.
-	RulesFailed int64 `json:"rules_failed"`
+	RulesFailed int64 `json:"rules_failed,omitempty"`
 
 	// Number of compliance rules passed.
-	RulesPassed int64 `json:"rules_passed"`
+	RulesPassed int64 `json:"rules_passed,omitempty"`
 
 	// Total number of resources in the scan.
-	Total int64 `json:"total"`
+	Total int64 `json:"total,omitempty"`
 }
 
 // Validate validates this resource summary
@@ -102,19 +102,19 @@ func (m *ResourceSummary) UnmarshalBinary(b []byte) error {
 type ResourceSummaryFamiliesItems0 struct {
 
 	// Number of compliant resources in this family.
-	Compliant int64 `json:"compliant"`
+	Compliant int64 `json:"compliant,omitempty"`
 
 	// Name of the compliance family.
-	Family string `json:"family"`
+	Family string `json:"family,omitempty"`
 
 	// Number of noncompliant resources in this family.
-	Noncompliant int64 `json:"noncompliant"`
+	Noncompliant int64 `json:"noncompliant,omitempty"`
 
 	// Number of compliance rules failed in this family.
-	RulesFailed int64 `json:"rules_failed"`
+	RulesFailed int64 `json:"rules_failed,omitempty"`
 
 	// Number of compliance rules passed in this family.
-	RulesPassed int64 `json:"rules_passed"`
+	RulesPassed int64 `json:"rules_passed,omitempty"`
 }
 
 // Validate validates this resource summary families items0

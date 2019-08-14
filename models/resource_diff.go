@@ -25,13 +25,13 @@ type ResourceDiff struct {
 
 	// Type of change which occurred.
 	// Enum: [ADDED MODIFIED REMOVED]
-	Change string `json:"change"`
+	Change string `json:"change,omitempty"`
 
 	// ID of the resource given by the provider.
-	ResourceID string `json:"resource_id"`
+	ResourceID string `json:"resource_id,omitempty"`
 
 	// Resource type.
-	ResourceType string `json:"resource_type"`
+	ResourceType string `json:"resource_type,omitempty"`
 }
 
 // Validate validates this resource diff

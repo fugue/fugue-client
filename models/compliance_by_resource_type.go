@@ -19,16 +19,16 @@ import (
 type ComplianceByResourceType struct {
 
 	// Count of resources found to be fully compliant with all rules it has been evaulated against.
-	Compliant int64 `json:"compliant"`
+	Compliant int64 `json:"compliant,omitempty"`
 
 	// List of non-compliant resources and the rules they have violated.
 	Noncompliant []*NonCompliantResource `json:"noncompliant"`
 
 	// Name of the resource type.
-	ResourceType string `json:"resource_type"`
+	ResourceType string `json:"resource_type,omitempty"`
 
 	// Count of all resources evaluated for this resource type.
-	Total int64 `json:"total"`
+	Total int64 `json:"total,omitempty"`
 }
 
 // Validate validates this compliance by resource type

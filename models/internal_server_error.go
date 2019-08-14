@@ -20,14 +20,14 @@ import (
 type InternalServerError struct {
 
 	// HTTP status code for the error.
-	Code int64 `json:"code"`
+	Code int64 `json:"code,omitempty"`
 
 	// Detailed human-readable message about the internal server error.
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 
 	// Type of internal server error.
 	// Enum: [InternalServerError DatabaseError]
-	Type string `json:"type"`
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this internal server error

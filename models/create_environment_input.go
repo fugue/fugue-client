@@ -23,24 +23,24 @@ type CreateEnvironmentInput struct {
 	ComplianceFamilies []string `json:"compliance_families"`
 
 	// Name of the environment.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 
 	// Name of the cloud service provider for the environment.
 	// Enum: [aws aws_govcloud azure]
-	Provider string `json:"provider"`
+	Provider string `json:"provider,omitempty"`
 
 	// A dictionary of options for the provider.
-	ProviderOptions *ProviderOptions `json:"provider_options"`
+	ProviderOptions *ProviderOptions `json:"provider_options,omitempty"`
 
 	// List of resource types to be remediated if remediation is enabled.
 	RemediateResourceTypes []string `json:"remediate_resource_types"`
 
 	// Time in seconds between the end of one scan to the start of the next. Must also set scan_schedule_enabled to true.
 	// Minimum: 300
-	ScanInterval int64 `json:"scan_interval"`
+	ScanInterval int64 `json:"scan_interval,omitempty"`
 
 	// Indicates if the new environment should have scans run on a schedule upon creation.
-	ScanScheduleEnabled bool `json:"scan_schedule_enabled"`
+	ScanScheduleEnabled bool `json:"scan_schedule_enabled,omitempty"`
 
 	// List of resource types to be surveyed.
 	SurveyResourceTypes []string `json:"survey_resource_types"`
