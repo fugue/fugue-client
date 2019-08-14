@@ -4,7 +4,7 @@ This is a command line client for the [Fugue](https://riskmanager.fugue.co/) API
 
 For information about enabling a client in your account, see
 [the documentation](https://riskmanagerdocs.fugue.co/api.html). More details of the underlying Swagger API are available
-[here](https://riskmanagerdocs.fugue.co/Resources/API/swagger.html).
+[here](https://docs.fugue.co/_static/swagger.html).
 
 This project is under active development and is not yet stable. Commands will
 change as we incorporate feedback.
