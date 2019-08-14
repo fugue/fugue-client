@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/client/scans"
@@ -56,17 +55,15 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			}
 
 			families := strings.Join(env.ComplianceFamilies, ",")
-			nextScanAt := time.Unix(env.NextScanAt, 0)
-			lastScanAt := time.Unix(env.LastScanAt, 0)
 
 			items := []interface{}{
-				Item{"ID", env.ID},
+				Item{"ENVIRONMENT_ID", env.ID},
 				Item{"NAME", env.Name},
 				Item{"PROVIDER", env.Provider},
 				Item{"SCAN_INTERVAL", env.ScanInterval},
 				Item{"LAST_SCAN_ID", lastScanID},
-				Item{"LAST_SCAN_AT", lastScanAt.Format(time.RFC3339)},
-				Item{"NEXT_SCAN_AT", nextScanAt.Format(time.RFC3339)},
+				Item{"LAST_SCAN_AT", format.Unix(env.LastScanAt)},
+				Item{"NEXT_SCAN_AT", format.Unix(env.NextScanAt)},
 				Item{"SCAN_STATUS", env.ScanStatus},
 				Item{"COMPLIANCE_FAMILIES", families},
 				Item{"DRIFT", env.Drift},

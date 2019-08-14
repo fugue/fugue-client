@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/fugue/fugue-client/client/scans"
 	"github.com/fugue/fugue-client/format"
@@ -47,11 +46,10 @@ func NewTriggerScanCommand() *cobra.Command {
 			CheckErr(err)
 
 			scan := resp.Payload
-			createdAt := time.Unix(scan.CreatedAt, 0)
 
 			items := []interface{}{
-				Item{"ID", scan.ID},
-				Item{"CREATED_AT", createdAt.Format(time.RFC3339)},
+				Item{"SCAN_ID", scan.ID},
+				Item{"CREATED_AT", format.Unix(scan.CreatedAt)},
 				Item{"STATUS", scan.Status},
 			}
 

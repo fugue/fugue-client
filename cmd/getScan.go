@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/fugue/fugue-client/client/scans"
 	"github.com/fugue/fugue-client/format"
+	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
 )
 
@@ -34,10 +34,11 @@ func NewGetScanCommand() *cobra.Command {
 			}
 
 			scan := resp.Payload
-			summary := resp.Payload.ResourceSummary
 
-			createdAt := time.Unix(scan.CreatedAt, 0)
-			finishedAt := time.Unix(scan.FinishedAt, 0)
+			var summary models.ResourceSummary
+			if resp.Payload.ResourceSummary != nil {
+				summary = *resp.Payload.ResourceSummary
+			}
 
 			message := "-"
 			if scan.Message != "" {
@@ -45,9 +46,9 @@ func NewGetScanCommand() *cobra.Command {
 			}
 
 			items := []interface{}{
-				Item{"ID", scan.ID},
-				Item{"CREATED_AT", createdAt.Format(time.RFC3339)},
-				Item{"FINISHED_AT", finishedAt.Format(time.RFC3339)},
+				Item{"SCAN_ID", scan.ID},
+				Item{"CREATED_AT", format.Unix(scan.CreatedAt)},
+				Item{"FINISHED_AT", format.Unix(scan.FinishedAt)},
 				Item{"STATUS", scan.Status},
 				Item{"MESSAGE", message},
 				Item{"RESOURCE_COUNT", summary.Total},

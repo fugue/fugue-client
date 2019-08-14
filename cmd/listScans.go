@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/fugue/fugue-client/client/scans"
 	"github.com/fugue/fugue-client/format"
@@ -74,15 +73,11 @@ func NewListScansCommand() *cobra.Command {
 
 			rows := make([]interface{}, len(scans))
 			for i, scan := range scans {
-
-				createdAt := time.Unix(scan.CreatedAt, 0)
-				finishedAt := time.Unix(scan.FinishedAt, 0)
-
 				rows[i] = listScansViewItem{
 					ScanID:        scan.ID,
 					EnvironmentID: scan.EnvironmentID,
-					CreatedAt:     createdAt.Format(time.RFC3339),
-					FinishedAt:    finishedAt.Format(time.RFC3339),
+					CreatedAt:     format.Unix(scan.CreatedAt),
+					FinishedAt:    format.Unix(scan.FinishedAt),
 					Status:        scan.Status,
 					Message:       scan.Message,
 				}

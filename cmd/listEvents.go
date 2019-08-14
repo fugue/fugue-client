@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/fugue/fugue-client/client/events"
 	"github.com/fugue/fugue-client/format"
@@ -84,12 +83,10 @@ func NewListEventsCommand() *cobra.Command {
 			rows := make([]interface{}, len(events))
 			for i, event := range events {
 
-				createdAt := time.Unix(event.CreatedAt, 0)
-
 				item := listEventsViewItem{
 					EventID:      event.ID,
 					EventType:    event.EventType,
-					CreatedAt:    createdAt.Format(time.RFC3339),
+					CreatedAt:    format.Unix(event.CreatedAt),
 					Error:        event.Error,
 					ResourceID:   empty,
 					ResourceType: empty,
