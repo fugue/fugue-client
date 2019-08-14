@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/fugue/fugue-client/client/events"
 	"github.com/fugue/fugue-client/format"
@@ -18,6 +19,18 @@ type listEventsOptions struct {
 	Remediated   []string
 	ResourceType []string
 	Columns      []string
+}
+
+type listEventsViewItem struct {
+	EventID      string
+	EventType    string
+	CreatedAt    string
+	ResourceID   string
+	ResourceType string
+	Change       string
+	OldState     string
+	NewState     string
+	Error        string
 }
 
 // NewListEventsCommand returns a command that lists events in an environment
@@ -66,9 +79,53 @@ func NewListEventsCommand() *cobra.Command {
 
 			events := resp.Payload.Items
 
+			empty := "-"
+
 			rows := make([]interface{}, len(events))
 			for i, event := range events {
-				rows[i] = event
+
+				createdAt := time.Unix(event.CreatedAt, 0)
+
+				item := listEventsViewItem{
+					EventID:      event.ID,
+					EventType:    event.EventType,
+					CreatedAt:    createdAt.Format(time.RFC3339),
+					Error:        event.Error,
+					ResourceID:   empty,
+					ResourceType: empty,
+					OldState:     empty,
+					NewState:     empty,
+					Change:       empty,
+				}
+
+				if event.ComplianceDiff != nil {
+					diff := event.ComplianceDiff
+					item.ResourceID = diff.ResourceID
+					item.ResourceType = diff.ResourceType
+					item.OldState = diff.OldState
+					item.NewState = diff.NewState
+
+					// This will happen when a resource type is "UNKNOWN"
+					if item.ResourceID == "" {
+						item.ResourceID = empty
+					}
+				}
+
+				if event.ResourceDiff != nil {
+					diff := event.ResourceDiff
+					item.ResourceID = diff.ResourceID
+					item.ResourceType = diff.ResourceType
+					item.Change = diff.Change
+				}
+
+				// Resource IDs can be extremely long.
+				// Truncate at a max length for now.
+				idLen := len(item.ResourceID)
+				if idLen > 50 {
+					item.ResourceID = "..." + item.ResourceID[idLen-50:]
+				}
+
+				rows[i] = item
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -84,16 +141,26 @@ func NewListEventsCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String("environment-id", "", "Environment ID (required)")
-	cmd.Flags().Int64("offset", 0, "Offset")
-	cmd.Flags().Int64("max-items", 0, "Max items")
-	cmd.Flags().Int64("range-from", 0, "Range from")
-	cmd.Flags().Int64("range-to", 0, "Range to")
-	cmd.Flags().StringSlice("event-type", nil, "Event types")
-	cmd.Flags().StringSlice("change", nil, "Change")
-	cmd.Flags().StringSlice("remediated", nil, "Remediated")
-	cmd.Flags().StringSlice("resource-type", nil, "Resource types")
-	cmd.Flags().StringSliceVar(&opts.Columns, "columns", []string{"ID", "EventType", "CreatedAt"}, "columns to show")
+	defaultCols := []string{
+		// "EventID",
+		"EventType",
+		"CreatedAt",
+		"ResourceID",
+		"ResourceType",
+		"Change",
+		"OldState",
+		"NewState",
+	}
+
+	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset")
+	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 20, "Max items")
+	cmd.Flags().Int64Var(&opts.RangeFrom, "range-from", 0, "Range from")
+	cmd.Flags().Int64Var(&opts.RangeTo, "range-to", 0, "Range to")
+	cmd.Flags().StringSliceVar(&opts.EventType, "event-type", nil, "Event types")
+	cmd.Flags().StringSliceVar(&opts.Change, "change", nil, "Change")
+	cmd.Flags().StringSliceVar(&opts.Remediated, "remediated", nil, "Remediated")
+	cmd.Flags().StringSliceVar(&opts.ResourceType, "resource-type", nil, "Resource types")
+	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "columns to show")
 
 	return cmd
 }
