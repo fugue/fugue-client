@@ -58,18 +58,18 @@ func extractColumn(rows [][]string, column int) []string {
 	return values
 }
 
-func columnWidths(rows [][]string, colNames []string, includeCols bool) []int {
+func columnWidths(rows [][]string, columnLabels []string, includeCols bool) []int {
 
 	if len(rows) == 0 {
 		return nil
 	}
-	columnCount := len(colNames)
+	columnCount := len(columnLabels)
 
 	widths := make([]int, columnCount)
 
 	if includeCols {
-		for i, name := range colNames {
-			widths[i] = len(name)
+		for i, label := range columnLabels {
+			widths[i] = len(label)
 		}
 	}
 
@@ -119,6 +119,11 @@ func Table(opts TableOpts) ([]string, error) {
 		return nil, errors.New("No columns to display")
 	}
 
+	columnLabels := make([]string, len(opts.Columns))
+	for i, name := range opts.Columns {
+		columnLabels[i] = strings.ToUpper(toSnakeCase(name))
+	}
+
 	rowMaps := getRowMaps(opts.Rows)
 
 	tableData, err := extractSliceAttrs(rowMaps, opts.Columns)
@@ -132,7 +137,7 @@ func Table(opts TableOpts) ([]string, error) {
 	}
 
 	separatorLen := len(separator)
-	columnWidths := columnWidths(tableData, opts.Columns, opts.ShowHeader)
+	columnWidths := columnWidths(tableData, columnLabels, opts.ShowHeader)
 	columnFormats := columnFormats(columnWidths)
 	tableWidth := sum(columnWidths) + separatorLen*(len(opts.Columns)-1)
 
@@ -146,9 +151,8 @@ func Table(opts TableOpts) ([]string, error) {
 
 	if opts.ShowHeader {
 		headers := make([]string, len(opts.Columns))
-		for i, col := range opts.Columns {
-			colName := strings.ToUpper(toSnakeCase(col))
-			headers[i] = fmt.Sprintf(columnFormats[i], colName)
+		for i, label := range columnLabels {
+			headers[i] = fmt.Sprintf(columnFormats[i], label)
 		}
 		rows[0] = strings.Repeat("=", tableWidth)
 		rows[1] = strings.Join(headers, separator)

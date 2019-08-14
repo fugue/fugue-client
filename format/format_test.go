@@ -5,22 +5,23 @@ import (
 )
 
 type item struct {
-	Name    string
-	Age     int
-	Married bool
+	Name           string
+	Age            int
+	Married        bool
+	FavoriteNumber int
 }
 
 func TestFormatTable(t *testing.T) {
 
 	items := []interface{}{
-		item{"hank", 32, true},
-		item{"peggy", 31, true},
-		item{"bobby", 1, false},
+		item{"hank", 32, true, 42},
+		item{"peggy", 31, true, 43},
+		item{"bobby", 1, false, 44},
 	}
 
 	rows, err := Table(TableOpts{
 		Rows:       items,
-		Columns:    []string{"Name", "Age"},
+		Columns:    []string{"Name", "Age", "FavoriteNumber"},
 		ShowHeader: true,
 	})
 	if err != nil {
@@ -28,12 +29,12 @@ func TestFormatTable(t *testing.T) {
 	}
 
 	expected := []string{
-		"===========",
-		"NAME  | AGE",
-		"===========",
-		"hank  | 32 ",
-		"peggy | 31 ",
-		"bobby | 1  ",
+		"=============================",
+		"NAME  | AGE | FAVORITE_NUMBER",
+		"=============================",
+		"hank  | 32  | 42             ",
+		"peggy | 31  | 43             ",
+		"bobby | 1   | 44             ",
 	}
 
 	for i, row := range rows {
@@ -46,9 +47,9 @@ func TestFormatTable(t *testing.T) {
 func TestFormatTableNoHeader(t *testing.T) {
 
 	items := []interface{}{
-		item{"a", 0, true},
-		item{"abcd", 31, true},
-		item{"abcdef", 1, false},
+		item{"a", 0, true, 0},
+		item{"abcd", 31, true, 0},
+		item{"abcdef", 1, false, 0},
 	}
 
 	rows, err := Table(TableOpts{
