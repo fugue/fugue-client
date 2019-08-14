@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/fugue/fugue-client/client/scans"
 	"github.com/fugue/fugue-client/format"
@@ -16,6 +17,15 @@ type listScansOptions struct {
 	Status         []string
 	RangeFrom      int64
 	RangeTo        int64
+}
+
+type listScansViewItem struct {
+	ScanID        string
+	EnvironmentID string
+	CreatedAt     string
+	FinishedAt    string
+	Status        string
+	Message       string
 }
 
 // NewListScansCommand returns a command that lists scans in Fugue
@@ -64,12 +74,23 @@ func NewListScansCommand() *cobra.Command {
 
 			rows := make([]interface{}, len(scans))
 			for i, scan := range scans {
-				rows[i] = scan
+
+				createdAt := time.Unix(scan.CreatedAt, 0)
+				finishedAt := time.Unix(scan.FinishedAt, 0)
+
+				rows[i] = listScansViewItem{
+					ScanID:        scan.ID,
+					EnvironmentID: scan.EnvironmentID,
+					CreatedAt:     createdAt.Format(time.RFC3339),
+					FinishedAt:    finishedAt.Format(time.RFC3339),
+					Status:        scan.Status,
+					Message:       scan.Message,
+				}
 			}
 
 			table, err := format.Table(format.TableOpts{
 				Rows:       rows,
-				Columns:    []string{"ID", "FinishedAt", "Status", "Message"},
+				Columns:    []string{"ScanID", "CreatedAt", "FinishedAt", "Status"},
 				ShowHeader: true,
 			})
 			CheckErr(err)
