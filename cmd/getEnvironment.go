@@ -55,6 +55,9 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			}
 
 			families := strings.Join(env.ComplianceFamilies, ",")
+			if families == "" {
+				families = "-"
+			}
 
 			items := []interface{}{
 				Item{"ENVIRONMENT_ID", env.ID},

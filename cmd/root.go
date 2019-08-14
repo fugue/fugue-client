@@ -19,7 +19,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "fugue-client",
+	Use:   "fugue",
 	Short: "Fugue API Client",
 	Long:  ``,
 	// Uncomment the following line if your bare application
