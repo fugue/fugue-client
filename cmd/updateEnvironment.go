@@ -1,7 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/fugue/fugue-client/client/environments"
+	"github.com/fugue/fugue-client/format"
 	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -36,6 +40,12 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 			params.EnvironmentID = args[0]
 			params.Environment = &models.UpdateEnvironmentInput{}
 
+			// The generated Go models have omitempty set on boolean flags.
+			// This means we can't send "false" values for these fields:
+			// * remediation
+			// * scan_schedule_enabled
+			// For now we won't support setting these flags in the CLI.
+
 			// Using Visit here allows us to process only flags that were set
 			cmd.Flags().Visit(func(f *pflag.Flag) {
 				switch f.Name {
@@ -51,17 +61,38 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 					params.Environment.SurveyResourceTypes = opts.SurveyResourceTypes
 				case "remediate-resource-types":
 					params.Environment.RemediateResourceTypes = opts.RemediateResourceTypes
-				case "remediation":
-					params.Environment.Remediation = opts.Remediation
-				case "scan-schedule-enabled":
-					params.Environment.ScanScheduleEnabled = opts.ScanScheduleEnabled
 				}
 			})
 
 			resp, err := client.Environments.UpdateEnvironment(params, auth)
 			CheckErr(err)
+			env := resp.Payload
 
-			showResponse(resp.Payload)
+			families := strings.Join(env.ComplianceFamilies, ",")
+
+			items := []interface{}{
+				Item{"ENVIRONMENT_ID", env.ID},
+				Item{"NAME", env.Name},
+				Item{"PROVIDER", env.Provider},
+				Item{"SCAN_INTERVAL", env.ScanInterval},
+				Item{"LAST_SCAN_AT", format.Unix(env.LastScanAt)},
+				Item{"NEXT_SCAN_AT", format.Unix(env.NextScanAt)},
+				Item{"SCAN_STATUS", env.ScanStatus},
+				Item{"COMPLIANCE_FAMILIES", families},
+				Item{"DRIFT", env.Drift},
+				Item{"REMEDIATION", env.Remediation},
+			}
+
+			table, err := format.Table(format.TableOpts{
+				Rows:       items,
+				Columns:    []string{"Attribute", "Value"},
+				ShowHeader: true,
+			})
+			CheckErr(err)
+
+			for _, tableRow := range table {
+				fmt.Println(tableRow)
+			}
 		},
 	}
 
@@ -71,8 +102,6 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", nil, "Compliance families")
 	cmd.Flags().StringSliceVar(&opts.RemediateResourceTypes, "remediate-resource-types", nil, "Remediation resource types")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types")
-	cmd.Flags().BoolVar(&opts.Remediation, "remediation", false, "Remediation enabled")
-	cmd.Flags().BoolVar(&opts.ScanScheduleEnabled, "scan-schedule-enabled", false, "Scan schedule enabled")
 
 	return cmd
 }
