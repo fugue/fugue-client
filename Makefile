@@ -9,6 +9,9 @@ GOPATH?=$(shell go env GOPATH)
 $(BINARY): $(SOURCES)
 	$(GO) build -v -o fugue
 
+.PHONY: build
+build: $(BINARY)
+
 .PHONY: install
 install: $(BINARY)
 	cp $(BINARY) $(GOPATH)/bin/
