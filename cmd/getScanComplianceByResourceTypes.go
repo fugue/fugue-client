@@ -50,7 +50,7 @@ func NewGetScanComplianceByResourceTypesCommand() *cobra.Command {
 				params.ResourceType = opts.ResourceTypes
 			}
 			if len(opts.Families) > 0 {
-				params.Family = opts.Families
+				params.Family = format.NormalizeStrings(opts.Families)
 			}
 
 			resp, err := client.Scans.GetComplianceByResourceTypes(params, auth)
