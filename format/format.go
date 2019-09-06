@@ -169,3 +169,12 @@ func Table(opts TableOpts) ([]string, error) {
 
 	return rows, nil
 }
+
+// NormalizeStrings normalizes a slice of strings to all uppercase
+func NormalizeStrings(input []string) []string {
+	output := make([]string, len(input))
+	for i, s := range input {
+		output[i] = strings.ToUpper(s)
+	}
+	return output
+}
