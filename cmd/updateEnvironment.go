@@ -52,7 +52,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 				case "name":
 					params.Environment.Name = opts.Name
 				case "baseline-id":
-					params.Environment.BaselineID = opts.BaselineID
+					params.Environment.BaselineID = &opts.BaselineID
 				case "scan-interval":
 					params.Environment.ScanInterval = opts.ScanInterval
 				case "compliance-families":
@@ -65,7 +65,15 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 			})
 
 			resp, err := client.Environments.UpdateEnvironment(params, auth)
-			CheckErr(err)
+			if err != nil {
+				switch respError := err.(type) {
+				case *environments.UpdateEnvironmentBadRequest:
+					Fatal(respError.Payload.Message, DefaultErrorExitCode)
+				default:
+					CheckErr(err)
+				}
+			}
+
 			env := resp.Payload
 
 			families := strings.Join(env.ComplianceFamilies, ",")
@@ -73,17 +81,35 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 				families = "-"
 			}
 
+			baselineID := env.BaselineID
+			if baselineID == "" {
+				baselineID = "-"
+			}
+
 			items := []interface{}{
 				Item{"ENVIRONMENT_ID", env.ID},
 				Item{"NAME", env.Name},
 				Item{"PROVIDER", env.Provider},
 				Item{"SCAN_INTERVAL", env.ScanInterval},
+				Item{"BASELINE_ID", baselineID},
 				Item{"LAST_SCAN_AT", format.Unix(env.LastScanAt)},
 				Item{"NEXT_SCAN_AT", format.Unix(env.NextScanAt)},
 				Item{"SCAN_STATUS", env.ScanStatus},
 				Item{"COMPLIANCE_FAMILIES", families},
 				Item{"DRIFT", env.Drift},
 				Item{"REMEDIATION", env.Remediation},
+			}
+
+			switch env.Provider {
+			case "aws":
+				items = append(items, Item{"ROLE", env.ProviderOptions.Aws.RoleArn})
+				items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
+			case "aws_govcloud":
+				items = append(items, Item{"ROLE", env.ProviderOptions.AwsGovcloud.RoleArn})
+				items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
+			case "azure":
+				items = append(items, Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID})
+				items = append(items, Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID})
 			}
 
 			table, err := format.Table(format.TableOpts{

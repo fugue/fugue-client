@@ -20,7 +20,7 @@ import (
 type UpdateEnvironmentInput struct {
 
 	// Scan ID of the baseline if baseline is enabled.
-	BaselineID string `json:"baseline_id,omitempty"`
+	BaselineID *string `json:"baseline_id,omitempty"`
 
 	// List of compliance families validated against the environment.
 	ComplianceFamilies []string `json:"compliance_families"`
@@ -39,14 +39,14 @@ type UpdateEnvironmentInput struct {
 	RemediateResourceTypes []string `json:"remediate_resource_types"`
 
 	// Indicates whether remediation is enabled for the environment.
-	Remediation bool `json:"remediation,omitempty"`
+	Remediation *bool `json:"remediation,omitempty"`
 
 	// Time in seconds between the end of one scan to the start of the next. Must also set scan_schedule_enabled to true.
 	// Minimum: 300
 	ScanInterval int64 `json:"scan_interval,omitempty"`
 
 	// Indicates whether an environment is scanned on a schedule.
-	ScanScheduleEnabled bool `json:"scan_schedule_enabled,omitempty"`
+	ScanScheduleEnabled *bool `json:"scan_schedule_enabled,omitempty"`
 
 	// List of resource types surveyed for the environment.
 	SurveyResourceTypes []string `json:"survey_resource_types"`

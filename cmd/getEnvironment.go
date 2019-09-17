@@ -59,11 +59,17 @@ func NewGetEnvironmentCommand() *cobra.Command {
 				families = "-"
 			}
 
+			baselineID := env.BaselineID
+			if baselineID == "" {
+				baselineID = "-"
+			}
+
 			items := []interface{}{
 				Item{"ENVIRONMENT_ID", env.ID},
 				Item{"NAME", env.Name},
 				Item{"PROVIDER", env.Provider},
 				Item{"SCAN_INTERVAL", env.ScanInterval},
+				Item{"BASELINE_ID", baselineID},
 				Item{"LAST_SCAN_ID", lastScanID},
 				Item{"LAST_SCAN_AT", format.Unix(env.LastScanAt)},
 				Item{"NEXT_SCAN_AT", format.Unix(env.NextScanAt)},
