@@ -99,6 +99,7 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringSliceVar(&opts.RemediateResourceGroups, "remediation-resource-groups", []string{}, "Remediation resource groups")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceGroups, "survey-resource-groups", nil, "Survey resource groups")
 
+	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("app")
 	cmd.MarkFlagRequired("secret")
 	cmd.MarkFlagRequired("sub")
