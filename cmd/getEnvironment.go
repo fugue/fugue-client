@@ -73,6 +73,18 @@ func NewGetEnvironmentCommand() *cobra.Command {
 				Item{"REMEDIATION", env.Remediation},
 			}
 
+			switch env.Provider {
+			case "aws":
+				items = append(items, Item{"ROLE", env.ProviderOptions.Aws.RoleArn})
+				items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
+			case "aws_govcloud":
+				items = append(items, Item{"ROLE", env.ProviderOptions.AwsGovcloud.RoleArn})
+				items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
+			case "azure":
+				items = append(items, Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID})
+				items = append(items, Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID})
+			}
+
 			table, err := format.Table(format.TableOpts{
 				Rows:       items,
 				Columns:    []string{"Attribute", "Value"},

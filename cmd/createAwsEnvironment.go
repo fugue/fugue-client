@@ -35,8 +35,10 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 
 			client, auth := getClient()
 
+			region := strings.ToLower(opts.Region)
+
 			provider := "aws"
-			if opts.GovCloud {
+			if strings.Contains(region, "gov") {
 				provider = "aws_govcloud"
 			}
 
@@ -45,7 +47,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				// Default to all available types
 				getTypesParams := metadata.NewGetResourceTypesParams()
 				getTypesParams.Provider = provider
-				getTypesParams.Region = &opts.Region
+				getTypesParams.Region = &region
 				resp, err := client.Metadata.GetResourceTypes(getTypesParams, auth)
 				CheckErr(err)
 				surveyTypes = resp.Payload.ResourceTypes
@@ -63,11 +65,11 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 			}
 
 			providerOpts := &models.ProviderOptionsAws{
-				Region:  opts.Region,
+				Region:  region,
 				RoleArn: opts.Role,
 			}
 
-			if opts.GovCloud {
+			if provider == "aws_govcloud" {
 				params.Environment.ProviderOptions = &models.ProviderOptions{AwsGovcloud: providerOpts}
 			} else {
 				params.Environment.ProviderOptions = &models.ProviderOptions{Aws: providerOpts}
@@ -117,8 +119,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Environment name")
-	cmd.Flags().StringVar(&opts.Region, "region", "us-east-1", "AWS region")
-	cmd.Flags().BoolVar(&opts.GovCloud, "govcloud", false, "Is GovCloud?")
+	cmd.Flags().StringVar(&opts.Region, "region", "", "AWS region")
 	cmd.Flags().StringVar(&opts.Role, "role", "", "AWS IAM role arn")
 	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 86400, "Scan interval (seconds)")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", []string{}, "Compliance families")
@@ -127,6 +128,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("role")
+	cmd.MarkFlagRequired("region")
 
 	return cmd
 }
