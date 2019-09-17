@@ -46,7 +46,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				getTypesParams := metadata.NewGetResourceTypesParams()
 				getTypesParams.Provider = provider
 				getTypesParams.Region = &opts.Region
-				resp, err := client.Metadata.GetResourceTypes(getTypesParams)
+				resp, err := client.Metadata.GetResourceTypes(getTypesParams, auth)
 				CheckErr(err)
 				surveyTypes = resp.Payload.ResourceTypes
 			}

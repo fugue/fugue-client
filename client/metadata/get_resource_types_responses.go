@@ -32,6 +32,27 @@ func (o *GetResourceTypesReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return result, nil
 
+	case 400:
+		result := NewGetResourceTypesBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 401:
+		result := NewGetResourceTypesUnauthorized()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 403:
+		result := NewGetResourceTypesForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 500:
 		result := NewGetResourceTypesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -64,6 +85,93 @@ func (o *GetResourceTypesOK) Error() string {
 func (o *GetResourceTypesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ResourceTypeMetadata)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetResourceTypesBadRequest creates a GetResourceTypesBadRequest with default headers values
+func NewGetResourceTypesBadRequest() *GetResourceTypesBadRequest {
+	return &GetResourceTypesBadRequest{}
+}
+
+/*GetResourceTypesBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type GetResourceTypesBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *GetResourceTypesBadRequest) Error() string {
+	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *GetResourceTypesBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetResourceTypesUnauthorized creates a GetResourceTypesUnauthorized with default headers values
+func NewGetResourceTypesUnauthorized() *GetResourceTypesUnauthorized {
+	return &GetResourceTypesUnauthorized{}
+}
+
+/*GetResourceTypesUnauthorized handles this case with default header values.
+
+Authentication error.
+*/
+type GetResourceTypesUnauthorized struct {
+	Payload *models.AuthenticationError
+}
+
+func (o *GetResourceTypesUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *GetResourceTypesUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.AuthenticationError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetResourceTypesForbidden creates a GetResourceTypesForbidden with default headers values
+func NewGetResourceTypesForbidden() *GetResourceTypesForbidden {
+	return &GetResourceTypesForbidden{}
+}
+
+/*GetResourceTypesForbidden handles this case with default header values.
+
+Authorization error.
+*/
+type GetResourceTypesForbidden struct {
+	Payload *models.AuthorizationError
+}
+
+func (o *GetResourceTypesForbidden) Error() string {
+	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesForbidden  %+v", 403, o.Payload)
+}
+
+func (o *GetResourceTypesForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.AuthorizationError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

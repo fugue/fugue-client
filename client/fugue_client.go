@@ -11,6 +11,8 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
+	"github.com/fugue/fugue-client/client/c_o_r_s"
+	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/client/events"
 	"github.com/fugue/fugue-client/client/metadata"
@@ -60,6 +62,10 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Fugue {
 
 	cli := new(Fugue)
 	cli.Transport = transport
+
+	cli.CORS = c_o_r_s.New(transport, formats)
+
+	cli.CustomRules = custom_rules.New(transport, formats)
 
 	cli.Environments = environments.New(transport, formats)
 
@@ -115,6 +121,10 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Fugue is a client for fugue
 type Fugue struct {
+	CORS *c_o_r_s.Client
+
+	CustomRules *custom_rules.Client
+
 	Environments *environments.Client
 
 	Events *events.Client
@@ -131,6 +141,10 @@ type Fugue struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Fugue) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
+
+	c.CORS.SetTransport(transport)
+
+	c.CustomRules.SetTransport(transport)
 
 	c.Environments.SetTransport(transport)
 

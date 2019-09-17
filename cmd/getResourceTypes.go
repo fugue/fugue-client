@@ -24,7 +24,7 @@ func NewGetResourceTypesCommand() *cobra.Command {
 		Aliases: []string{"resource-types"},
 		Run: func(cmd *cobra.Command, args []string) {
 
-			client, _ := getClient()
+			client, auth := getClient()
 
 			params := metadata.NewGetResourceTypesParams()
 			params.Provider = opts.Provider
@@ -36,7 +36,7 @@ func NewGetResourceTypesCommand() *cobra.Command {
 				params.Region = &opts.Region
 			}
 
-			resp, err := client.Metadata.GetResourceTypes(params)
+			resp, err := client.Metadata.GetResourceTypes(params, auth)
 			CheckErr(err)
 
 			for _, rtype := range resp.Payload.ResourceTypes {

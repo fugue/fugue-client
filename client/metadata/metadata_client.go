@@ -60,7 +60,7 @@ GetResourceTypes lists the resource types supported by fugue
 
 Lists the resource types supported by Fugue.
 */
-func (a *Client) GetResourceTypes(params *GetResourceTypesParams) (*GetResourceTypesOK, error) {
+func (a *Client) GetResourceTypes(params *GetResourceTypesParams, authInfo runtime.ClientAuthInfoWriter) (*GetResourceTypesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetResourceTypesParams()
@@ -75,6 +75,7 @@ func (a *Client) GetResourceTypes(params *GetResourceTypesParams) (*GetResourceT
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &GetResourceTypesReader{formats: a.formats},
+		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})

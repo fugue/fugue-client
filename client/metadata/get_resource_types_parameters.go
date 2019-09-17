@@ -13,6 +13,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -61,6 +62,11 @@ for the get resource types operation typically these are written to a http.Reque
 */
 type GetResourceTypesParams struct {
 
+	/*BetaResources
+	  Indicates whether resource types in beta will be returned.
+
+	*/
+	BetaResources *bool
 	/*Provider
 	  Name of the cloud provider.
 
@@ -110,6 +116,17 @@ func (o *GetResourceTypesParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithBetaResources adds the betaResources to the get resource types params
+func (o *GetResourceTypesParams) WithBetaResources(betaResources *bool) *GetResourceTypesParams {
+	o.SetBetaResources(betaResources)
+	return o
+}
+
+// SetBetaResources adds the betaResources to the get resource types params
+func (o *GetResourceTypesParams) SetBetaResources(betaResources *bool) {
+	o.BetaResources = betaResources
+}
+
 // WithProvider adds the provider to the get resource types params
 func (o *GetResourceTypesParams) WithProvider(provider string) *GetResourceTypesParams {
 	o.SetProvider(provider)
@@ -139,6 +156,22 @@ func (o *GetResourceTypesParams) WriteToRequest(r runtime.ClientRequest, reg str
 		return err
 	}
 	var res []error
+
+	if o.BetaResources != nil {
+
+		// query param beta_resources
+		var qrBetaResources bool
+		if o.BetaResources != nil {
+			qrBetaResources = *o.BetaResources
+		}
+		qBetaResources := swag.FormatBool(qrBetaResources)
+		if qBetaResources != "" {
+			if err := r.SetQueryParam("beta_resources", qBetaResources); err != nil {
+				return err
+			}
+		}
+
+	}
 
 	// path param provider
 	if err := r.SetPathParam("provider", o.Provider); err != nil {

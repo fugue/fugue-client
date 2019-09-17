@@ -26,7 +26,6 @@ validate: $(SWAGGER)
 .PHONY: gen
 gen: $(SWAGGER)
 	swagger generate client -f $(SWAGGER)
-	# sed -i "" "s/,omitempty//g" $(shell find models -name "*.go")
 
 .PHONY: clean
 clean:
