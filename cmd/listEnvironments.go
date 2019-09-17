@@ -12,13 +12,9 @@ import (
 )
 
 type listEnvironmentsOptions struct {
-	Offset         int64
-	MaxItems       int64
-	OrderBy        string
-	OrderDirection string
-	Columns        []string
-	Provider       string
-	NameFilter     string
+	Columns    []string
+	Provider   string
+	NameFilter string
 }
 
 type listEnvironmentsViewItem struct {
@@ -47,19 +43,6 @@ func NewListEnvironmentsCommand() *cobra.Command {
 			client, auth := getClient()
 
 			params := environments.NewListEnvironmentsParams()
-			if opts.Offset > 0 {
-				params.Offset = &opts.Offset
-			}
-			if opts.MaxItems > 0 {
-				params.MaxItems = &opts.MaxItems
-			}
-			if opts.OrderBy != "" {
-				params.OrderBy = &opts.OrderBy
-			}
-			if opts.OrderDirection != "" {
-				params.OrderDirection = &opts.OrderDirection
-			}
-
 			resp, err := client.Environments.ListEnvironments(params, auth)
 			CheckErr(err)
 
@@ -130,13 +113,9 @@ func NewListEnvironmentsCommand() *cobra.Command {
 		"ScanStatus",
 	}
 
-	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "offset into results")
-	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 0, "max items to return")
-	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "", "order by attribute")
-	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "", "order by direction [asc | desc]")
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider filter")
 	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
-	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "columns to show")
+	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")
 
 	return cmd
 }
