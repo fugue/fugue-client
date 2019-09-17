@@ -74,7 +74,15 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 			}
 
 			resp, err := client.Environments.CreateEnvironment(params, auth)
-			CheckErr(err)
+			if err != nil {
+				switch respError := err.(type) {
+				case *environments.CreateEnvironmentInternalServerError:
+					Fatal(respError.Payload.Message, DefaultErrorExitCode)
+				default:
+					CheckErr(err)
+				}
+			}
+
 			env := resp.Payload
 
 			families := strings.Join(env.ComplianceFamilies, ",")
@@ -115,7 +123,10 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 86400, "Scan interval (seconds)")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", []string{}, "Compliance families")
 	cmd.Flags().StringSliceVar(&opts.RemediationResourceTypes, "remediation-resource-types", []string{}, "Remediation resource types")
-	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types")
+	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types (defaults to all available types)")
+
+	cmd.MarkFlagRequired("name")
+	cmd.MarkFlagRequired("role")
 
 	return cmd
 }
