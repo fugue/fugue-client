@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/fugue/fugue-client/client/environments"
@@ -18,6 +19,17 @@ type listEnvironmentsOptions struct {
 	Columns        []string
 	Provider       string
 	NameFilter     string
+}
+
+type listEnvironmentsViewItem struct {
+	ID                 string
+	Name               string
+	Provider           string
+	Region             string
+	ScanInterval       string
+	ScanStatus         string
+	HasBaseline        bool
+	ComplianceFamilies string
 }
 
 // NewListEnvironmentsCommand returns a command that lists environments in Fugue
@@ -76,7 +88,23 @@ func NewListEnvironmentsCommand() *cobra.Command {
 					}
 				}
 
-				rows = append(rows, env)
+				region := "-"
+				if env.Provider == "aws" {
+					region = env.ProviderOptions.Aws.Region
+				} else if env.Provider == "aws_govcloud" {
+					region = env.ProviderOptions.AwsGovcloud.Region
+				}
+
+				rows = append(rows, listEnvironmentsViewItem{
+					ID:                 env.ID,
+					Name:               env.Name,
+					HasBaseline:        env.BaselineID != "",
+					Provider:           env.Provider,
+					Region:             region,
+					ScanInterval:       strconv.FormatInt(env.ScanInterval, 10),
+					ScanStatus:         env.ScanStatus,
+					ComplianceFamilies: strings.Join(env.ComplianceFamilies, ","),
+				})
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -92,13 +120,23 @@ func NewListEnvironmentsCommand() *cobra.Command {
 		},
 	}
 
+	defaultCols := []string{
+		"ID",
+		"Name",
+		"Provider",
+		"Region",
+		"HasBaseline",
+		"ScanInterval",
+		"ScanStatus",
+	}
+
 	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "offset into results")
 	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 0, "max items to return")
 	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "", "order by attribute")
 	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "", "order by direction [asc | desc]")
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider filter")
 	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
-	cmd.Flags().StringSliceVar(&opts.Columns, "columns", []string{"ID", "Name", "Provider", "ScanStatus"}, "columns to show")
+	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "columns to show")
 
 	return cmd
 }
