@@ -25,6 +25,9 @@ type UpdateCustomRuleInput struct {
 	// Human readable name of the custom rule
 	Name string `json:"name,omitempty"`
 
+	// Resource type to which the custom rule applies
+	ResourceType string `json:"resource_type,omitempty"`
+
 	// Rego code used by the rule
 	RuleText string `json:"rule_text,omitempty"`
 
