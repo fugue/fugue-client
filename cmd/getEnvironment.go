@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Item is used to display an attribute and its value to the user
 type Item struct {
 	Attribute string
 	Value     interface{}
