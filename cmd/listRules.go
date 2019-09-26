@@ -44,6 +44,9 @@ func NewListRulesCommand() *cobra.Command {
 			CheckErr(err)
 
 			rules := resp.Payload.Items
+			if len(rules) == 0 {
+				return
+			}
 
 			var rows []interface{}
 			for _, rule := range rules {
