@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
@@ -38,12 +37,16 @@ func loadRego(path string) (*regoFile, error) {
 	baseName := filepath.Base(path)
 	extension := strings.ToLower(filepath.Ext(path))
 	if extension != ".rego" {
-		return nil, fmt.Errorf("Unexpected file type: %s", extension)
+		return nil, nil
 	}
 
 	contents, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(contents) == 0 {
+		return nil, nil
 	}
 
 	rego := regoFile{
@@ -67,33 +70,33 @@ func loadRego(path string) (*regoFile, error) {
 				rego.Provider = strings.ToUpper(match[1])
 				continue
 			}
+			lineUpper := strings.ToUpper(line)
+			if lineUpper == "AWS" || lineUpper == "AWS_GOVCLOUD" || lineUpper == "AZURE" {
+				rego.Provider = lineUpper
+			}
 		}
 		// Comment lines are otherwise considered part of the rule description
 		if rego.Description == "" {
 			rego.Description = line
-		} else {
-			rego.Description += "\n" + line
 		}
 	}
 	if rego.ResourceType == "" {
-		return nil, errors.New("No resource type detected in rego comments. " +
-			"Expected type like AWS.EC2.SecurityGroup.")
+		rego.ResourceType = "MULTIPLE"
 	}
 	if rego.Description == "" {
 		return nil, errors.New("Expected a rego comment to use as the " +
 			"rule description.")
 	}
-	fmt.Printf("REGO: %+v\n", rego)
 	return &rego, nil
 }
 
-// NewWatchRulesCommand returns a command that watches a directory for changes
+// NewSyncRulesCommand returns a command that watches a directory for changes
 // to rego files
-func NewWatchRulesCommand() *cobra.Command {
+func NewSyncRulesCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "rules [directory]",
-		Short: "Update rule settings",
+		Short: "Sync rules to the organization",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 
@@ -119,7 +122,13 @@ func NewWatchRulesCommand() *cobra.Command {
 				}
 
 				rego, err := loadRego(path)
-				CheckErr(err)
+				if err != nil {
+					fmt.Println("WARN:", err)
+					return nil
+				}
+				if rego == nil {
+					return nil
+				}
 
 				existingRule := getRuleByName(ruleName)
 				if existingRule == nil {
@@ -147,29 +156,12 @@ func NewWatchRulesCommand() *cobra.Command {
 				return nil
 			}
 
-			watcher, err := fsnotify.NewWatcher()
-			CheckErr(err)
-			defer watcher.Close()
-
-			err = watcher.Add(args[0])
+			files, err := ioutil.ReadDir(args[0])
 			CheckErr(err)
 
-			for {
-				select {
-				case event, ok := <-watcher.Events:
-					if !ok {
-						return
-					}
-					if event.Op&fsnotify.Write == fsnotify.Write {
-						updateRule(event.Name)
-					} else if event.Op&fsnotify.Create == fsnotify.Create {
-						updateRule(event.Name)
-					}
-				case err, ok := <-watcher.Errors:
-					if !ok {
-						return
-					}
-					CheckErr(err)
+			for _, file := range files {
+				if filepath.Ext(file.Name()) == ".rego" {
+					updateRule(filepath.Join(args[0], file.Name()))
 				}
 			}
 		},
@@ -178,5 +170,5 @@ func NewWatchRulesCommand() *cobra.Command {
 }
 
 func init() {
-	watchCmd.AddCommand(NewWatchRulesCommand())
+	syncCmd.AddCommand(NewSyncRulesCommand())
 }

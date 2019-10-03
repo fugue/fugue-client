@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 
@@ -36,8 +37,11 @@ func NewUpdateRuleCommand() *cobra.Command {
 			params.RuleID = args[0]
 			params.Rule = &models.UpdateCustomRuleInput{}
 
+			flagCount := 0
+
 			// Using Visit here allows us to process only flags that were set
 			cmd.Flags().Visit(func(f *pflag.Flag) {
+				flagCount++
 				switch f.Name {
 				case "name":
 					params.Rule.Name = opts.Name
@@ -49,6 +53,10 @@ func NewUpdateRuleCommand() *cobra.Command {
 					params.Rule.RuleText = opts.RuleText
 				}
 			})
+
+			if flagCount == 0 {
+				os.Exit(0)
+			}
 
 			resp, err := client.CustomRules.UpdateCustomRule(params, auth)
 			CheckErr(err)

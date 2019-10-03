@@ -32,6 +32,13 @@ func (o *GetCustomRuleReader) ReadResponse(response runtime.ClientResponse, cons
 		}
 		return result, nil
 
+	case 400:
+		result := NewGetCustomRuleBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
 	case 401:
 		result := NewGetCustomRuleUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -41,6 +48,13 @@ func (o *GetCustomRuleReader) ReadResponse(response runtime.ClientResponse, cons
 
 	case 403:
 		result := NewGetCustomRuleForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+
+	case 404:
+		result := NewGetCustomRuleNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -78,6 +92,35 @@ func (o *GetCustomRuleOK) Error() string {
 func (o *GetCustomRuleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.CustomRule)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetCustomRuleBadRequest creates a GetCustomRuleBadRequest with default headers values
+func NewGetCustomRuleBadRequest() *GetCustomRuleBadRequest {
+	return &GetCustomRuleBadRequest{}
+}
+
+/*GetCustomRuleBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type GetCustomRuleBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *GetCustomRuleBadRequest) Error() string {
+	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *GetCustomRuleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -136,6 +179,35 @@ func (o *GetCustomRuleForbidden) Error() string {
 func (o *GetCustomRuleForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetCustomRuleNotFound creates a GetCustomRuleNotFound with default headers values
+func NewGetCustomRuleNotFound() *GetCustomRuleNotFound {
+	return &GetCustomRuleNotFound{}
+}
+
+/*GetCustomRuleNotFound handles this case with default header values.
+
+Not found error.
+*/
+type GetCustomRuleNotFound struct {
+	Payload *models.NotFoundError
+}
+
+func (o *GetCustomRuleNotFound) Error() string {
+	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleNotFound  %+v", 404, o.Payload)
+}
+
+func (o *GetCustomRuleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.NotFoundError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

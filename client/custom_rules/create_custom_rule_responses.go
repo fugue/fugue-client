@@ -68,7 +68,7 @@ func NewCreateCustomRuleCreated() *CreateCustomRuleCreated {
 New custom rule details.
 */
 type CreateCustomRuleCreated struct {
-	Payload *models.CustomRule
+	Payload *models.CustomRuleWithErrors
 }
 
 func (o *CreateCustomRuleCreated) Error() string {
@@ -77,7 +77,7 @@ func (o *CreateCustomRuleCreated) Error() string {
 
 func (o *CreateCustomRuleCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.CustomRule)
+	o.Payload = new(models.CustomRuleWithErrors)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

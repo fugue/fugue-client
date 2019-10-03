@@ -153,6 +153,70 @@ func (a *Client) ListCustomRules(params *ListCustomRulesParams, authInfo runtime
 }
 
 /*
+TestCustomRule tests a custom rule
+
+Test a custom rule using state from an scan.
+
+*/
+func (a *Client) TestCustomRule(params *TestCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*TestCustomRuleOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewTestCustomRuleParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "testCustomRule",
+		Method:             "POST",
+		PathPattern:        "/rules/test",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &TestCustomRuleReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*TestCustomRuleOK), nil
+
+}
+
+/*
+TestCustomRuleInput gets the input for a custom rule test
+
+Get the input against which a custom rule would be tested.
+
+*/
+func (a *Client) TestCustomRuleInput(params *TestCustomRuleInputParams, authInfo runtime.ClientAuthInfoWriter) (*TestCustomRuleInputOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewTestCustomRuleInputParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "testCustomRuleInput",
+		Method:             "GET",
+		PathPattern:        "/rules/test/input",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &TestCustomRuleInputReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*TestCustomRuleInputOK), nil
+
+}
+
+/*
 UpdateCustomRule updates custom rule
 
 Update configuration of a custom rule.
@@ -181,38 +245,6 @@ func (a *Client) UpdateCustomRule(params *UpdateCustomRuleParams, authInfo runti
 		return nil, err
 	}
 	return result.(*UpdateCustomRuleOK), nil
-
-}
-
-/*
-ValidateCustomRule validates a custom rule
-
-Validate a custom rule using state from an environment.
-
-*/
-func (a *Client) ValidateCustomRule(params *ValidateCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*ValidateCustomRuleCreated, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewValidateCustomRuleParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "validateCustomRule",
-		Method:             "POST",
-		PathPattern:        "/rules/validator/v1/{environment_id}",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &ValidateCustomRuleReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*ValidateCustomRuleCreated), nil
 
 }
 

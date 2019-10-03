@@ -87,33 +87,64 @@ func (a *Client) OptionsRulesRuleID(params *OptionsRulesRuleIDParams) (*OptionsR
 }
 
 /*
-OptionsRulesValidatorV1EnvironmentID cs o r s support
+OptionsRulesTest cs o r s support
 
 Enable CORS by returning correct headers.
 
 */
-func (a *Client) OptionsRulesValidatorV1EnvironmentID(params *OptionsRulesValidatorV1EnvironmentIDParams) (*OptionsRulesValidatorV1EnvironmentIDOK, error) {
+func (a *Client) OptionsRulesTest(params *OptionsRulesTestParams) (*OptionsRulesTestOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewOptionsRulesValidatorV1EnvironmentIDParams()
+		params = NewOptionsRulesTestParams()
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "OptionsRulesValidatorV1EnvironmentID",
+		ID:                 "OptionsRulesTest",
 		Method:             "OPTIONS",
-		PathPattern:        "/rules/validator/v1/{environment_id}",
+		PathPattern:        "/rules/test",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &OptionsRulesValidatorV1EnvironmentIDReader{formats: a.formats},
+		Reader:             &OptionsRulesTestReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return result.(*OptionsRulesValidatorV1EnvironmentIDOK), nil
+	return result.(*OptionsRulesTestOK), nil
+
+}
+
+/*
+OptionsRulesTestInput cs o r s support
+
+Enable CORS by returning correct headers.
+
+*/
+func (a *Client) OptionsRulesTestInput(params *OptionsRulesTestInputParams) (*OptionsRulesTestInputOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewOptionsRulesTestInputParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "OptionsRulesTestInput",
+		Method:             "OPTIONS",
+		PathPattern:        "/rules/test/input",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &OptionsRulesTestInputReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*OptionsRulesTestInputOK), nil
 
 }
 
