@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/fatih/structs v1.1.0
+	github.com/fsnotify/fsnotify v1.4.7
 	github.com/go-openapi/errors v0.18.0
 	github.com/go-openapi/runtime v0.19.0
 	github.com/go-openapi/strfmt v0.19.0

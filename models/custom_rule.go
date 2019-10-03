@@ -19,7 +19,7 @@ import (
 // swagger:model CustomRule
 type CustomRule struct {
 
-	// Compliance controls to which the custom rule belongs
+	// Compliance controls to which the custom rule belongs.
 	ComplianceControls []string `json:"compliance_controls"`
 
 	// The date and time the rule was created.
@@ -28,30 +28,30 @@ type CustomRule struct {
 	// Principal that created the rule.
 	CreatedBy string `json:"created_by,omitempty"`
 
-	// Description of the custom rule
+	// Description of the custom rule.
 	Description string `json:"description,omitempty"`
 
-	// ID of the custom rule
+	// ID of the custom rule.
 	ID string `json:"id,omitempty"`
 
-	// Human readable name of the custom rule
+	// Human readable name of the custom rule.
 	Name string `json:"name,omitempty"`
 
-	// Provider of the custom rule
+	// Provider of the custom rule.
 	// Enum: [AWS AWS_GOVCLOUD AZURE]
 	Provider string `json:"provider,omitempty"`
 
-	// Resource type to which the custom rule applies
+	// Resource type to which the custom rule applies.
 	ResourceType string `json:"resource_type,omitempty"`
 
-	// The rego source code for the rule
+	// The rego source code for the rule.
 	RuleText string `json:"rule_text,omitempty"`
 
-	// The origin of this rule
+	// The origin of this rule.
 	// Enum: [CUSTOM]
 	Source string `json:"source,omitempty"`
 
-	// The current status of the rule
+	// The current status of the rule.
 	// Enum: [ENABLED DISABLED INVALID]
 	Status string `json:"status,omitempty"`
 
