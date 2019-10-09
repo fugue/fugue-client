@@ -2,8 +2,10 @@
 
 This is a command line client for the [Fugue](https://riskmanager.fugue.co/) API.
 
+For CLI documentation and examples, see the [Fugue docs site](https://docs.fugue.co/cli.html).
+
 For information about enabling a client in your account, see
-[the documentation](https://riskmanagerdocs.fugue.co/api.html). More details of the underlying Swagger API are available
+the [API Reference](https://docs.fugue.co/api.html). More details of the underlying Swagger API are available
 [here](https://docs.fugue.co/_static/swagger.html).
 
 This project is under active development and is not yet stable. Commands will
