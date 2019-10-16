@@ -5,7 +5,7 @@ This is a command line client for the [Fugue](https://riskmanager.fugue.co/) API
 For CLI documentation and examples, see the [Fugue docs site](https://docs.fugue.co/cli.html).
 
 For information about enabling a client in your account, see
-the [API Reference](https://docs.fugue.co/api.html). More details of the underlying Swagger API are available
+the [API User Guide](https://docs.fugue.co/api.html). More details of the underlying Swagger API are available
 [here](https://docs.fugue.co/_static/swagger.html).
 
 This project is under active development and is not yet stable. Commands will
@@ -26,12 +26,14 @@ Change file permissions:
 chmod 755 /usr/local/bin/fugue
 ```
 
+For more information, see the [CLI documentation](https://docs.fugue.co/cli.html#installation).
+
 ## Environment Variables
 
 The client uses the following *required* environment variables:
 
-* `FUGUE_API_ID` - your API [client ID](https://riskmanagerdocs.fugue.co/api.html#HowtoUsetheAPI)
-* `FUGUE_API_SECRET` - your API [client secret](https://riskmanagerdocs.fugue.co/api.html#HowtoUsetheAPI)
+* `FUGUE_API_ID` - your API [client ID](https://docs.fugue.co/api.html#steps)
+* `FUGUE_API_SECRET` - your API [client secret](https://docs.fugue.co/api.html#steps)
 
 ## Build from Source
 
@@ -61,49 +63,41 @@ Show usage:
 fugue -h
 ```
 
-Show usage for a subcommand:
-
 ```
-fugue list -h
-```
+Fugue API Client
 
-List environments:
+Usage:
+  fugue [command]
 
-```
-fugue list environments
-```
+Available Commands:
+  create      Create a resource
+  delete      Delete a resource
+  get         Retrieve a resource
+  help        Help about any command
+  list        List a collection of resources
+  scan        Trigger a scan
+  sync        Sync files to your account
+  update      Update a resource
 
-List environment scans:
+Flags:
+  -h, --help      help for fugue
+      --version   version for fugue
 
-```
-fugue list scans [environment-id]
-```
-
-List environment events:
-
-```
-fugue list events [environment-id]
-```
-
-Trigger a scan:
-
-```
-fugue scan [environment-id]
+Use "fugue [command] --help" for more information about a command.
 ```
 
-Compliance by resource types:
+### Command Documentation
 
-```
-fugue get compliance-by-resource-types [scan-id]
-```
+- [create](https://docs.fugue.co/cli-create.html)
+- [delete](https://docs.fugue.co/cli-delete.html)
+- [get](https://docs.fugue.co/cli-get.html)
+- [help](https://docs.fugue.co/cli-help.html)
+- [list](https://docs.fugue.co/cli-list.html)
+- [scan](https://docs.fugue.co/cli-scan.html)
+- [sync](https://docs.fugue.co/cli-sync.html)
+- [update](https://docs.fugue.co/cli-update.html)
 
-Compliance by rules:
-
-```
-fugue get compliance-by-rules [scan-id]
-```
-
-## Aliases
+### Aliases
 
 You may use the shorthand `env` instead of `environment` when running commands.
 
