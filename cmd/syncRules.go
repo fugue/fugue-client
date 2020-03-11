@@ -21,7 +21,8 @@ type regoFile struct {
 	Text         string
 }
 
-var regoResourceTypeRegex = regexp.MustCompile(`([\w]+)[.]([\w]+)[.]([\w]+)`)
+var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]([\w]+)[.]([\w]+)`)
+var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
 
 func pathToRuleName(path string) string {
 	baseName := filepath.Base(path)
@@ -65,30 +66,33 @@ func loadRego(path string) (*regoFile, error) {
 			continue
 		}
 		line = strings.TrimSpace(strings.Trim(line, "#"))
-		// Look for a resource type in the form of "Provider.Service.Type"
+		// Look for a resource type type denoted by the correct header
 		if rego.ResourceType == "" {
-			match := regoResourceTypeRegex.FindStringSubmatch(line)
-			if len(match) == 4 {
-				rego.ResourceType = strings.Join(match[1:4], ".")
-				rego.Provider = strings.ToUpper(match[1])
+			match := regoResourceTypeHeader.FindStringSubmatch(line)
+			if len(match) == 5 {
+				rego.ResourceType = strings.Join(match[2:5], ".")
+				rego.Provider = strings.ToUpper(match[2])
 				continue
-			}
-			lineUpper := strings.ToUpper(line)
-			if lineUpper == "AWS" || lineUpper == "AWS_GOVCLOUD" || lineUpper == "AZURE" {
-				rego.Provider = lineUpper
+			} else {
+				return nil, errors.New("unexpected resource type definition")
 			}
 		}
-		// Comment lines are otherwise considered part of the rule description
+		// Look for a description type denoted by the correct header
 		if rego.Description == "" {
-			rego.Description = line
+			match := regoDescriptionHeader.FindStringSubmatch(line)
+			if len(match) == 3 {
+				rego.Description = match[2]
+				continue
+			} else {
+				return nil, errors.New("unexpected description definition")
+			}
 		}
 	}
 	if rego.ResourceType == "" {
-		rego.ResourceType = "MULTIPLE"
+		return nil, errors.New("expected a resource type by the header \"Resource-Type\"")
 	}
 	if rego.Description == "" {
-		return nil, errors.New("Expected a rego comment to use as the " +
-			"rule description.")
+		return nil, errors.New("expected a description by the header \"Description\"")
 	}
 	return &rego, nil
 }
