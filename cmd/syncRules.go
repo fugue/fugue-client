@@ -49,9 +49,12 @@ func loadRego(path string) (*regoFile, error) {
 		return nil, nil
 	}
 
+	name := baseName[:len(baseName)-len(extension)]
+	name = strings.ReplaceAll(name, "_", "-")
+
 	rego := regoFile{
 		Text: string(contents),
-		Name: baseName[:len(baseName)-len(extension)],
+		Name: name,
 	}
 
 	for _, line := range strings.Split(rego.Text, "\n") {
@@ -116,11 +119,6 @@ func NewSyncRulesCommand() *cobra.Command {
 
 			updateRule := func(path string) error {
 
-				ruleName := pathToRuleName(path)
-				if ruleName == "" {
-					return nil
-				}
-
 				rego, err := loadRego(path)
 				if err != nil {
 					fmt.Println("WARN:", err)
@@ -130,9 +128,9 @@ func NewSyncRulesCommand() *cobra.Command {
 					return nil
 				}
 
-				existingRule := getRuleByName(ruleName)
+				existingRule := getRuleByName(rego.Name)
 				if existingRule == nil {
-					fmt.Println("Creating rule", ruleName)
+					fmt.Println("Creating rule", rego.Name)
 					params := custom_rules.NewCreateCustomRuleParams()
 					params.Rule = &models.CreateCustomRuleInput{
 						Name:         rego.Name,
@@ -143,7 +141,7 @@ func NewSyncRulesCommand() *cobra.Command {
 					}
 					client.CustomRules.CreateCustomRule(params, auth)
 				} else {
-					fmt.Println("Updating rule", ruleName)
+					fmt.Println("Updating rule", rego.Name)
 					params := custom_rules.NewUpdateCustomRuleParams()
 					params.RuleID = existingRule.ID
 					params.Rule = &models.UpdateCustomRuleInput{
