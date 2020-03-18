@@ -15,9 +15,9 @@ func TestParseRego(t *testing.T) {
 			"single-aws",
 			&regoFile{
 				Text: `
-# Resource-Type: AWS.EC2.Instance
-# Description: fake
 # Provider: AWS
+# Resource-Type: EC2.Instance
+# Description: fake
 deny{}`,
 			},
 			"AWS",
@@ -27,9 +27,9 @@ deny{}`,
 			"multiple-aws",
 			&regoFile{
 				Text: `
+# Provider: AWS
 # Resource-Type: MULTIPLE
 # Description: fake
-# Provider: AWS
 deny{}`,
 			},
 			"AWS",
@@ -39,8 +39,8 @@ deny{}`,
 			"single-aws-govcloud",
 			&regoFile{
 				Text: `
-# Resource-Type: AWS.EC2.Instance
 # Provider: AWS_GOVCLOUD
+# Resource-Type: EC2.Instance
 # Description: fake
 
 deny{}`,
@@ -52,9 +52,9 @@ deny{}`,
 			"multiple-aws-govcloud",
 			&regoFile{
 				Text: `
+# Provider: AWS_GOVCLOUD
 # Resource-Type: MULTIPLE
 # Description: fake
-# Provider: AWS_GOVCLOUD
 
 deny{}`,
 			},
@@ -65,9 +65,9 @@ deny{}`,
 			"single-azure",
 			&regoFile{
 				Text: `
-# Resource-Type: Azure.Compute.VirtualMachine
-# Description: fake
 # Provider: Azure
+# Resource-Type: Compute.VirtualMachine
+# Description: fake
 deny{}`,
 			},
 			"Azure",
@@ -77,13 +77,28 @@ deny{}`,
 			"multiple-azure",
 			&regoFile{
 				Text: `
+# Provider: Azure
 # Resource-Type: MULTIPLE
 # Description: fake
-# Provider: Azure
 deny{}`,
 			},
 			"Azure",
 			"MULTIPLE",
+		},
+		{
+			"becki1-aws-s3-bucket-sse",
+			&regoFile{
+				Text: `
+# Provider: AWS_GOVCLOUD
+# Resource-Type: S3.Bucket
+# Description: SSE encryption should be enabled for S3 buckets (AES-256 or KMS).
+
+allow {
+  input.server_side_encryption_configuration[_].rule[_][_][_].sse_algorithm = _
+}`,
+			},
+			"AWS_GOVCLOUD",
+			"AWS.S3.Bucket",
 		},
 	}
 
