@@ -66,7 +66,7 @@ func (rego *regoFile) ParseText() error {
 	return nil
 }
 
-var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]((?i)(MULTIPLE)|([\w]+[.][\w]+))`)
+var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]((MULTIPLE)|([\w]+[.][\w]+))`)
 var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
 
 func loadRego(path string) (*regoFile, error) {

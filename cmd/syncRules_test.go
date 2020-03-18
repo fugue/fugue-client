@@ -28,14 +28,6 @@ func TestParseRego(t *testing.T) {
 			"MULTIPLE",
 		},
 		{
-			"multiple-aws-mixed",
-			&regoFile{
-				Text: "# Resource-Type: AWS.mulTiPLe\n# Description: fake\n\ndeny{}",
-			},
-			"AWS",
-			"MULTIPLE",
-		},
-		{
 			"single-aws-govcloud",
 			&regoFile{
 				Text: "# Resource-Type: AWS_GOVCLOUD.EC2.Instance\n# Description: fake\n\ndeny{}",
