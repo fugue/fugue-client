@@ -38,6 +38,10 @@ gen: $(SWAGGER)
 	sed -i "" "s/ScanScheduleEnabled bool/ScanScheduleEnabled *bool/g" $(UPDATE_ENV_SRC)
 	sed -i "" "s/ScanScheduleEnabled bool/ScanScheduleEnabled *bool/g" $(UPDATE_RULE_SRC)
 
+.PHONY: test
+test:
+	$(GO) test -test.v ./...
+
 .PHONY: clean
 clean:
 	rm -f $(BINARY)
