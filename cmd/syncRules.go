@@ -59,9 +59,13 @@ func loadRego(path string) (*regoFile, error) {
 		// Look for a resource type type denoted by the correct header
 		if rego.ResourceType == "" {
 			match := regoResourceTypeHeader.FindStringSubmatch(line)
-			if len(match) == 5 {
-				rego.ResourceType = strings.Join(match[2:5], ".")
-				rego.Provider = strings.ToUpper(match[2])
+			if len(match) == 6 {
+				rego.Provider = match[2]
+				if match[4] == "" {
+					rego.ResourceType = strings.Join(match[2:4], ".")
+				} else {
+					rego.ResourceType = strings.ToUpper(match[3])
+				}
 				continue
 			} else {
 				return nil, errors.New("unexpected resource type definition")
