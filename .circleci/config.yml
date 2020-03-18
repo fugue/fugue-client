@@ -14,3 +14,4 @@ jobs:
     steps:
       - checkout
       - run: go test -test.v ./...
+
