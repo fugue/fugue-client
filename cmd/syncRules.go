@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"net/textproto"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -22,47 +26,58 @@ type regoFile struct {
 }
 
 func (rego *regoFile) ParseText() error {
-
+	// Extract the header block from the first comment block.
+	headerText := ""
+	inFirstCommentBlock := false
 	for _, line := range strings.Split(rego.Text, "\n") {
-		// We will extract the rule description and resource type from
-		// comment lines in the rego file. Ignore non-comment lines here.
-		line = strings.TrimSpace(line)
-		if len(line) == 0 || !strings.HasPrefix(line, "#") {
-			continue
-		}
-		line = strings.TrimSpace(strings.Trim(line, "#"))
-		// Look for a resource type type denoted by the correct header
-		if rego.ResourceType == "" {
-			match := regoResourceTypeHeader.FindStringSubmatch(line)
-			if len(match) == 6 {
-				rego.Provider = match[2]
-				if match[4] == "" {
-					rego.ResourceType = strings.Join(match[2:4], ".")
-				} else {
-					rego.ResourceType = strings.ToUpper(match[3])
-				}
-				continue
-			} else {
-				return errors.New("unexpected resource type definition")
+		if strings.HasPrefix(line, "#") {
+			if !inFirstCommentBlock && headerText == "" {
+				inFirstCommentBlock = true
 			}
-		}
-		// Look for a description type denoted by the correct header
-		if rego.Description == "" {
-			match := regoDescriptionHeader.FindStringSubmatch(line)
-			if len(match) == 3 {
-				rego.Description = match[2]
-				continue
-			} else {
-				return errors.New("unexpected description definition")
+			if inFirstCommentBlock {
+				headerText += strings.TrimSpace(strings.TrimPrefix(line, "#"))
+				headerText += "\r\n"
 			}
+		} else {
+			inFirstCommentBlock = false
 		}
 	}
+
+	// Parse the HTTP headers in `headerText`.
+	reader := bufio.NewReader(strings.NewReader(headerText + "\r\n"))
+	tp := textproto.NewReader(reader)
+	headers := make(map[string][]string)
+	mimeHeader, err := tp.ReadMIMEHeader()
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		headers = http.Header(mimeHeader)
+	}
+
+	// Helper to obtain a specific header.
+	getHeader := func(name string) string {
+		if arr, ok := headers[name]; ok {
+			if len(arr) > 0 {
+				return arr[0]
+			}
+		}
+		return ""
+	}
+	rego.ResourceType = getHeader("Resource-Type")
+	rego.Description = getHeader("Description")
+	rego.Provider = getHeader("Provider")
+
+	// Throw errors if things are missing.
 	if rego.ResourceType == "" {
 		return errors.New("expected a resource type by the header \"Resource-Type\"")
 	}
 	if rego.Description == "" {
 		return errors.New("expected a description by the header \"Description\"")
 	}
+	if rego.Provider == "" {
+		return errors.New("expected a provider by the header \"Provider\"")
+	}
+
 	return nil
 }
 

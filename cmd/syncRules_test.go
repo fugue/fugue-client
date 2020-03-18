@@ -14,7 +14,11 @@ func TestParseRego(t *testing.T) {
 		{
 			"single-aws",
 			&regoFile{
-				Text: "# Resource-Type: AWS.EC2.Instance\n# Description: fake\n\ndeny{}",
+				Text: `
+# Resource-Type: AWS.EC2.Instance
+# Description: fake
+# Provider: AWS
+deny{}`,
 			},
 			"AWS",
 			"AWS.EC2.Instance",
@@ -22,7 +26,11 @@ func TestParseRego(t *testing.T) {
 		{
 			"multiple-aws",
 			&regoFile{
-				Text: "# Resource-Type: AWS.MULTIPLE\n# Description: fake\n\ndeny{}",
+				Text: `
+# Resource-Type: MULTIPLE
+# Description: fake
+# Provider: AWS
+deny{}`,
 			},
 			"AWS",
 			"MULTIPLE",
@@ -30,15 +38,25 @@ func TestParseRego(t *testing.T) {
 		{
 			"single-aws-govcloud",
 			&regoFile{
-				Text: "# Resource-Type: AWS_GOVCLOUD.EC2.Instance\n# Description: fake\n\ndeny{}",
+				Text: `
+# Resource-Type: AWS.EC2.Instance
+# Provider: AWS_GOVCLOUD
+# Description: fake
+
+deny{}`,
 			},
 			"AWS_GOVCLOUD",
-			"AWS_GOVCLOUD.EC2.Instance",
+			"AWS.EC2.Instance",
 		},
 		{
 			"multiple-aws-govcloud",
 			&regoFile{
-				Text: "# Resource-Type: AWS_GOVCLOUD.MULTIPLE\n# Description: fake\n\ndeny{}",
+				Text: `
+# Resource-Type: MULTIPLE
+# Description: fake
+# Provider: AWS_GOVCLOUD
+
+deny{}`,
 			},
 			"AWS_GOVCLOUD",
 			"MULTIPLE",
@@ -46,7 +64,11 @@ func TestParseRego(t *testing.T) {
 		{
 			"single-azure",
 			&regoFile{
-				Text: "# Resource-Type: Azure.Compute.VirtualMachine\n# Description: fake\n\ndeny{}",
+				Text: `
+# Resource-Type: Azure.Compute.VirtualMachine
+# Description: fake
+# Provider: Azure
+deny{}`,
 			},
 			"Azure",
 			"Azure.Compute.VirtualMachine",
@@ -54,7 +76,11 @@ func TestParseRego(t *testing.T) {
 		{
 			"multiple-azure",
 			&regoFile{
-				Text: "# Resource-Type: Azure.MULTIPLE\n# Description: fake\n\ndeny{}",
+				Text: `
+# Resource-Type: MULTIPLE
+# Description: fake
+# Provider: Azure
+deny{}`,
 			},
 			"Azure",
 			"MULTIPLE",
