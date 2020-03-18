@@ -13,5 +13,5 @@ jobs:
     working_directory: /go/src/github.com/fugue/fugue-client
     steps:
       - checkout
-      - run: go test -test.v ./...
+      - run: make test
 
