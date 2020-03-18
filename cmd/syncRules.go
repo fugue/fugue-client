@@ -24,15 +24,6 @@ type regoFile struct {
 var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]([\w]+)[.]([\w]+)`)
 var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
 
-func pathToRuleName(path string) string {
-	baseName := filepath.Base(path)
-	extension := strings.ToLower(filepath.Ext(path))
-	if extension != ".rego" {
-		return ""
-	}
-	return baseName[:len(baseName)-len(extension)]
-}
-
 func loadRego(path string) (*regoFile, error) {
 
 	baseName := filepath.Base(path)
