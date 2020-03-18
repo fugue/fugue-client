@@ -21,6 +21,52 @@ type regoFile struct {
 	Text         string
 }
 
+func (rego *regoFile) ParseText() error {
+
+	for _, line := range strings.Split(rego.Text, "\n") {
+		// We will extract the rule description and resource type from
+		// comment lines in the rego file. Ignore non-comment lines here.
+		line = strings.TrimSpace(line)
+		if len(line) == 0 || !strings.HasPrefix(line, "#") {
+			continue
+		}
+		line = strings.TrimSpace(strings.Trim(line, "#"))
+		// Look for a resource type type denoted by the correct header
+		if rego.ResourceType == "" {
+			match := regoResourceTypeHeader.FindStringSubmatch(line)
+			if len(match) == 6 {
+				rego.Provider = match[2]
+				if match[4] == "" {
+					rego.ResourceType = strings.Join(match[2:4], ".")
+				} else {
+					rego.ResourceType = strings.ToUpper(match[3])
+				}
+				continue
+			} else {
+				return errors.New("unexpected resource type definition")
+			}
+		}
+		// Look for a description type denoted by the correct header
+		if rego.Description == "" {
+			match := regoDescriptionHeader.FindStringSubmatch(line)
+			if len(match) == 3 {
+				rego.Description = match[2]
+				continue
+			} else {
+				return errors.New("unexpected description definition")
+			}
+		}
+	}
+	if rego.ResourceType == "" {
+		return errors.New("expected a resource type by the header \"Resource-Type\"")
+	}
+	if rego.Description == "" {
+		return errors.New("expected a description by the header \"Description\"")
+	}
+	return nil
+}
+
+var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]((?i)(MULTIPLE)|([\w]+[.][\w]+))`)
 var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
 
 func loadRego(path string) (*regoFile, error) {
@@ -48,50 +94,9 @@ func loadRego(path string) (*regoFile, error) {
 		Name: name,
 	}
 
-	for _, line := range strings.Split(rego.Text, "\n") {
-		// We will extract the rule description and resource type from
-		// comment lines in the rego file. Ignore non-comment lines here.
-		line = strings.TrimSpace(line)
-		if len(line) == 0 || !strings.HasPrefix(line, "#") {
-			continue
-		}
-		line = strings.TrimSpace(strings.Trim(line, "#"))
-		// Look for a resource type type denoted by the correct header
-		if rego.ResourceType == "" {
-			match := regoResourceTypeHeader.FindStringSubmatch(line)
-			if len(match) == 6 {
-				rego.Provider = match[2]
-				if match[4] == "" {
-					rego.ResourceType = strings.Join(match[2:4], ".")
-				} else {
-					rego.ResourceType = strings.ToUpper(match[3])
-				}
-				continue
-			} else {
-				return nil, errors.New("unexpected resource type definition")
-			}
-		}
-		// Look for a description type denoted by the correct header
-		if rego.Description == "" {
-			match := regoDescriptionHeader.FindStringSubmatch(line)
-			if len(match) == 3 {
-				rego.Description = match[2]
-				continue
-			} else {
-				return nil, errors.New("unexpected description definition")
-			}
-		}
-	}
-	if rego.ResourceType == "" {
-		return nil, errors.New("expected a resource type by the header \"Resource-Type\"")
-	}
-	if rego.Description == "" {
-		return nil, errors.New("expected a description by the header \"Description\"")
+	err = rego.ParseText()
 
-var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]((?i)(MULTIPLE)|([\w]+[.][\w]+))`)
-var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
-	}
-	return &rego, nil
+	return &rego, err
 }
 
 // NewSyncRulesCommand returns a command that watches a directory for changes
