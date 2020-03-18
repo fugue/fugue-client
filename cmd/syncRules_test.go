@@ -16,7 +16,7 @@ func TestParseRego(t *testing.T) {
 			&regoFile{
 				Text: `
 # Provider: AWS
-# Resource-Type: EC2.Instance
+# Resource-Type: AWS.EC2.Instance
 # Description: fake
 deny{}`,
 			},
@@ -40,7 +40,7 @@ deny{}`,
 			&regoFile{
 				Text: `
 # Provider: AWS_GOVCLOUD
-# Resource-Type: EC2.Instance
+# Resource-Type: AWS.EC2.Instance
 # Description: fake
 
 deny{}`,
@@ -66,7 +66,7 @@ deny{}`,
 			&regoFile{
 				Text: `
 # Provider: Azure
-# Resource-Type: Compute.VirtualMachine
+# Resource-Type: Azure.Compute.VirtualMachine
 # Description: fake
 deny{}`,
 			},
@@ -90,7 +90,7 @@ deny{}`,
 			&regoFile{
 				Text: `
 # Provider: AWS_GOVCLOUD
-# Resource-Type: S3.Bucket
+# Resource-Type: AWS.S3.Bucket
 # Description: SSE encryption should be enabled for S3 buckets (AES-256 or KMS).
 
 allow {

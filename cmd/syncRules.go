@@ -63,17 +63,9 @@ func (rego *regoFile) ParseText() error {
 		return ""
 	}
 
-	rego.Description = getHeader("Description")
 	rego.Provider = getHeader("Provider")
-
-	rt := getHeader("Resource-Type")
-	if strings.EqualFold(rt, "MULTIPLE") {
-		rego.ResourceType = rt
-	} else if strings.EqualFold(rego.Provider[0:3], "AWS") {
-		rego.ResourceType = "AWS." + rt
-	} else {
-		rego.ResourceType = rego.Provider + "." + rt
-	}
+	rego.ResourceType = getHeader("Resource-Type")
+	rego.Description = getHeader("Description")
 
 	// Throw errors if things are missing.
 	if rego.ResourceType == "" {
