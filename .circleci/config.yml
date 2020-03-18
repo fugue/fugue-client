@@ -4,20 +4,13 @@
 #
 version: 2.1
 
-commands:
-  tf-install:
-    steps:
-      - run:
-          name: go-test
-          command: |
-            go test -test.v ./...
-
 jobs:
   build:
     docker:
       - image: circleci/golang:1.12
     environment:
       GOMODULE111=on
+    working_directory: /go/src/github.com/fugue/fugue-client
     steps:
       - checkout
-      - go-test
+      - run: go test -test.v ./...
