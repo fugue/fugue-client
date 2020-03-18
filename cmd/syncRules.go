@@ -21,7 +21,6 @@ type regoFile struct {
 	Text         string
 }
 
-var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]([\w]+)[.]([\w]+)`)
 var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
 
 func loadRego(path string) (*regoFile, error) {
@@ -84,6 +83,9 @@ func loadRego(path string) (*regoFile, error) {
 	}
 	if rego.Description == "" {
 		return nil, errors.New("expected a description by the header \"Description\"")
+
+var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]((?i)(MULTIPLE)|([\w]+[.][\w]+))`)
+var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
 	}
 	return &rego, nil
 }
