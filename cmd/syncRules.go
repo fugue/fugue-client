@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/textproto"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
@@ -80,9 +79,6 @@ func (rego *regoFile) ParseText() error {
 
 	return nil
 }
-
-var regoResourceTypeHeader = regexp.MustCompile(`([rR]esource-[tT]ype\:[\t ]*?)([\w]+)[.]((MULTIPLE)|([\w]+[.][\w]+))`)
-var regoDescriptionHeader = regexp.MustCompile(`([dD]escription\:[\t ]*?)(.*)`)
 
 func loadRego(path string) (*regoFile, error) {
 
