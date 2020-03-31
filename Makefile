@@ -1,6 +1,7 @@
 
 GO=GO111MODULE=on go
 BINARY=fugue
+WINDOWS_BINARY=fugue_windows
 VERSION=$(shell cat VERSION)
 SHORT_COMMIT=$(shell git rev-parse HEAD | cut -c 1-8)
 LD_FLAGS=-ldflags "-X main.version=$(VERSION) -X main.commit=$(SHORT_COMMIT)"
@@ -13,7 +14,10 @@ UPDATE_ENV_SRC=$(shell find models -name "update_environment_input.go")
 UPDATE_RULE_SRC=$(shell find models -name "update_custom_rule_input.go")
 
 $(BINARY): $(SOURCES)
-	$(GO) build $(LD_FLAGS) -v -o fugue
+	$(GO) build $(LD_FLAGS) -v -o $@
+
+$(WINDOWS_BINARY): $(SOURCES)
+	GOOS=windows GOARCH=386 $(GO) build $(LD_FLAGS) -v -o $@
 
 .PHONY: build
 build: $(BINARY)
@@ -45,3 +49,4 @@ test:
 .PHONY: clean
 clean:
 	rm -f $(BINARY)
+	rm -f $(WINDOWS_BINARY)
