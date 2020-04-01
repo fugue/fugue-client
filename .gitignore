@@ -16,5 +16,5 @@ vendor/
 
 .vscode
 fugue
-fugue_windows.exe
+fugue.exe
 swagger.yaml

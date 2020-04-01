@@ -1,7 +1,7 @@
 
 GO=GO111MODULE=on go
 BINARY=fugue
-WINDOWS_BINARY=fugue_windows.exe
+WINDOWS_BINARY=fugue.exe
 VERSION=$(shell cat VERSION)
 SHORT_COMMIT=$(shell git rev-parse HEAD | cut -c 1-8)
 LD_FLAGS=-ldflags "-X main.version=$(VERSION) -X main.commit=$(SHORT_COMMIT)"
