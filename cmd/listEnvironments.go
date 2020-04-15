@@ -22,6 +22,7 @@ type listEnvironmentsViewItem struct {
 	Name               string
 	Provider           string
 	Region             string
+	Regions            string
 	ScanInterval       string
 	ScanStatus         string
 	HasBaseline        bool
@@ -72,10 +73,21 @@ func NewListEnvironmentsCommand() *cobra.Command {
 				}
 
 				region := "-"
+				var regionsTmp []string
 				if env.Provider == "aws" {
 					region = env.ProviderOptions.Aws.Region
+					regionsTmp = env.ProviderOptions.Aws.Regions
 				} else if env.Provider == "aws_govcloud" {
 					region = env.ProviderOptions.AwsGovcloud.Region
+					regionsTmp = env.ProviderOptions.AwsGovcloud.Regions
+				}
+				var regions string
+				if len(regionsTmp) == 0 {
+					regions = region
+				} else if len(regionsTmp) > 2 {
+					regions = strings.Join(regionsTmp[:2], ",") + "..."
+				} else {
+					regions = strings.Join(regionsTmp, ",")
 				}
 
 				rows = append(rows, listEnvironmentsViewItem{
@@ -84,6 +96,7 @@ func NewListEnvironmentsCommand() *cobra.Command {
 					HasBaseline:        env.BaselineID != "",
 					Provider:           env.Provider,
 					Region:             region,
+					Regions:            regions,
 					ScanInterval:       strconv.FormatInt(env.ScanInterval, 10),
 					ScanStatus:         env.ScanStatus,
 					ComplianceFamilies: strings.Join(env.ComplianceFamilies, ","),
@@ -107,7 +120,7 @@ func NewListEnvironmentsCommand() *cobra.Command {
 		"ID",
 		"Name",
 		"Provider",
-		"Region",
+		"Regions",
 		"HasBaseline",
 		"ScanInterval",
 		"ScanStatus",
