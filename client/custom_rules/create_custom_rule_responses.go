@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // CreateCustomRuleReader is a Reader for the CreateCustomRule structure.
@@ -24,28 +23,30 @@ type CreateCustomRuleReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CreateCustomRuleReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 201:
 		result := NewCreateCustomRuleCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
+	case 400:
+		result := NewCreateCustomRuleBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewCreateCustomRuleUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewCreateCustomRuleForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewCreateCustomRuleInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -75,9 +76,46 @@ func (o *CreateCustomRuleCreated) Error() string {
 	return fmt.Sprintf("[POST /rules][%d] createCustomRuleCreated  %+v", 201, o.Payload)
 }
 
+func (o *CreateCustomRuleCreated) GetPayload() *models.CustomRuleWithErrors {
+	return o.Payload
+}
+
 func (o *CreateCustomRuleCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.CustomRuleWithErrors)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateCustomRuleBadRequest creates a CreateCustomRuleBadRequest with default headers values
+func NewCreateCustomRuleBadRequest() *CreateCustomRuleBadRequest {
+	return &CreateCustomRuleBadRequest{}
+}
+
+/*CreateCustomRuleBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type CreateCustomRuleBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *CreateCustomRuleBadRequest) Error() string {
+	return fmt.Sprintf("[POST /rules][%d] createCustomRuleBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *CreateCustomRuleBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *CreateCustomRuleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -102,6 +140,10 @@ type CreateCustomRuleUnauthorized struct {
 
 func (o *CreateCustomRuleUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /rules][%d] createCustomRuleUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *CreateCustomRuleUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *CreateCustomRuleUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -133,6 +175,10 @@ func (o *CreateCustomRuleForbidden) Error() string {
 	return fmt.Sprintf("[POST /rules][%d] createCustomRuleForbidden  %+v", 403, o.Payload)
 }
 
+func (o *CreateCustomRuleForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *CreateCustomRuleForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -160,6 +206,10 @@ type CreateCustomRuleInternalServerError struct {
 
 func (o *CreateCustomRuleInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /rules][%d] createCustomRuleInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *CreateCustomRuleInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *CreateCustomRuleInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

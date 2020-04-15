@@ -6,13 +6,14 @@ package scans
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
+	"fmt"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new scans API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,10 +25,25 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreateScan creates and triggers a new environment scan
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateScan(params *CreateScanParams, authInfo runtime.ClientAuthInfoWriter) (*CreateScanCreated, error)
 
-Creates and triggers a new environment scan.
+	GetComplianceByResourceTypes(params *GetComplianceByResourceTypesParams, authInfo runtime.ClientAuthInfoWriter) (*GetComplianceByResourceTypesOK, error)
+
+	GetComplianceByRules(params *GetComplianceByRulesParams, authInfo runtime.ClientAuthInfoWriter) (*GetComplianceByRulesOK, error)
+
+	GetScan(params *GetScanParams, authInfo runtime.ClientAuthInfoWriter) (*GetScanOK, error)
+
+	ListScans(params *ListScansParams, authInfo runtime.ClientAuthInfoWriter) (*ListScansOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateScan creates and triggers a new environment scan
+
+  Creates and triggers a new environment scan.
 */
 func (a *Client) CreateScan(params *CreateScanParams, authInfo runtime.ClientAuthInfoWriter) (*CreateScanCreated, error) {
 	// TODO: Validate the params before sending
@@ -51,14 +67,20 @@ func (a *Client) CreateScan(params *CreateScanParams, authInfo runtime.ClientAut
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CreateScanCreated), nil
-
+	success, ok := result.(*CreateScanCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createScan: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetComplianceByResourceTypes lists compliance results by resource type for a scan
+  GetComplianceByResourceTypes lists compliance results by resource type for a scan
 
-Lists compliance results by resource type for a scan.
+  Lists compliance results by resource type for a scan.
 */
 func (a *Client) GetComplianceByResourceTypes(params *GetComplianceByResourceTypesParams, authInfo runtime.ClientAuthInfoWriter) (*GetComplianceByResourceTypesOK, error) {
 	// TODO: Validate the params before sending
@@ -82,14 +104,20 @@ func (a *Client) GetComplianceByResourceTypes(params *GetComplianceByResourceTyp
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetComplianceByResourceTypesOK), nil
-
+	success, ok := result.(*GetComplianceByResourceTypesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getComplianceByResourceTypes: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetComplianceByRules lists compliance results by rule for a scan
+  GetComplianceByRules lists compliance results by rule for a scan
 
-Lists compliance results by rule for a scan.
+  Lists compliance results by rule for a scan.
 */
 func (a *Client) GetComplianceByRules(params *GetComplianceByRulesParams, authInfo runtime.ClientAuthInfoWriter) (*GetComplianceByRulesOK, error) {
 	// TODO: Validate the params before sending
@@ -113,14 +141,20 @@ func (a *Client) GetComplianceByRules(params *GetComplianceByRulesParams, authIn
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetComplianceByRulesOK), nil
-
+	success, ok := result.(*GetComplianceByRulesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getComplianceByRules: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetScan retrieves details for a scan
+  GetScan retrieves details for a scan
 
-Retrieves details for a scan.
+  Retrieves details for a scan.
 */
 func (a *Client) GetScan(params *GetScanParams, authInfo runtime.ClientAuthInfoWriter) (*GetScanOK, error) {
 	// TODO: Validate the params before sending
@@ -144,14 +178,20 @@ func (a *Client) GetScan(params *GetScanParams, authInfo runtime.ClientAuthInfoW
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetScanOK), nil
-
+	success, ok := result.(*GetScanOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getScan: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-ListScans lists scans for an environment
+  ListScans lists scans for an environment
 
-Lists scans for an environment.
+  Lists scans for an environment.
 */
 func (a *Client) ListScans(params *ListScansParams, authInfo runtime.ClientAuthInfoWriter) (*ListScansOK, error) {
 	// TODO: Validate the params before sending
@@ -175,8 +215,14 @@ func (a *Client) ListScans(params *ListScansParams, authInfo runtime.ClientAuthI
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListScansOK), nil
-
+	success, ok := result.(*ListScansOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listScans: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

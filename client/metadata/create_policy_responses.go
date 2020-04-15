@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // CreatePolicyReader is a Reader for the CreatePolicy structure.
@@ -24,35 +23,30 @@ type CreatePolicyReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CreatePolicyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 201:
 		result := NewCreatePolicyCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewCreatePolicyBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewCreatePolicyUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewCreatePolicyForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewCreatePolicyInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type CreatePolicyCreated struct {
 
 func (o *CreatePolicyCreated) Error() string {
 	return fmt.Sprintf("[POST /metadata/{provider}/permissions][%d] createPolicyCreated  %+v", 201, o.Payload)
+}
+
+func (o *CreatePolicyCreated) GetPayload() *models.Permissions {
+	return o.Payload
 }
 
 func (o *CreatePolicyCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *CreatePolicyBadRequest) Error() string {
 	return fmt.Sprintf("[POST /metadata/{provider}/permissions][%d] createPolicyBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *CreatePolicyBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *CreatePolicyBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -138,6 +140,10 @@ type CreatePolicyUnauthorized struct {
 
 func (o *CreatePolicyUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /metadata/{provider}/permissions][%d] createPolicyUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *CreatePolicyUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *CreatePolicyUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *CreatePolicyForbidden) Error() string {
 	return fmt.Sprintf("[POST /metadata/{provider}/permissions][%d] createPolicyForbidden  %+v", 403, o.Payload)
 }
 
+func (o *CreatePolicyForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *CreatePolicyForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -196,6 +206,10 @@ type CreatePolicyInternalServerError struct {
 
 func (o *CreatePolicyInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /metadata/{provider}/permissions][%d] createPolicyInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *CreatePolicyInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *CreatePolicyInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

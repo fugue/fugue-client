@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // GetResourceTypesReader is a Reader for the GetResourceTypes structure.
@@ -24,35 +23,30 @@ type GetResourceTypesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetResourceTypesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetResourceTypesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewGetResourceTypesBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewGetResourceTypesUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewGetResourceTypesForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetResourceTypesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type GetResourceTypesOK struct {
 
 func (o *GetResourceTypesOK) Error() string {
 	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesOK  %+v", 200, o.Payload)
+}
+
+func (o *GetResourceTypesOK) GetPayload() *models.ResourceTypeMetadata {
+	return o.Payload
 }
 
 func (o *GetResourceTypesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *GetResourceTypesBadRequest) Error() string {
 	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *GetResourceTypesBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *GetResourceTypesBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -138,6 +140,10 @@ type GetResourceTypesUnauthorized struct {
 
 func (o *GetResourceTypesUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *GetResourceTypesUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *GetResourceTypesUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *GetResourceTypesForbidden) Error() string {
 	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesForbidden  %+v", 403, o.Payload)
 }
 
+func (o *GetResourceTypesForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *GetResourceTypesForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -196,6 +206,10 @@ type GetResourceTypesInternalServerError struct {
 
 func (o *GetResourceTypesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /metadata/{provider}/resource_types][%d] getResourceTypesInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetResourceTypesInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *GetResourceTypesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

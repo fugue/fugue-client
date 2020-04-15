@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // TestCustomRuleInputReader is a Reader for the TestCustomRuleInput structure.
@@ -24,28 +23,24 @@ type TestCustomRuleInputReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *TestCustomRuleInputReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewTestCustomRuleInputOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewTestCustomRuleInputUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewTestCustomRuleInputForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewTestCustomRuleInputInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -73,6 +68,10 @@ type TestCustomRuleInputOK struct {
 
 func (o *TestCustomRuleInputOK) Error() string {
 	return fmt.Sprintf("[GET /rules/test/input][%d] testCustomRuleInputOK  %+v", 200, o.Payload)
+}
+
+func (o *TestCustomRuleInputOK) GetPayload() *models.TestCustomRuleInputScan {
+	return o.Payload
 }
 
 func (o *TestCustomRuleInputOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -104,6 +103,10 @@ func (o *TestCustomRuleInputUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /rules/test/input][%d] testCustomRuleInputUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *TestCustomRuleInputUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *TestCustomRuleInputUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -133,6 +136,10 @@ func (o *TestCustomRuleInputForbidden) Error() string {
 	return fmt.Sprintf("[GET /rules/test/input][%d] testCustomRuleInputForbidden  %+v", 403, o.Payload)
 }
 
+func (o *TestCustomRuleInputForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *TestCustomRuleInputForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -160,6 +167,10 @@ type TestCustomRuleInputInternalServerError struct {
 
 func (o *TestCustomRuleInputInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /rules/test/input][%d] testCustomRuleInputInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *TestCustomRuleInputInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *TestCustomRuleInputInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

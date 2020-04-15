@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // CreateNotificationReader is a Reader for the CreateNotification structure.
@@ -24,35 +23,30 @@ type CreateNotificationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CreateNotificationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 201:
 		result := NewCreateNotificationCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewCreateNotificationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewCreateNotificationForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewCreateNotificationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewCreateNotificationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type CreateNotificationCreated struct {
 
 func (o *CreateNotificationCreated) Error() string {
 	return fmt.Sprintf("[POST /notifications][%d] createNotificationCreated  %+v", 201, o.Payload)
+}
+
+func (o *CreateNotificationCreated) GetPayload() *models.Notification {
+	return o.Payload
 }
 
 func (o *CreateNotificationCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *CreateNotificationUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /notifications][%d] createNotificationUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *CreateNotificationUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *CreateNotificationUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type CreateNotificationForbidden struct {
 
 func (o *CreateNotificationForbidden) Error() string {
 	return fmt.Sprintf("[POST /notifications][%d] createNotificationForbidden  %+v", 403, o.Payload)
+}
+
+func (o *CreateNotificationForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *CreateNotificationForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *CreateNotificationNotFound) Error() string {
 	return fmt.Sprintf("[POST /notifications][%d] createNotificationNotFound  %+v", 404, o.Payload)
 }
 
+func (o *CreateNotificationNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *CreateNotificationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type CreateNotificationInternalServerError struct {
 
 func (o *CreateNotificationInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /notifications][%d] createNotificationInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *CreateNotificationInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *CreateNotificationInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // CreateEnvironmentReader is a Reader for the CreateEnvironment structure.
@@ -24,35 +23,30 @@ type CreateEnvironmentReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CreateEnvironmentReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 201:
 		result := NewCreateEnvironmentCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewCreateEnvironmentUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewCreateEnvironmentForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewCreateEnvironmentNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewCreateEnvironmentInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type CreateEnvironmentCreated struct {
 
 func (o *CreateEnvironmentCreated) Error() string {
 	return fmt.Sprintf("[POST /environments][%d] createEnvironmentCreated  %+v", 201, o.Payload)
+}
+
+func (o *CreateEnvironmentCreated) GetPayload() *models.Environment {
+	return o.Payload
 }
 
 func (o *CreateEnvironmentCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *CreateEnvironmentUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /environments][%d] createEnvironmentUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *CreateEnvironmentUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *CreateEnvironmentUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type CreateEnvironmentForbidden struct {
 
 func (o *CreateEnvironmentForbidden) Error() string {
 	return fmt.Sprintf("[POST /environments][%d] createEnvironmentForbidden  %+v", 403, o.Payload)
+}
+
+func (o *CreateEnvironmentForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *CreateEnvironmentForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *CreateEnvironmentNotFound) Error() string {
 	return fmt.Sprintf("[POST /environments][%d] createEnvironmentNotFound  %+v", 404, o.Payload)
 }
 
+func (o *CreateEnvironmentNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *CreateEnvironmentNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type CreateEnvironmentInternalServerError struct {
 
 func (o *CreateEnvironmentInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /environments][%d] createEnvironmentInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *CreateEnvironmentInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *CreateEnvironmentInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

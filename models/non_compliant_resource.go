@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // NonCompliantResource Describes the rules violated by a resource.
+//
 // swagger:model NonCompliantResource
 type NonCompliantResource struct {
 
@@ -83,6 +83,7 @@ func (m *NonCompliantResource) UnmarshalBinary(b []byte) error {
 }
 
 // NonCompliantResourceFailedRulesItems0 non compliant resource failed rules items0
+//
 // swagger:model NonCompliantResourceFailedRulesItems0
 type NonCompliantResourceFailedRulesItems0 struct {
 

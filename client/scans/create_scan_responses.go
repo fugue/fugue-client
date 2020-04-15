@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // CreateScanReader is a Reader for the CreateScan structure.
@@ -24,35 +23,30 @@ type CreateScanReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CreateScanReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 201:
 		result := NewCreateScanCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewCreateScanBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewCreateScanUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewCreateScanForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewCreateScanInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type CreateScanCreated struct {
 
 func (o *CreateScanCreated) Error() string {
 	return fmt.Sprintf("[POST /scans][%d] createScanCreated  %+v", 201, o.Payload)
+}
+
+func (o *CreateScanCreated) GetPayload() *models.Scan {
+	return o.Payload
 }
 
 func (o *CreateScanCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *CreateScanBadRequest) Error() string {
 	return fmt.Sprintf("[POST /scans][%d] createScanBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *CreateScanBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *CreateScanBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -138,6 +140,10 @@ type CreateScanUnauthorized struct {
 
 func (o *CreateScanUnauthorized) Error() string {
 	return fmt.Sprintf("[POST /scans][%d] createScanUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *CreateScanUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *CreateScanUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *CreateScanForbidden) Error() string {
 	return fmt.Sprintf("[POST /scans][%d] createScanForbidden  %+v", 403, o.Payload)
 }
 
+func (o *CreateScanForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *CreateScanForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -196,6 +206,10 @@ type CreateScanInternalServerError struct {
 
 func (o *CreateScanInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /scans][%d] createScanInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *CreateScanInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *CreateScanInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

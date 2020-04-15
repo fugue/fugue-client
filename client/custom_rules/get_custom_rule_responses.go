@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // GetCustomRuleReader is a Reader for the GetCustomRule structure.
@@ -24,42 +23,36 @@ type GetCustomRuleReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetCustomRuleReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetCustomRuleOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewGetCustomRuleBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewGetCustomRuleUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewGetCustomRuleForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetCustomRuleNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetCustomRuleInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -87,6 +80,10 @@ type GetCustomRuleOK struct {
 
 func (o *GetCustomRuleOK) Error() string {
 	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleOK  %+v", 200, o.Payload)
+}
+
+func (o *GetCustomRuleOK) GetPayload() *models.CustomRule {
+	return o.Payload
 }
 
 func (o *GetCustomRuleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -118,6 +115,10 @@ func (o *GetCustomRuleBadRequest) Error() string {
 	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *GetCustomRuleBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *GetCustomRuleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -145,6 +146,10 @@ type GetCustomRuleUnauthorized struct {
 
 func (o *GetCustomRuleUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *GetCustomRuleUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *GetCustomRuleUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -176,6 +181,10 @@ func (o *GetCustomRuleForbidden) Error() string {
 	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleForbidden  %+v", 403, o.Payload)
 }
 
+func (o *GetCustomRuleForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *GetCustomRuleForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -205,6 +214,10 @@ func (o *GetCustomRuleNotFound) Error() string {
 	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleNotFound  %+v", 404, o.Payload)
 }
 
+func (o *GetCustomRuleNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *GetCustomRuleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -232,6 +245,10 @@ type GetCustomRuleInternalServerError struct {
 
 func (o *GetCustomRuleInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /rules/{rule_id}][%d] getCustomRuleInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetCustomRuleInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *GetCustomRuleInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

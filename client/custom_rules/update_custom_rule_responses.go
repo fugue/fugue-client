@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // UpdateCustomRuleReader is a Reader for the UpdateCustomRule structure.
@@ -24,42 +23,36 @@ type UpdateCustomRuleReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *UpdateCustomRuleReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewUpdateCustomRuleOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewUpdateCustomRuleBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewUpdateCustomRuleUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewUpdateCustomRuleForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewUpdateCustomRuleNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewUpdateCustomRuleInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -87,6 +80,10 @@ type UpdateCustomRuleOK struct {
 
 func (o *UpdateCustomRuleOK) Error() string {
 	return fmt.Sprintf("[PATCH /rules/{rule_id}][%d] updateCustomRuleOK  %+v", 200, o.Payload)
+}
+
+func (o *UpdateCustomRuleOK) GetPayload() *models.CustomRuleWithErrors {
+	return o.Payload
 }
 
 func (o *UpdateCustomRuleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -118,6 +115,10 @@ func (o *UpdateCustomRuleBadRequest) Error() string {
 	return fmt.Sprintf("[PATCH /rules/{rule_id}][%d] updateCustomRuleBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *UpdateCustomRuleBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *UpdateCustomRuleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -145,6 +146,10 @@ type UpdateCustomRuleUnauthorized struct {
 
 func (o *UpdateCustomRuleUnauthorized) Error() string {
 	return fmt.Sprintf("[PATCH /rules/{rule_id}][%d] updateCustomRuleUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *UpdateCustomRuleUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *UpdateCustomRuleUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -176,6 +181,10 @@ func (o *UpdateCustomRuleForbidden) Error() string {
 	return fmt.Sprintf("[PATCH /rules/{rule_id}][%d] updateCustomRuleForbidden  %+v", 403, o.Payload)
 }
 
+func (o *UpdateCustomRuleForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *UpdateCustomRuleForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -205,6 +214,10 @@ func (o *UpdateCustomRuleNotFound) Error() string {
 	return fmt.Sprintf("[PATCH /rules/{rule_id}][%d] updateCustomRuleNotFound  %+v", 404, o.Payload)
 }
 
+func (o *UpdateCustomRuleNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *UpdateCustomRuleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -232,6 +245,10 @@ type UpdateCustomRuleInternalServerError struct {
 
 func (o *UpdateCustomRuleInternalServerError) Error() string {
 	return fmt.Sprintf("[PATCH /rules/{rule_id}][%d] updateCustomRuleInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *UpdateCustomRuleInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *UpdateCustomRuleInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

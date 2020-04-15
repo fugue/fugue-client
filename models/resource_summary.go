@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ResourceSummary Summary of resources for a scan.
+//
 // swagger:model ResourceSummary
 type ResourceSummary struct {
 
@@ -98,6 +98,7 @@ func (m *ResourceSummary) UnmarshalBinary(b []byte) error {
 }
 
 // ResourceSummaryFamiliesItems0 Compliance summary for the compliance family run against resources for the scan.
+//
 // swagger:model ResourceSummaryFamiliesItems0
 type ResourceSummaryFamiliesItems0 struct {
 

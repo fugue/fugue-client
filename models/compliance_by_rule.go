@@ -9,14 +9,14 @@ import (
 	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ComplianceByRule Compliance rule and result.
+//
 // swagger:model ComplianceByRule
 type ComplianceByRule struct {
 
@@ -177,6 +177,7 @@ func (m *ComplianceByRule) UnmarshalBinary(b []byte) error {
 }
 
 // ComplianceByRuleFailedResourceTypesItems0 Resource type that failed to satisfy the rule due to a required resource being omitted and associated error messages.
+//
 // swagger:model ComplianceByRuleFailedResourceTypesItems0
 type ComplianceByRuleFailedResourceTypesItems0 struct {
 
@@ -211,6 +212,7 @@ func (m *ComplianceByRuleFailedResourceTypesItems0) UnmarshalBinary(b []byte) er
 }
 
 // ComplianceByRuleFailedResourcesItems0 Resource that failed to satisfy the rule due to a misconfiguration in the resource and associated error messages.
+//
 // swagger:model ComplianceByRuleFailedResourcesItems0
 type ComplianceByRuleFailedResourcesItems0 struct {
 

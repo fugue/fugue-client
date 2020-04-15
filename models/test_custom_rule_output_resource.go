@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // TestCustomRuleOutputResource Test results from testing a custom rule on a single resource.
+//
 // swagger:model TestCustomRuleOutputResource
 type TestCustomRuleOutputResource struct {
 

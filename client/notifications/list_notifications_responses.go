@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // ListNotificationsReader is a Reader for the ListNotifications structure.
@@ -24,35 +23,30 @@ type ListNotificationsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ListNotificationsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewListNotificationsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewListNotificationsBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewListNotificationsUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewListNotificationsForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewListNotificationsInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type ListNotificationsOK struct {
 
 func (o *ListNotificationsOK) Error() string {
 	return fmt.Sprintf("[GET /notifications][%d] listNotificationsOK  %+v", 200, o.Payload)
+}
+
+func (o *ListNotificationsOK) GetPayload() *models.Notifications {
+	return o.Payload
 }
 
 func (o *ListNotificationsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *ListNotificationsBadRequest) Error() string {
 	return fmt.Sprintf("[GET /notifications][%d] listNotificationsBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *ListNotificationsBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *ListNotificationsBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -138,6 +140,10 @@ type ListNotificationsUnauthorized struct {
 
 func (o *ListNotificationsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /notifications][%d] listNotificationsUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *ListNotificationsUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *ListNotificationsUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *ListNotificationsForbidden) Error() string {
 	return fmt.Sprintf("[GET /notifications][%d] listNotificationsForbidden  %+v", 403, o.Payload)
 }
 
+func (o *ListNotificationsForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *ListNotificationsForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -196,6 +206,10 @@ type ListNotificationsInternalServerError struct {
 
 func (o *ListNotificationsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /notifications][%d] listNotificationsInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *ListNotificationsInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *ListNotificationsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

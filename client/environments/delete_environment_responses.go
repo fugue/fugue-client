@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // DeleteEnvironmentReader is a Reader for the DeleteEnvironment structure.
@@ -24,35 +23,30 @@ type DeleteEnvironmentReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *DeleteEnvironmentReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewDeleteEnvironmentNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewDeleteEnvironmentUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewDeleteEnvironmentForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewDeleteEnvironmentNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewDeleteEnvironmentInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -103,6 +97,10 @@ func (o *DeleteEnvironmentUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /environments/{environment_id}][%d] deleteEnvironmentUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *DeleteEnvironmentUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *DeleteEnvironmentUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -130,6 +128,10 @@ type DeleteEnvironmentForbidden struct {
 
 func (o *DeleteEnvironmentForbidden) Error() string {
 	return fmt.Sprintf("[DELETE /environments/{environment_id}][%d] deleteEnvironmentForbidden  %+v", 403, o.Payload)
+}
+
+func (o *DeleteEnvironmentForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *DeleteEnvironmentForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -161,6 +163,10 @@ func (o *DeleteEnvironmentNotFound) Error() string {
 	return fmt.Sprintf("[DELETE /environments/{environment_id}][%d] deleteEnvironmentNotFound  %+v", 404, o.Payload)
 }
 
+func (o *DeleteEnvironmentNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *DeleteEnvironmentNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -188,6 +194,10 @@ type DeleteEnvironmentInternalServerError struct {
 
 func (o *DeleteEnvironmentInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /environments/{environment_id}][%d] deleteEnvironmentInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *DeleteEnvironmentInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *DeleteEnvironmentInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

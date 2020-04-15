@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // ListEventsReader is a Reader for the ListEvents structure.
@@ -24,35 +23,30 @@ type ListEventsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ListEventsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewListEventsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewListEventsUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewListEventsForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewListEventsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewListEventsInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type ListEventsOK struct {
 
 func (o *ListEventsOK) Error() string {
 	return fmt.Sprintf("[GET /events][%d] listEventsOK  %+v", 200, o.Payload)
+}
+
+func (o *ListEventsOK) GetPayload() *models.Events {
+	return o.Payload
 }
 
 func (o *ListEventsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *ListEventsUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /events][%d] listEventsUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *ListEventsUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *ListEventsUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type ListEventsForbidden struct {
 
 func (o *ListEventsForbidden) Error() string {
 	return fmt.Sprintf("[GET /events][%d] listEventsForbidden  %+v", 403, o.Payload)
+}
+
+func (o *ListEventsForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *ListEventsForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *ListEventsNotFound) Error() string {
 	return fmt.Sprintf("[GET /events][%d] listEventsNotFound  %+v", 404, o.Payload)
 }
 
+func (o *ListEventsNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *ListEventsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type ListEventsInternalServerError struct {
 
 func (o *ListEventsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /events][%d] listEventsInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *ListEventsInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *ListEventsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

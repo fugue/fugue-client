@@ -8,8 +8,7 @@ package client
 import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 
 	"github.com/fugue/fugue-client/client/c_o_r_s"
 	"github.com/fugue/fugue-client/client/custom_rules"
@@ -62,21 +61,13 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Fugue {
 
 	cli := new(Fugue)
 	cli.Transport = transport
-
-	cli.CORS = c_o_r_s.New(transport, formats)
-
+	cli.Cors = c_o_r_s.New(transport, formats)
 	cli.CustomRules = custom_rules.New(transport, formats)
-
 	cli.Environments = environments.New(transport, formats)
-
 	cli.Events = events.New(transport, formats)
-
 	cli.Metadata = metadata.New(transport, formats)
-
 	cli.Notifications = notifications.New(transport, formats)
-
 	cli.Scans = scans.New(transport, formats)
-
 	return cli
 }
 
@@ -121,19 +112,19 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Fugue is a client for fugue
 type Fugue struct {
-	CORS *c_o_r_s.Client
+	Cors c_o_r_s.ClientService
 
-	CustomRules *custom_rules.Client
+	CustomRules custom_rules.ClientService
 
-	Environments *environments.Client
+	Environments environments.ClientService
 
-	Events *events.Client
+	Events events.ClientService
 
-	Metadata *metadata.Client
+	Metadata metadata.ClientService
 
-	Notifications *notifications.Client
+	Notifications notifications.ClientService
 
-	Scans *scans.Client
+	Scans scans.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -141,19 +132,11 @@ type Fugue struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Fugue) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-
-	c.CORS.SetTransport(transport)
-
+	c.Cors.SetTransport(transport)
 	c.CustomRules.SetTransport(transport)
-
 	c.Environments.SetTransport(transport)
-
 	c.Events.SetTransport(transport)
-
 	c.Metadata.SetTransport(transport)
-
 	c.Notifications.SetTransport(transport)
-
 	c.Scans.SetTransport(transport)
-
 }

@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // UpdateEnvironmentReader is a Reader for the UpdateEnvironment structure.
@@ -24,42 +23,36 @@ type UpdateEnvironmentReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *UpdateEnvironmentReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewUpdateEnvironmentOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewUpdateEnvironmentBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewUpdateEnvironmentUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewUpdateEnvironmentForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewUpdateEnvironmentNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewUpdateEnvironmentInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -87,6 +80,10 @@ type UpdateEnvironmentOK struct {
 
 func (o *UpdateEnvironmentOK) Error() string {
 	return fmt.Sprintf("[PATCH /environments/{environment_id}][%d] updateEnvironmentOK  %+v", 200, o.Payload)
+}
+
+func (o *UpdateEnvironmentOK) GetPayload() *models.Environment {
+	return o.Payload
 }
 
 func (o *UpdateEnvironmentOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -118,6 +115,10 @@ func (o *UpdateEnvironmentBadRequest) Error() string {
 	return fmt.Sprintf("[PATCH /environments/{environment_id}][%d] updateEnvironmentBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *UpdateEnvironmentBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *UpdateEnvironmentBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -145,6 +146,10 @@ type UpdateEnvironmentUnauthorized struct {
 
 func (o *UpdateEnvironmentUnauthorized) Error() string {
 	return fmt.Sprintf("[PATCH /environments/{environment_id}][%d] updateEnvironmentUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *UpdateEnvironmentUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *UpdateEnvironmentUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -176,6 +181,10 @@ func (o *UpdateEnvironmentForbidden) Error() string {
 	return fmt.Sprintf("[PATCH /environments/{environment_id}][%d] updateEnvironmentForbidden  %+v", 403, o.Payload)
 }
 
+func (o *UpdateEnvironmentForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *UpdateEnvironmentForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -205,6 +214,10 @@ func (o *UpdateEnvironmentNotFound) Error() string {
 	return fmt.Sprintf("[PATCH /environments/{environment_id}][%d] updateEnvironmentNotFound  %+v", 404, o.Payload)
 }
 
+func (o *UpdateEnvironmentNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *UpdateEnvironmentNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -232,6 +245,10 @@ type UpdateEnvironmentInternalServerError struct {
 
 func (o *UpdateEnvironmentInternalServerError) Error() string {
 	return fmt.Sprintf("[PATCH /environments/{environment_id}][%d] updateEnvironmentInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *UpdateEnvironmentInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *UpdateEnvironmentInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

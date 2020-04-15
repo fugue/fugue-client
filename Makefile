@@ -31,6 +31,7 @@ validate: $(SWAGGER)
 
 .PHONY: gen
 gen: $(SWAGGER)
+	# go-swagger: https://goswagger.io/
 	swagger generate client -f $(SWAGGER)
 	# Workaround for deficiencies in generated swagger types
 	sed -i "" "s/BaselineID string/BaselineID *string/g" $(UPDATE_ENV_SRC)
