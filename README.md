@@ -81,6 +81,7 @@ Available Commands:
 
 Flags:
   -h, --help      help for fugue
+      --json      outputs the Fugue API JSON response
       --version   version for fugue
 
 Use "fugue [command] --help" for more information about a command.

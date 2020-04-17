@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -16,6 +20,30 @@ const (
 )
 
 var cfgFile string
+var captureJSON bool
+
+func isOutputJSON() bool {
+	// We need to to os Args because rootCmd.Execute() has not run yet
+	argsWithoutProg := os.Args[1:]
+	for _, elem := range argsWithoutProg {
+		if elem == "--json" {
+			return true
+		}
+	}
+	return false
+}
+
+func printLastJSONFromTheOutput(out []byte) {
+	outAsString := string(out)
+	doubleEnterRegex := regexp.MustCompile(`\n\s\n`)
+	outAsArray := doubleEnterRegex.Split(outAsString, -1)
+	src := []byte(outAsArray[len(outAsArray)-1])
+	dst := &bytes.Buffer{}
+	if err := json.Indent(dst, src, "", "  "); err != nil {
+		panic(err)
+	}
+	fmt.Println(dst.String())
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -31,7 +59,27 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(version, commit string) {
 	rootCmd.Version = fmt.Sprintf("%s-%s", version, commit)
+
+	var rescueStdout, wStdout *os.File
+	var rescueStderr, rStderr, wStderr *os.File
+	if isOutputJSON() {
+		os.Setenv("DEBUG", "1")
+		rescueStdout, rescueStderr = os.Stdout, os.Stderr
+		_, wStdout, _ = os.Pipe()
+		rStderr, wStderr, _ = os.Pipe()
+		os.Stdout, os.Stderr = wStdout, wStderr
+	}
+
 	CheckErr(rootCmd.Execute())
+
+	if captureJSON {
+		wStdout.Close()
+		wStderr.Close()
+		err, _ := ioutil.ReadAll(rStderr)
+		os.Stdout = rescueStdout
+		os.Stderr = rescueStderr
+		printLastJSONFromTheOutput(err)
+	}
 }
 
 func init() {
@@ -39,6 +87,7 @@ func init() {
 
 	// Application global flags
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.fugue.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&captureJSON, "json", false, "outputs the Fugue API JSON response")
 }
 
 // initConfig reads in config file and ENV variables if set.
