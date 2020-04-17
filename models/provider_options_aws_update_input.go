@@ -15,6 +15,9 @@ import (
 // swagger:model ProviderOptionsAwsUpdateInput
 type ProviderOptionsAwsUpdateInput struct {
 
+	// The AWS regions to scan and remediate infrastructure in.
+	Regions []string `json:"regions"`
+
 	// AWS IAM Role ARN that will be assumed to scan and remediate infrastructure.
 	RoleArn string `json:"role_arn,omitempty"`
 }
