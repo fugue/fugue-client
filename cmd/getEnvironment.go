@@ -112,7 +112,8 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			}
 		},
 	}
-
+	// When printing json gets the first (pos 0) API call printed
+	jsonPositionToShow = 0
 	return cmd
 }
 

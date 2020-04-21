@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"regexp"
 	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -22,27 +21,43 @@ const (
 var cfgFile string
 var captureJSON bool
 
+//jsonPositionToShow When assigned in the children commands gets the nth Json in the output
+var jsonPositionToShow int = -1
+
 func isOutputJSON() bool {
 	// We need to to os Args because rootCmd.Execute() has not run yet
 	argsWithoutProg := os.Args[1:]
 	for _, elem := range argsWithoutProg {
-		if elem == "--json" {
+		if strings.ToLower(elem) == "--json" {
 			return true
 		}
 	}
 	return false
 }
 
-func printLastJSONFromTheOutput(out []byte) {
-	outAsString := string(out)
-	doubleEnterRegex := regexp.MustCompile(`\n\s\n`)
-	outAsArray := doubleEnterRegex.Split(outAsString, -1)
-	src := []byte(outAsArray[len(outAsArray)-1])
-	dst := &bytes.Buffer{}
-	if err := json.Indent(dst, src, "", "  "); err != nil {
+func printJSONOutput(out []byte) {
+
+	outArray := bytes.Split(out, []byte("\n"))
+
+	var jsonArray []string
+	for _, v := range outArray {
+		var js map[string]interface{}
+		if json.Unmarshal(v, &js) == nil {
+			jsonArray = append(jsonArray, string(v))
+		}
+	}
+	var elemToPrint string
+	if jsonPositionToShow == -1 {
+		elemToPrint = jsonArray[len(jsonArray)-1]
+	} else {
+		elemToPrint = jsonArray[jsonPositionToShow]
+	}
+
+	elemToPrintIndented := &bytes.Buffer{}
+	if err := json.Indent(elemToPrintIndented, []byte(elemToPrint), "", "  "); err != nil {
 		panic(err)
 	}
-	fmt.Println(dst.String())
+	fmt.Println(elemToPrintIndented.String())
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -50,6 +65,10 @@ var rootCmd = &cobra.Command{
 	Use:   "fugue",
 	Short: "Fugue API Client",
 	Long:  ``,
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("Inside rootCmd PersistentPreRun with args: %v\n", args)
+	},
+
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -72,13 +91,13 @@ func Execute(version, commit string) {
 
 	CheckErr(rootCmd.Execute())
 
-	if captureJSON {
+	if isOutputJSON() && captureJSON {
 		wStdout.Close()
 		wStderr.Close()
 		err, _ := ioutil.ReadAll(rStderr)
 		os.Stdout = rescueStdout
 		os.Stderr = rescueStderr
-		printLastJSONFromTheOutput(err)
+		printJSONOutput(err)
 	}
 }
 
