@@ -65,9 +65,6 @@ var rootCmd = &cobra.Command{
 	Use:   "fugue",
 	Short: "Fugue API Client",
 	Long:  ``,
-	PersistentPostRun: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Inside rootCmd PersistentPreRun with args: %v\n", args)
-	},
 
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
