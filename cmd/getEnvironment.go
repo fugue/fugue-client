@@ -25,7 +25,8 @@ func NewGetEnvironmentCommand() *cobra.Command {
 		Short:   "Retrieve details for an environment",
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-
+			// When printing json gets the first (pos 0) API call printed
+			jsonPositionToShow = 0
 			client, auth := getClient()
 
 			params := environments.NewGetEnvironmentParams()
@@ -83,10 +84,18 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			switch env.Provider {
 			case "aws":
 				items = append(items, Item{"ROLE", env.ProviderOptions.Aws.RoleArn})
-				items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
+				if env.ProviderOptions.Aws.Region != "" {
+					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
+				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
+				}
 			case "aws_govcloud":
 				items = append(items, Item{"ROLE", env.ProviderOptions.AwsGovcloud.RoleArn})
-				items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
+				if env.ProviderOptions.Aws.Region != "" {
+					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
+				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ",")})
+				}
 			case "azure":
 				items = append(items, Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID})
 				items = append(items, Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID})

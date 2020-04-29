@@ -8,14 +8,14 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ScanWithSummary A scan belonging to an environment.
+//
 // swagger:model ScanWithSummary
 type ScanWithSummary struct {
 	Scan
@@ -62,7 +62,6 @@ func (m ScanWithSummary) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	_parts = append(_parts, aO0)
-
 	var dataAO1 struct {
 		ResourceSummary *ResourceSummary `json:"resource_summary,omitempty"`
 
@@ -78,7 +77,6 @@ func (m ScanWithSummary) MarshalJSON() ([]byte, error) {
 		return nil, errAO1
 	}
 	_parts = append(_parts, jsonDataAO1)
-
 	return swag.ConcatJSON(_parts...), nil
 }
 
@@ -167,6 +165,7 @@ func (m *ScanWithSummary) UnmarshalBinary(b []byte) error {
 }
 
 // ScanWithSummaryResourceTypeErrorsItems0 scan with summary resource type errors items0
+//
 // swagger:model ScanWithSummaryResourceTypeErrorsItems0
 type ScanWithSummaryResourceTypeErrorsItems0 struct {
 

@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // ListScansReader is a Reader for the ListScans structure.
@@ -24,35 +23,30 @@ type ListScansReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ListScansReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewListScansOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewListScansBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewListScansUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewListScansForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewListScansInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type ListScansOK struct {
 
 func (o *ListScansOK) Error() string {
 	return fmt.Sprintf("[GET /scans][%d] listScansOK  %+v", 200, o.Payload)
+}
+
+func (o *ListScansOK) GetPayload() *models.Scans {
+	return o.Payload
 }
 
 func (o *ListScansOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *ListScansBadRequest) Error() string {
 	return fmt.Sprintf("[GET /scans][%d] listScansBadRequest  %+v", 400, o.Payload)
 }
 
+func (o *ListScansBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
 func (o *ListScansBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.BadRequestError)
@@ -138,6 +140,10 @@ type ListScansUnauthorized struct {
 
 func (o *ListScansUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /scans][%d] listScansUnauthorized  %+v", 401, o.Payload)
+}
+
+func (o *ListScansUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
 }
 
 func (o *ListScansUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *ListScansForbidden) Error() string {
 	return fmt.Sprintf("[GET /scans][%d] listScansForbidden  %+v", 403, o.Payload)
 }
 
+func (o *ListScansForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
+}
+
 func (o *ListScansForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthorizationError)
@@ -196,6 +206,10 @@ type ListScansInternalServerError struct {
 
 func (o *ListScansInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /scans][%d] listScansInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *ListScansInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *ListScansInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

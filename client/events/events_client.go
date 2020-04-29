@@ -6,13 +6,14 @@ package events
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
+	"fmt"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new events API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,10 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-ListEvents lists drift remediation and compliance events for an environment
+// ClientService is the interface for Client methods
+type ClientService interface {
+	ListEvents(params *ListEventsParams, authInfo runtime.ClientAuthInfoWriter) (*ListEventsOK, error)
 
-Lists drift, remediation, and compliance events for an environment.
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  ListEvents lists drift remediation and compliance events for an environment
+
+  Lists drift, remediation, and compliance events for an environment.
 */
 func (a *Client) ListEvents(params *ListEventsParams, authInfo runtime.ClientAuthInfoWriter) (*ListEventsOK, error) {
 	// TODO: Validate the params before sending
@@ -51,8 +59,14 @@ func (a *Client) ListEvents(params *ListEventsParams, authInfo runtime.ClientAut
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListEventsOK), nil
-
+	success, ok := result.(*ListEventsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listEvents: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // GetComplianceByResourceTypesReader is a Reader for the GetComplianceByResourceTypes structure.
@@ -24,35 +23,30 @@ type GetComplianceByResourceTypesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetComplianceByResourceTypesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetComplianceByResourceTypesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetComplianceByResourceTypesUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewGetComplianceByResourceTypesForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetComplianceByResourceTypesNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetComplianceByResourceTypesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type GetComplianceByResourceTypesOK struct {
 
 func (o *GetComplianceByResourceTypesOK) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_resource_types][%d] getComplianceByResourceTypesOK  %+v", 200, o.Payload)
+}
+
+func (o *GetComplianceByResourceTypesOK) GetPayload() *models.ComplianceByResourceTypeOutput {
+	return o.Payload
 }
 
 func (o *GetComplianceByResourceTypesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *GetComplianceByResourceTypesUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_resource_types][%d] getComplianceByResourceTypesUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *GetComplianceByResourceTypesUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *GetComplianceByResourceTypesUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type GetComplianceByResourceTypesForbidden struct {
 
 func (o *GetComplianceByResourceTypesForbidden) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_resource_types][%d] getComplianceByResourceTypesForbidden  %+v", 403, o.Payload)
+}
+
+func (o *GetComplianceByResourceTypesForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *GetComplianceByResourceTypesForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *GetComplianceByResourceTypesNotFound) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_resource_types][%d] getComplianceByResourceTypesNotFound  %+v", 404, o.Payload)
 }
 
+func (o *GetComplianceByResourceTypesNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *GetComplianceByResourceTypesNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type GetComplianceByResourceTypesInternalServerError struct {
 
 func (o *GetComplianceByResourceTypesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_resource_types][%d] getComplianceByResourceTypesInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetComplianceByResourceTypesInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *GetComplianceByResourceTypesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

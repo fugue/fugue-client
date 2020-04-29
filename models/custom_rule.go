@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // CustomRule A custom rule
+//
 // swagger:model CustomRule
 type CustomRule struct {
 
@@ -27,6 +27,9 @@ type CustomRule struct {
 
 	// Principal that created the rule.
 	CreatedBy string `json:"created_by,omitempty"`
+
+	// Display name of the user that created the rule
+	CreatedByDisplayName string `json:"created_by_display_name,omitempty"`
 
 	// Description of the custom rule.
 	Description string `json:"description,omitempty"`
@@ -60,6 +63,9 @@ type CustomRule struct {
 
 	// Principal that last updated the rule.
 	UpdatedBy string `json:"updated_by,omitempty"`
+
+	// Display name of the user that last updated the rule
+	UpdatedByDisplayName string `json:"updated_by_display_name,omitempty"`
 }
 
 // Validate validates this custom rule

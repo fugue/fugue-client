@@ -6,14 +6,17 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ResourceTypeMetadata List of resource types supported by Fugue.
+//
 // swagger:model ResourceTypeMetadata
 type ResourceTypeMetadata struct {
+
+	// List of Fugue recommended resource types.
+	RecommendedTypes []string `json:"recommended_types"`
 
 	// List of resource types supported by Fugue.
 	ResourceTypes []string `json:"resource_types"`

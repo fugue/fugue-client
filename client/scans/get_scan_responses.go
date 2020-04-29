@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // GetScanReader is a Reader for the GetScan structure.
@@ -24,35 +23,30 @@ type GetScanReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetScanReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetScanOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetScanUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewGetScanForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetScanNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetScanInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type GetScanOK struct {
 
 func (o *GetScanOK) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}][%d] getScanOK  %+v", 200, o.Payload)
+}
+
+func (o *GetScanOK) GetPayload() *models.ScanWithSummary {
+	return o.Payload
 }
 
 func (o *GetScanOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *GetScanUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}][%d] getScanUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *GetScanUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *GetScanUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type GetScanForbidden struct {
 
 func (o *GetScanForbidden) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}][%d] getScanForbidden  %+v", 403, o.Payload)
+}
+
+func (o *GetScanForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *GetScanForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *GetScanNotFound) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}][%d] getScanNotFound  %+v", 404, o.Payload)
 }
 
+func (o *GetScanNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *GetScanNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type GetScanInternalServerError struct {
 
 func (o *GetScanInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}][%d] getScanInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetScanInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *GetScanInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

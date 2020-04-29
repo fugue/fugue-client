@@ -6,13 +6,14 @@ package notifications
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
+	"fmt"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new notifications API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,10 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreateNotification creates a new notification
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateNotification(params *CreateNotificationParams, authInfo runtime.ClientAuthInfoWriter) (*CreateNotificationCreated, error)
 
-Creates a new notification.
+	DeleteNotification(params *DeleteNotificationParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteNotificationNoContent, error)
+
+	ListNotifications(params *ListNotificationsParams, authInfo runtime.ClientAuthInfoWriter) (*ListNotificationsOK, error)
+
+	UpdateNotification(params *UpdateNotificationParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateNotificationOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateNotification creates a new notification
+
+  Creates a new notification.
 */
 func (a *Client) CreateNotification(params *CreateNotificationParams, authInfo runtime.ClientAuthInfoWriter) (*CreateNotificationCreated, error) {
 	// TODO: Validate the params before sending
@@ -51,14 +65,20 @@ func (a *Client) CreateNotification(params *CreateNotificationParams, authInfo r
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CreateNotificationCreated), nil
-
+	success, ok := result.(*CreateNotificationCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createNotification: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-DeleteNotification deletes a notification
+  DeleteNotification deletes a notification
 
-Deletes a notification.
+  Deletes a notification.
 */
 func (a *Client) DeleteNotification(params *DeleteNotificationParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteNotificationNoContent, error) {
 	// TODO: Validate the params before sending
@@ -82,14 +102,20 @@ func (a *Client) DeleteNotification(params *DeleteNotificationParams, authInfo r
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteNotificationNoContent), nil
-
+	success, ok := result.(*DeleteNotificationNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteNotification: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-ListNotifications lists details for all notifications
+  ListNotifications lists details for all notifications
 
-Lists details for all notifications.
+  Lists details for all notifications.
 */
 func (a *Client) ListNotifications(params *ListNotificationsParams, authInfo runtime.ClientAuthInfoWriter) (*ListNotificationsOK, error) {
 	// TODO: Validate the params before sending
@@ -113,14 +139,20 @@ func (a *Client) ListNotifications(params *ListNotificationsParams, authInfo run
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListNotificationsOK), nil
-
+	success, ok := result.(*ListNotificationsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listNotifications: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-UpdateNotification updates an existing notification
+  UpdateNotification updates an existing notification
 
-Updates an existing notification.
+  Updates an existing notification.
 */
 func (a *Client) UpdateNotification(params *UpdateNotificationParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateNotificationOK, error) {
 	// TODO: Validate the params before sending
@@ -144,8 +176,14 @@ func (a *Client) UpdateNotification(params *UpdateNotificationParams, authInfo r
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpdateNotificationOK), nil
-
+	success, ok := result.(*UpdateNotificationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateNotification: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

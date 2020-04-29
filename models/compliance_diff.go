@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ComplianceDiff Difference between the old and new compliance state of a resource after an event.
+//
 // swagger:model ComplianceDiff
 type ComplianceDiff struct {
 
@@ -92,6 +92,7 @@ func (m *ComplianceDiff) UnmarshalBinary(b []byte) error {
 }
 
 // ComplianceDiffRulesItems0 compliance diff rules items0
+//
 // swagger:model ComplianceDiffRulesItems0
 type ComplianceDiffRulesItems0 struct {
 

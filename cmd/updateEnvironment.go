@@ -20,6 +20,7 @@ type updateEnvironmentOptions struct {
 	SurveyResourceTypes    []string
 	Remediation            bool
 	ScanScheduleEnabled    bool
+	Regions                []string
 }
 
 // NewUpdateEnvironmentCommand returns a command that updates an environment
@@ -28,7 +29,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 	var opts updateEnvironmentOptions
 
 	cmd := &cobra.Command{
-		Use:     "environment",
+		Use:     "environment [environment_id]",
 		Short:   "Update environment settings",
 		Aliases: []string{"env"},
 		Args:    cobra.ExactArgs(1),
@@ -39,6 +40,30 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 			params := environments.NewUpdateEnvironmentParams()
 			params.EnvironmentID = args[0]
 			params.Environment = &models.UpdateEnvironmentInput{}
+
+			if len(opts.Regions) > 0 {
+				// trying to update the regions. See if this environment has regions already
+				paramsGet := environments.NewGetEnvironmentParams()
+				paramsGet.EnvironmentID = params.EnvironmentID
+				resp, err := client.Environments.GetEnvironment(paramsGet, auth)
+				if err != nil {
+					switch respError := err.(type) {
+					case *environments.GetEnvironmentNotFound:
+						Fatal(respError.Payload.Message, DefaultErrorExitCode)
+					default:
+						CheckErr(err)
+					}
+				}
+				env := resp.Payload
+
+				if env.Provider == "aws" && len(env.ProviderOptions.Aws.Regions) > 0 {
+					params.Environment.ProviderOptions = &models.ProviderOptionsUpdateInput{}
+					params.Environment.ProviderOptions.Aws = &models.ProviderOptionsAwsUpdateInput{Regions: opts.Regions}
+				} else if env.Provider == "aws_govcloud" && len(env.ProviderOptions.AwsGovcloud.Regions) > 0 {
+					params.Environment.ProviderOptions = &models.ProviderOptionsUpdateInput{}
+					params.Environment.ProviderOptions.AwsGovcloud = &models.ProviderOptionsAwsUpdateInput{Regions: opts.Regions}
+				}
+			}
 
 			// The generated Go models have omitempty set on boolean flags.
 			// This means we can't send "false" values for these fields:
@@ -103,10 +128,18 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 			switch env.Provider {
 			case "aws":
 				items = append(items, Item{"ROLE", env.ProviderOptions.Aws.RoleArn})
-				items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
+				if env.ProviderOptions.Aws.Region != "" {
+					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
+				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
+				}
 			case "aws_govcloud":
 				items = append(items, Item{"ROLE", env.ProviderOptions.AwsGovcloud.RoleArn})
-				items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
+				if env.ProviderOptions.Aws.Region != "" {
+					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
+				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ",")})
+				}
 			case "azure":
 				items = append(items, Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID})
 				items = append(items, Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID})
@@ -131,6 +164,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", nil, "Compliance families")
 	cmd.Flags().StringSliceVar(&opts.RemediateResourceTypes, "remediate-resource-types", nil, "Remediation resource types")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types")
+	cmd.Flags().StringSliceVar(&opts.Regions, "regions", nil, "AWS regions")
 
 	return cmd
 }

@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // DeleteNotificationReader is a Reader for the DeleteNotification structure.
@@ -24,35 +23,30 @@ type DeleteNotificationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *DeleteNotificationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 204:
 		result := NewDeleteNotificationNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewDeleteNotificationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewDeleteNotificationForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewDeleteNotificationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewDeleteNotificationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -103,6 +97,10 @@ func (o *DeleteNotificationUnauthorized) Error() string {
 	return fmt.Sprintf("[DELETE /notifications/{notification_id}][%d] deleteNotificationUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *DeleteNotificationUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *DeleteNotificationUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -130,6 +128,10 @@ type DeleteNotificationForbidden struct {
 
 func (o *DeleteNotificationForbidden) Error() string {
 	return fmt.Sprintf("[DELETE /notifications/{notification_id}][%d] deleteNotificationForbidden  %+v", 403, o.Payload)
+}
+
+func (o *DeleteNotificationForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *DeleteNotificationForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -161,6 +163,10 @@ func (o *DeleteNotificationNotFound) Error() string {
 	return fmt.Sprintf("[DELETE /notifications/{notification_id}][%d] deleteNotificationNotFound  %+v", 404, o.Payload)
 }
 
+func (o *DeleteNotificationNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *DeleteNotificationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -188,6 +194,10 @@ type DeleteNotificationInternalServerError struct {
 
 func (o *DeleteNotificationInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /notifications/{notification_id}][%d] deleteNotificationInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *DeleteNotificationInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *DeleteNotificationInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

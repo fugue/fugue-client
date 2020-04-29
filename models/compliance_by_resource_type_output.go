@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ComplianceByResourceTypeOutput Paginated list of compliance results grouped by resource type.
+//
 // swagger:model ComplianceByResourceTypeOutput
 type ComplianceByResourceTypeOutput struct {
 

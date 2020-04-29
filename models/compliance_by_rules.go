@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ComplianceByRules Paginated list of compliance rules and results for a scan.
+//
 // swagger:model ComplianceByRules
 type ComplianceByRules struct {
 

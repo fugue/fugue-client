@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -14,12 +15,27 @@ import (
 type createAwsEnvironmentOptions struct {
 	Name                     string
 	Region                   string
+	Regions                  []string
+	Provider                 string
 	GovCloud                 bool
 	Role                     string
 	ScanInterval             int64
 	ComplianceFamilies       []string
 	RemediationResourceTypes []string
 	SurveyResourceTypes      []string
+}
+
+func all(vs []string, f func(string) bool) bool {
+	for _, v := range vs {
+		if !f(v) {
+			return false
+		}
+	}
+	return true
+}
+
+func stringContainsGov(elem string) bool {
+	return strings.Contains(elem, "gov")
 }
 
 // NewCreateAwsEnvironmentCommand returns a command that creates an environment
@@ -35,19 +51,12 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 
 			client, auth := getClient()
 
-			region := strings.ToLower(opts.Region)
-
-			provider := "aws"
-			if strings.Contains(region, "gov") {
-				provider = "aws_govcloud"
-			}
-
 			surveyTypes := opts.SurveyResourceTypes
 			if len(surveyTypes) == 0 {
 				// Default to all available types
 				getTypesParams := metadata.NewGetResourceTypesParams()
-				getTypesParams.Provider = provider
-				getTypesParams.Region = &region
+				getTypesParams.Provider = opts.Provider
+				getTypesParams.Region = &opts.Region // if opts.Regions, opts.Region is ""
 				resp, err := client.Metadata.GetResourceTypes(getTypesParams, auth)
 				CheckErr(err)
 				surveyTypes = resp.Payload.ResourceTypes
@@ -57,7 +66,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 			params.Environment = &models.CreateEnvironmentInput{
 				ComplianceFamilies:     opts.ComplianceFamilies,
 				Name:                   opts.Name,
-				Provider:               provider,
+				Provider:               opts.Provider,
 				ScanInterval:           opts.ScanInterval,
 				SurveyResourceTypes:    surveyTypes,
 				RemediateResourceTypes: opts.RemediationResourceTypes,
@@ -65,17 +74,21 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 			}
 
 			providerOpts := &models.ProviderOptionsAws{
-				Region:  region,
+				Region:  opts.Region,
+				Regions: opts.Regions,
 				RoleArn: opts.Role,
 			}
 
-			if provider == "aws_govcloud" {
+			if opts.Provider == "aws_govcloud" {
 				params.Environment.ProviderOptions = &models.ProviderOptions{AwsGovcloud: providerOpts}
 			} else {
 				params.Environment.ProviderOptions = &models.ProviderOptions{Aws: providerOpts}
 			}
 
 			resp, err := client.Environments.CreateEnvironment(params, auth)
+
+			buf := new(bytes.Buffer)
+			fmt.Println(buf)
 			if err != nil {
 				switch respError := err.(type) {
 				case *environments.CreateEnvironmentInternalServerError:
@@ -116,10 +129,40 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				fmt.Println(tableRow)
 			}
 		},
+		Args: func(cmd *cobra.Command, args []string) error {
+
+			if opts.Region == "" && len(opts.Regions) == 0 {
+				if opts.Provider != "aws" && opts.Provider != "aws_govcloud" {
+					return fmt.Errorf("Regions not specified. Please specify a provider: aws or aws_govcloud")
+				}
+				opts.Regions = []string{"*"}
+			} else if opts.Region != "" {
+				opts.Region = strings.ToLower(opts.Region)
+				opts.Provider = "aws"
+				if strings.Contains(opts.Region, "gov") {
+					opts.Provider = "aws_govcloud"
+				}
+			} else if len(opts.Regions) > 0 {
+				opts.Provider = "aws"
+				var regions []string
+				for _, thisRegion := range opts.Regions {
+					regions = append(regions, strings.ToLower(thisRegion))
+				}
+				if all(regions, stringContainsGov) {
+					opts.Provider = "aws_govcloud"
+				}
+				opts.Regions = regions
+			} else {
+				return fmt.Errorf("Unknown error: %s", args)
+			}
+			return nil
+		},
 	}
 
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Environment name")
-	cmd.Flags().StringVar(&opts.Region, "region", "", "AWS region")
+	cmd.Flags().StringVar(&opts.Region, "region", "", "AWS region (deprecated)")
+	cmd.Flags().StringSliceVar(&opts.Regions, "regions", []string{}, "AWS regions (default all regions)")
+	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider if cannot be resolved from regions")
 	cmd.Flags().StringVar(&opts.Role, "role", "", "AWS IAM role arn")
 	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 86400, "Scan interval (seconds)")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", []string{}, "Compliance families")
@@ -128,7 +171,6 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("role")
-	cmd.MarkFlagRequired("region")
 
 	return cmd
 }

@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // UpdateNotificationReader is a Reader for the UpdateNotification structure.
@@ -24,35 +23,30 @@ type UpdateNotificationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *UpdateNotificationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewUpdateNotificationOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewUpdateNotificationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewUpdateNotificationForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewUpdateNotificationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewUpdateNotificationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type UpdateNotificationOK struct {
 
 func (o *UpdateNotificationOK) Error() string {
 	return fmt.Sprintf("[PUT /notifications/{notification_id}][%d] updateNotificationOK  %+v", 200, o.Payload)
+}
+
+func (o *UpdateNotificationOK) GetPayload() *models.Notification {
+	return o.Payload
 }
 
 func (o *UpdateNotificationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *UpdateNotificationUnauthorized) Error() string {
 	return fmt.Sprintf("[PUT /notifications/{notification_id}][%d] updateNotificationUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *UpdateNotificationUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *UpdateNotificationUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type UpdateNotificationForbidden struct {
 
 func (o *UpdateNotificationForbidden) Error() string {
 	return fmt.Sprintf("[PUT /notifications/{notification_id}][%d] updateNotificationForbidden  %+v", 403, o.Payload)
+}
+
+func (o *UpdateNotificationForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *UpdateNotificationForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *UpdateNotificationNotFound) Error() string {
 	return fmt.Sprintf("[PUT /notifications/{notification_id}][%d] updateNotificationNotFound  %+v", 404, o.Payload)
 }
 
+func (o *UpdateNotificationNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *UpdateNotificationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type UpdateNotificationInternalServerError struct {
 
 func (o *UpdateNotificationInternalServerError) Error() string {
 	return fmt.Sprintf("[PUT /notifications/{notification_id}][%d] updateNotificationInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *UpdateNotificationInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *UpdateNotificationInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

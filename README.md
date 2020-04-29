@@ -81,6 +81,7 @@ Available Commands:
 
 Flags:
   -h, --help      help for fugue
+      --json      outputs the Fugue API JSON response
       --version   version for fugue
 
 Use "fugue [command] --help" for more information about a command.
@@ -105,4 +106,12 @@ For example:
 
 ```
 fugue list envs
+```
+
+### Debug
+
+To see the HTTP headers and the `json` exchanged between the CLI and the [Fugue](https://riskmanager.fugue.co/) API, set the environment variable `DEBUG=1`. For example:
+
+```
+DEBUG=1 fugue list environments
 ```

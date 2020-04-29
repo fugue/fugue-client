@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // GetEnvironmentReader is a Reader for the GetEnvironment structure.
@@ -24,35 +23,30 @@ type GetEnvironmentReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetEnvironmentReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetEnvironmentOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetEnvironmentUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewGetEnvironmentForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetEnvironmentNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetEnvironmentInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type GetEnvironmentOK struct {
 
 func (o *GetEnvironmentOK) Error() string {
 	return fmt.Sprintf("[GET /environments/{environment_id}][%d] getEnvironmentOK  %+v", 200, o.Payload)
+}
+
+func (o *GetEnvironmentOK) GetPayload() *models.EnvironmentWithSummary {
+	return o.Payload
 }
 
 func (o *GetEnvironmentOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *GetEnvironmentUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /environments/{environment_id}][%d] getEnvironmentUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *GetEnvironmentUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *GetEnvironmentUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type GetEnvironmentForbidden struct {
 
 func (o *GetEnvironmentForbidden) Error() string {
 	return fmt.Sprintf("[GET /environments/{environment_id}][%d] getEnvironmentForbidden  %+v", 403, o.Payload)
+}
+
+func (o *GetEnvironmentForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *GetEnvironmentForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *GetEnvironmentNotFound) Error() string {
 	return fmt.Sprintf("[GET /environments/{environment_id}][%d] getEnvironmentNotFound  %+v", 404, o.Payload)
 }
 
+func (o *GetEnvironmentNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *GetEnvironmentNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type GetEnvironmentInternalServerError struct {
 
 func (o *GetEnvironmentInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /environments/{environment_id}][%d] getEnvironmentInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetEnvironmentInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *GetEnvironmentInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

@@ -6,13 +6,14 @@ package environments
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
+	"fmt"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new environments API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,10 +25,25 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreateEnvironment creates a new environment
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*CreateEnvironmentCreated, error)
 
-Creates a new environment.
+	DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteEnvironmentNoContent, error)
+
+	GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentOK, error)
+
+	ListEnvironments(params *ListEnvironmentsParams, authInfo runtime.ClientAuthInfoWriter) (*ListEnvironmentsOK, error)
+
+	UpdateEnvironment(params *UpdateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateEnvironmentOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateEnvironment creates a new environment
+
+  Creates a new environment.
 */
 func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*CreateEnvironmentCreated, error) {
 	// TODO: Validate the params before sending
@@ -51,14 +67,20 @@ func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo run
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CreateEnvironmentCreated), nil
-
+	success, ok := result.(*CreateEnvironmentCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-DeleteEnvironment deletes an environment
+  DeleteEnvironment deletes an environment
 
-Deletes an environment.
+  Deletes an environment.
 */
 func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteEnvironmentNoContent, error) {
 	// TODO: Validate the params before sending
@@ -82,14 +104,20 @@ func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo run
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteEnvironmentNoContent), nil
-
+	success, ok := result.(*DeleteEnvironmentNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetEnvironment retrieves details and resource summary for an environment
+  GetEnvironment retrieves details and resource summary for an environment
 
-Retrieves details and resource summary for an environment.
+  Retrieves details and resource summary for an environment.
 */
 func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -113,14 +141,20 @@ func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetEnvironmentOK), nil
-
+	success, ok := result.(*GetEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-ListEnvironments lists details for all environments
+  ListEnvironments lists details for all environments
 
-Lists details for all environments.
+  Lists details for all environments.
 */
 func (a *Client) ListEnvironments(params *ListEnvironmentsParams, authInfo runtime.ClientAuthInfoWriter) (*ListEnvironmentsOK, error) {
 	// TODO: Validate the params before sending
@@ -144,14 +178,20 @@ func (a *Client) ListEnvironments(params *ListEnvironmentsParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListEnvironmentsOK), nil
-
+	success, ok := result.(*ListEnvironmentsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listEnvironments: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-UpdateEnvironment updates an environment
+  UpdateEnvironment updates an environment
 
-Updates an environment.
+  Updates an environment.
 */
 func (a *Client) UpdateEnvironment(params *UpdateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -175,8 +215,14 @@ func (a *Client) UpdateEnvironment(params *UpdateEnvironmentParams, authInfo run
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpdateEnvironmentOK), nil
-
+	success, ok := result.(*UpdateEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

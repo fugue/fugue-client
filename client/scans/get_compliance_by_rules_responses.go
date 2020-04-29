@@ -10,10 +10,9 @@ import (
 	"io"
 
 	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 
-	strfmt "github.com/go-openapi/strfmt"
-
-	models "github.com/fugue/fugue-client/models"
+	"github.com/fugue/fugue-client/models"
 )
 
 // GetComplianceByRulesReader is a Reader for the GetComplianceByRules structure.
@@ -24,35 +23,30 @@ type GetComplianceByRulesReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetComplianceByRulesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetComplianceByRulesOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetComplianceByRulesUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 403:
 		result := NewGetComplianceByRulesForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetComplianceByRulesNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 500:
 		result := NewGetComplianceByRulesInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +74,10 @@ type GetComplianceByRulesOK struct {
 
 func (o *GetComplianceByRulesOK) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_rules][%d] getComplianceByRulesOK  %+v", 200, o.Payload)
+}
+
+func (o *GetComplianceByRulesOK) GetPayload() *models.ComplianceByRules {
+	return o.Payload
 }
 
 func (o *GetComplianceByRulesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -111,6 +109,10 @@ func (o *GetComplianceByRulesUnauthorized) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_rules][%d] getComplianceByRulesUnauthorized  %+v", 401, o.Payload)
 }
 
+func (o *GetComplianceByRulesUnauthorized) GetPayload() *models.AuthenticationError {
+	return o.Payload
+}
+
 func (o *GetComplianceByRulesUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.AuthenticationError)
@@ -138,6 +140,10 @@ type GetComplianceByRulesForbidden struct {
 
 func (o *GetComplianceByRulesForbidden) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_rules][%d] getComplianceByRulesForbidden  %+v", 403, o.Payload)
+}
+
+func (o *GetComplianceByRulesForbidden) GetPayload() *models.AuthorizationError {
+	return o.Payload
 }
 
 func (o *GetComplianceByRulesForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -169,6 +175,10 @@ func (o *GetComplianceByRulesNotFound) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_rules][%d] getComplianceByRulesNotFound  %+v", 404, o.Payload)
 }
 
+func (o *GetComplianceByRulesNotFound) GetPayload() *models.NotFoundError {
+	return o.Payload
+}
+
 func (o *GetComplianceByRulesNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.NotFoundError)
@@ -196,6 +206,10 @@ type GetComplianceByRulesInternalServerError struct {
 
 func (o *GetComplianceByRulesInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_rules][%d] getComplianceByRulesInternalServerError  %+v", 500, o.Payload)
+}
+
+func (o *GetComplianceByRulesInternalServerError) GetPayload() *models.InternalServerError {
+	return o.Payload
 }
 
 func (o *GetComplianceByRulesInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

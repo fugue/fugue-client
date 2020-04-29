@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // CreateEnvironmentInput Structure of the body for creating a new environment.
+//
 // swagger:model CreateEnvironmentInput
 type CreateEnvironmentInput struct {
 

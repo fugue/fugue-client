@@ -6,17 +6,20 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ProviderOptionsAws Provider options for AWS.
+//
 // swagger:model ProviderOptionsAws
 type ProviderOptionsAws struct {
 
 	// The AWS region to scan and remediate infrastructure in.
 	Region string `json:"region,omitempty"`
+
+	// The AWS regions to scan and remediate infrastructure in.
+	Regions []string `json:"regions"`
 
 	// AWS IAM Role ARN that will be assumed to scan and remediate infrastructure.
 	RoleArn string `json:"role_arn,omitempty"`

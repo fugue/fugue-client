@@ -6,13 +6,14 @@ package metadata
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
+	"fmt"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new metadata API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,10 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreatePolicy returns the permissions required to survey and remediate resources
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreatePolicy(params *CreatePolicyParams, authInfo runtime.ClientAuthInfoWriter) (*CreatePolicyCreated, error)
 
-Returns the permissions required to survey and remediate resources.
+	GetResourceTypes(params *GetResourceTypesParams, authInfo runtime.ClientAuthInfoWriter) (*GetResourceTypesOK, error)
+
+	GetSwagger(params *GetSwaggerParams) (*GetSwaggerOK, error)
+
+	GetSwaggerUI(params *GetSwaggerUIParams) (*GetSwaggerUIOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreatePolicy returns the permissions required to survey and remediate resources
+
+  Returns the permissions required to survey and remediate resources.
 */
 func (a *Client) CreatePolicy(params *CreatePolicyParams, authInfo runtime.ClientAuthInfoWriter) (*CreatePolicyCreated, error) {
 	// TODO: Validate the params before sending
@@ -51,14 +65,20 @@ func (a *Client) CreatePolicy(params *CreatePolicyParams, authInfo runtime.Clien
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CreatePolicyCreated), nil
-
+	success, ok := result.(*CreatePolicyCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createPolicy: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetResourceTypes lists the resource types supported by fugue
+  GetResourceTypes lists the resource types supported by fugue
 
-Lists the resource types supported by Fugue.
+  Lists the resource types supported by Fugue.
 */
 func (a *Client) GetResourceTypes(params *GetResourceTypesParams, authInfo runtime.ClientAuthInfoWriter) (*GetResourceTypesOK, error) {
 	// TODO: Validate the params before sending
@@ -82,14 +102,20 @@ func (a *Client) GetResourceTypes(params *GetResourceTypesParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetResourceTypesOK), nil
-
+	success, ok := result.(*GetResourceTypesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getResourceTypes: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetSwagger returns the open API 2 0 specification for this API
+  GetSwagger returns the open API 2 0 specification for this API
 
-Returns the OpenAPI 2.0 specification for this API.
+  Returns the OpenAPI 2.0 specification for this API.
 */
 func (a *Client) GetSwagger(params *GetSwaggerParams) (*GetSwaggerOK, error) {
 	// TODO: Validate the params before sending
@@ -112,14 +138,20 @@ func (a *Client) GetSwagger(params *GetSwaggerParams) (*GetSwaggerOK, error) {
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetSwaggerOK), nil
-
+	success, ok := result.(*GetSwaggerOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getSwagger: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetSwaggerUI returns a friendly user interface for the open API 2 0 specification for this API
+  GetSwaggerUI returns a friendly user interface for the open API 2 0 specification for this API
 
-Returns a friendly user interface for the OpenAPI 2.0 specification for this API.
+  Returns a friendly user interface for the OpenAPI 2.0 specification for this API.
 */
 func (a *Client) GetSwaggerUI(params *GetSwaggerUIParams) (*GetSwaggerUIOK, error) {
 	// TODO: Validate the params before sending
@@ -142,8 +174,14 @@ func (a *Client) GetSwaggerUI(params *GetSwaggerUIParams) (*GetSwaggerUIOK, erro
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetSwaggerUIOK), nil
-
+	success, ok := result.(*GetSwaggerUIOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getSwaggerUI: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

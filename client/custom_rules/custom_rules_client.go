@@ -6,13 +6,14 @@ package custom_rules
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"github.com/go-openapi/runtime"
+	"fmt"
 
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new custom rules API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -24,10 +25,29 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-CreateCustomRule creates a new custom rule
+// ClientService is the interface for Client methods
+type ClientService interface {
+	CreateCustomRule(params *CreateCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*CreateCustomRuleCreated, error)
 
-Create a new custom rule.
+	DeleteCustomRule(params *DeleteCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteCustomRuleNoContent, error)
+
+	GetCustomRule(params *GetCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*GetCustomRuleOK, error)
+
+	ListCustomRules(params *ListCustomRulesParams, authInfo runtime.ClientAuthInfoWriter) (*ListCustomRulesOK, error)
+
+	TestCustomRule(params *TestCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*TestCustomRuleOK, error)
+
+	TestCustomRuleInput(params *TestCustomRuleInputParams, authInfo runtime.ClientAuthInfoWriter) (*TestCustomRuleInputOK, error)
+
+	UpdateCustomRule(params *UpdateCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateCustomRuleOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateCustomRule creates a new custom rule
+
+  Create a new custom rule.
 
 */
 func (a *Client) CreateCustomRule(params *CreateCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*CreateCustomRuleCreated, error) {
@@ -52,14 +72,20 @@ func (a *Client) CreateCustomRule(params *CreateCustomRuleParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	return result.(*CreateCustomRuleCreated), nil
-
+	success, ok := result.(*CreateCustomRuleCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createCustomRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-DeleteCustomRule deletes a custom rule
+  DeleteCustomRule deletes a custom rule
 
-Delete a specified custom rule.
+  Delete a specified custom rule.
 
 */
 func (a *Client) DeleteCustomRule(params *DeleteCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteCustomRuleNoContent, error) {
@@ -84,14 +110,20 @@ func (a *Client) DeleteCustomRule(params *DeleteCustomRuleParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteCustomRuleNoContent), nil
-
+	success, ok := result.(*DeleteCustomRuleNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteCustomRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-GetCustomRule gets details on a single custom rule
+  GetCustomRule gets details on a single custom rule
 
-Get details on a single custom rule.
+  Get details on a single custom rule.
 
 */
 func (a *Client) GetCustomRule(params *GetCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*GetCustomRuleOK, error) {
@@ -116,14 +148,20 @@ func (a *Client) GetCustomRule(params *GetCustomRuleParams, authInfo runtime.Cli
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetCustomRuleOK), nil
-
+	success, ok := result.(*GetCustomRuleOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getCustomRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-ListCustomRules lists custom rules
+  ListCustomRules lists custom rules
 
-Return a list of custom rules.
+  Return a list of custom rules.
 
 */
 func (a *Client) ListCustomRules(params *ListCustomRulesParams, authInfo runtime.ClientAuthInfoWriter) (*ListCustomRulesOK, error) {
@@ -148,14 +186,20 @@ func (a *Client) ListCustomRules(params *ListCustomRulesParams, authInfo runtime
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListCustomRulesOK), nil
-
+	success, ok := result.(*ListCustomRulesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listCustomRules: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-TestCustomRule tests a custom rule
+  TestCustomRule tests a custom rule
 
-Test a custom rule using state from an scan.
+  Test a custom rule using state from an scan.
 
 */
 func (a *Client) TestCustomRule(params *TestCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*TestCustomRuleOK, error) {
@@ -180,14 +224,20 @@ func (a *Client) TestCustomRule(params *TestCustomRuleParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	return result.(*TestCustomRuleOK), nil
-
+	success, ok := result.(*TestCustomRuleOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for testCustomRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-TestCustomRuleInput gets the input for a custom rule test
+  TestCustomRuleInput gets the input for a custom rule test
 
-Get the input against which a custom rule would be tested.
+  Get the input against which a custom rule would be tested.
 
 */
 func (a *Client) TestCustomRuleInput(params *TestCustomRuleInputParams, authInfo runtime.ClientAuthInfoWriter) (*TestCustomRuleInputOK, error) {
@@ -212,14 +262,20 @@ func (a *Client) TestCustomRuleInput(params *TestCustomRuleInputParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	return result.(*TestCustomRuleInputOK), nil
-
+	success, ok := result.(*TestCustomRuleInputOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for testCustomRuleInput: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
-UpdateCustomRule updates custom rule
+  UpdateCustomRule updates custom rule
 
-Update configuration of a custom rule.
+  Update configuration of a custom rule.
 
 */
 func (a *Client) UpdateCustomRule(params *UpdateCustomRuleParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateCustomRuleOK, error) {
@@ -244,8 +300,14 @@ func (a *Client) UpdateCustomRule(params *UpdateCustomRuleParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	return result.(*UpdateCustomRuleOK), nil
-
+	success, ok := result.(*UpdateCustomRuleOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateCustomRule: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client
