@@ -130,7 +130,7 @@ func init() {
 
 	// Application global flags
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.fugue.yaml)")
-	rootCmd.PersistentFlags().StringVar(&outputFormat, "output", "table", "Use 'json' to access the Fugue API JSON response")
+	rootCmd.PersistentFlags().StringVar(&outputFormat, "output", "table", "The formatting style for command output [table | json]")
 }
 
 // initConfig reads in config file and ENV variables if set.
