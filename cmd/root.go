@@ -66,7 +66,7 @@ var rootCmd = &cobra.Command{
 		validOutputs := []string{"table", "json"}
 		valid := func() bool {
 			for _, validOutput := range validOutputs {
-				if outputFormat == validOutput {
+				if strings.ToLower(outputFormat) == validOutput {
 					return true
 				}
 			}
