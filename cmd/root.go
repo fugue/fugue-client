@@ -41,6 +41,11 @@ func jsonOutput(out []byte) string {
 			jsonArray = append(jsonArray, string(v))
 		}
 	}
+
+	if len(jsonArray) == 0 {
+		return ""
+	}
+
 	var elemToPrint string
 	if jsonPositionToShow == -1 {
 		elemToPrint = jsonArray[len(jsonArray)-1]
