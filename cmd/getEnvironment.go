@@ -25,7 +25,8 @@ func NewGetEnvironmentCommand() *cobra.Command {
 		Short:   "Retrieve details for an environment",
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-
+			// When printing json gets the first (pos 0) API call printed
+			jsonPositionToShow = 0
 			client, auth := getClient()
 
 			params := environments.NewGetEnvironmentParams()
@@ -112,8 +113,7 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			}
 		},
 	}
-	// When printing json gets the first (pos 0) API call printed
-	jsonPositionToShow = 0
+
 	return cmd
 }
 
