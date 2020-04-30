@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -25,15 +25,16 @@ var outputFormat string
 //jsonPositionToShow When assigned in the children commands gets the nth Json in the output
 var jsonPositionToShow int = -1
 
+// We need to check the command line Args because rootCmd.Execute() has not run yet when
+// this function is called the first time
 func isOutputJSON() bool {
-	// We need to check the command line Args because rootCmd.Execute() has not run yet
 	argsWithoutProg := os.Args[1:]
 	matched, _ := regexp.MatchString(`(?i)--output json`, strings.Join(argsWithoutProg, " "))
 	return matched
 }
 
-func jsonOutput(out []byte) string {
-	outArray := bytes.Split(out, []byte("\n"))
+func jsonOutput(out string) string {
+	outArray := bytes.Split([]byte(out), []byte("\n"))
 	var jsonArray []string
 	for _, v := range outArray {
 		var js map[string]interface{}
@@ -41,18 +42,15 @@ func jsonOutput(out []byte) string {
 			jsonArray = append(jsonArray, string(v))
 		}
 	}
-
 	if len(jsonArray) == 0 {
 		return ""
 	}
-
 	var elemToPrint string
 	if jsonPositionToShow == -1 {
 		elemToPrint = jsonArray[len(jsonArray)-1]
 	} else {
 		elemToPrint = jsonArray[jsonPositionToShow]
 	}
-
 	elemToPrintIndented := &bytes.Buffer{}
 	if err := json.Indent(elemToPrintIndented, []byte(elemToPrint), "", "  "); err != nil {
 		panic(err)
@@ -65,7 +63,7 @@ var rootCmd = &cobra.Command{
 	Use:   "fugue",
 	Short: "Fugue API Client",
 	Long:  ``,
-	// This is a hack to check the flag output is valid.
+	// This is an hack to check the flag `output` is valid.
 	// wait for this to be merged: https://github.com/spf13/pflag/issues/236
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		validOutputs := []string{"table", "json"}
@@ -88,18 +86,65 @@ var rootCmd = &cobra.Command{
 	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
-var rescueStdout, rStdout, wStdout *os.File
-var rescueStderr, rStderr, wStderr *os.File
+// os.Stdout or os.Stderr can not be passed as a function parameter.
+// That's why we have two functions very similar
+// We use goroutines to avoid the unix pipes deadlock: We need to read from both pipes at the same time.
+func captureOut() func() (string, error) {
+	r, w, err := os.Pipe()
+	if err != nil {
+		panic(err)
+	}
 
-func getRedirectedOutput() ([]byte, []byte) {
-	wStdout.Close()
-	wStderr.Close()
-	out, _ := ioutil.ReadAll(rStdout)
-	err, _ := ioutil.ReadAll(rStderr)
-	os.Stdout = rescueStdout
-	os.Stderr = rescueStderr
-	return out, err
+	done := make(chan error, 1)
+
+	save := os.Stdout
+	os.Stdout = w
+
+	var buf strings.Builder
+
+	go func() {
+		_, err := io.Copy(&buf, r)
+		r.Close()
+		done <- err
+	}()
+
+	return func() (string, error) {
+		os.Stdout = save
+		w.Close()
+		err := <-done
+		return buf.String(), err
+	}
 }
+
+func captureErr() func() (string, error) {
+	r, w, err := os.Pipe()
+	if err != nil {
+		panic(err)
+	}
+
+	done := make(chan error, 1)
+
+	save := os.Stderr
+	os.Stderr = w
+
+	var buf strings.Builder
+
+	go func() {
+		_, err := io.Copy(&buf, r)
+		r.Close()
+		done <- err
+	}()
+
+	return func() (string, error) {
+		os.Stderr = save
+		w.Close()
+		err := <-done
+		return buf.String(), err
+	}
+}
+
+var doneErr func() (string, error)
+var doneOut func() (string, error)
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -110,18 +155,18 @@ func Execute(version, commit string) {
 
 	if isOutputJSON() {
 		os.Setenv("DEBUG", "1")
-		rescueStdout, rescueStderr = os.Stdout, os.Stderr
-		rStdout, wStdout, _ = os.Pipe()
-		rStderr, wStderr, _ = os.Pipe()
-		os.Stdout, os.Stderr = wStdout, wStderr
-	}
+		doneErr = captureErr()
+		doneOut = captureOut()
 
-	CheckErr(rootCmd.Execute())
+		CheckErr(rootCmd.Execute())
 
-	if isOutputJSON() {
-		_, err := getRedirectedOutput()
-		outStr := jsonOutput(err)
+		doneOut()
+		capturedErr, _ := doneErr()
+
+		outStr := jsonOutput(capturedErr)
 		fmt.Println(outStr)
+	} else {
+		CheckErr(rootCmd.Execute())
 	}
 }
 
@@ -159,21 +204,27 @@ func initConfig() {
 // Fatal prints the message (if provided) and then exits.
 func Fatal(msg string, code int) {
 	if len(msg) > 0 {
+		// ensure error prefix
+		if !strings.HasPrefix(msg, "error: ") {
+			msg = fmt.Sprintf("error: %s", msg)
+		}
+		// add newline if needed
+		if !strings.HasSuffix(msg, "\n") {
+			msg += "\n"
+		}
 
 		if isOutputJSON() {
-			_, err := getRedirectedOutput()
-			outStr := jsonOutput(err)
+			doneOut()
+			capturedErr, _ := doneErr()
+
+			outStr := jsonOutput(capturedErr)
 
 			if outStr != "" {
 				fmt.Fprintln(os.Stderr, outStr)
 			} else {
-				fmt.Fprintf(os.Stderr, `{"error": "%s"}\\n`, msg)
+				fmt.Fprint(os.Stderr, msg)
 			}
 		} else {
-			// add newline if needed
-			if !strings.HasSuffix(msg, "\n") {
-				msg += "\n"
-			}
 			fmt.Fprint(os.Stderr, msg)
 		}
 
