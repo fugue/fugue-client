@@ -25,8 +25,9 @@ var outputFormat string
 //jsonPositionToShow When assigned in the children commands gets the nth Json in the output
 var jsonPositionToShow int = -1
 
+// We need to check the command line Args because rootCmd.Execute() has not run yet when
+// this function is called the first time
 func isOutputJSON() bool {
-	// We need to check the command line Args because rootCmd.Execute() has not run yet
 	argsWithoutProg := os.Args[1:]
 	matched, _ := regexp.MatchString(`(?i)--output json`, strings.Join(argsWithoutProg, " "))
 	return matched
@@ -41,18 +42,15 @@ func jsonOutput(out string) string {
 			jsonArray = append(jsonArray, string(v))
 		}
 	}
-
 	if len(jsonArray) == 0 {
 		return ""
 	}
-
 	var elemToPrint string
 	if jsonPositionToShow == -1 {
 		elemToPrint = jsonArray[len(jsonArray)-1]
 	} else {
 		elemToPrint = jsonArray[jsonPositionToShow]
 	}
-
 	elemToPrintIndented := &bytes.Buffer{}
 	if err := json.Indent(elemToPrintIndented, []byte(elemToPrint), "", "  "); err != nil {
 		panic(err)
@@ -65,7 +63,7 @@ var rootCmd = &cobra.Command{
 	Use:   "fugue",
 	Short: "Fugue API Client",
 	Long:  ``,
-	// This is a hack to check the flag output is valid.
+	// This is an hack to check the flag `output` is valid.
 	// wait for this to be merged: https://github.com/spf13/pflag/issues/236
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		validOutputs := []string{"table", "json"}
@@ -88,7 +86,9 @@ var rootCmd = &cobra.Command{
 	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
-// stream is os.Stdout or os.Stderr
+// os.Stdout or os.Stderr can not be passed as a function parameter.
+// That's why we have two functions very similar
+// We use goroutines to avoid the unix pipes deadlock: We need to read from both pipes at the same time.
 func captureOut() func() (string, error) {
 	r, w, err := os.Pipe()
 	if err != nil {
@@ -116,7 +116,6 @@ func captureOut() func() (string, error) {
 	}
 }
 
-// stream is os.Stdout or os.Stderr
 func captureErr() func() (string, error) {
 	r, w, err := os.Pipe()
 	if err != nil {
@@ -214,7 +213,7 @@ func Fatal(msg string, code int) {
 			if outStr != "" {
 				fmt.Fprintln(os.Stderr, outStr)
 			} else {
-				fmt.Fprintf(os.Stderr, "{\"error\": \"%s\"}\n", msg)
+				fmt.Fprintf(os.Stderr, "{\n\t\"error\": \"%s.\"\n}\n", msg)
 			}
 		} else {
 			// add newline if needed
