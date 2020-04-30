@@ -162,6 +162,7 @@ func Execute(version, commit string) {
 
 		doneOut()
 		capturedErr, _ := doneErr()
+
 		outStr := jsonOutput(capturedErr)
 		fmt.Println(outStr)
 	} else {
@@ -203,6 +204,14 @@ func initConfig() {
 // Fatal prints the message (if provided) and then exits.
 func Fatal(msg string, code int) {
 	if len(msg) > 0 {
+		// ensure error prefix
+		if !strings.HasPrefix(msg, "error: ") {
+			msg = fmt.Sprintf("error: %s", msg)
+		}
+		// add newline if needed
+		if !strings.HasSuffix(msg, "\n") {
+			msg += "\n"
+		}
 
 		if isOutputJSON() {
 			doneOut()
@@ -213,13 +222,9 @@ func Fatal(msg string, code int) {
 			if outStr != "" {
 				fmt.Fprintln(os.Stderr, outStr)
 			} else {
-				fmt.Fprintf(os.Stderr, "{\n\t\"error\": \"%s.\"\n}\n", msg)
+				fmt.Fprint(os.Stderr, msg)
 			}
 		} else {
-			// add newline if needed
-			if !strings.HasSuffix(msg, "\n") {
-				msg += "\n"
-			}
 			fmt.Fprint(os.Stderr, msg)
 		}
 
