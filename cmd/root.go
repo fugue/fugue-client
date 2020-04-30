@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"regexp"
 	"strings"
+	"sync"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -28,12 +31,12 @@ var jsonPositionToShow int = -1
 func isOutputJSON() bool {
 	// We need to check the command line Args because rootCmd.Execute() has not run yet
 	argsWithoutProg := os.Args[1:]
-	matched, _ := regexp.MatchString(`(?i)--output json`, strings.Join(argsWithoutProg, " "))
+	matched, _ := regexp.MatchString(`(?i)--output json$`, strings.Join(argsWithoutProg, " "))
 	return matched
 }
 
-func jsonOutput(out []byte) string {
-	outArray := bytes.Split(out, []byte("\n"))
+func jsonOutput(out string) string {
+	outArray := bytes.Split([]byte(out), []byte("\n"))
 	var jsonArray []string
 	for _, v := range outArray {
 		var js map[string]interface{}
@@ -101,28 +104,53 @@ func getRedirectedOutput() ([]byte, []byte) {
 	return out, err
 }
 
+func captureOutput(f func() error) string {
+	reader, writer, err := os.Pipe()
+	if err != nil {
+		panic(err)
+	}
+	stdout := os.Stdout
+	stderr := os.Stderr
+	defer func() {
+		os.Stdout = stdout
+		os.Stderr = stderr
+		log.SetOutput(os.Stderr)
+	}()
+	os.Stdout = writer
+	os.Stderr = writer
+	log.SetOutput(writer)
+	out := make(chan string)
+	wg := new(sync.WaitGroup)
+	wg.Add(1)
+	go func() {
+		var buf bytes.Buffer
+		wg.Done()
+		io.Copy(&buf, reader)
+		out <- buf.String()
+	}()
+	wg.Wait()
+	res := f()
+	writer.Close()
+	CheckErr(res)
+	return <-out
+}
+
+var outputMixed string
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(version, commit string) {
 	rootCmd.Version = fmt.Sprintf("%s-%s", version, commit)
 
-	rootCmd.SetOutput(os.Stderr)
-
 	if isOutputJSON() {
 		os.Setenv("DEBUG", "1")
-		rescueStdout, rescueStderr = os.Stdout, os.Stderr
-		rStdout, wStdout, _ = os.Pipe()
-		rStderr, wStderr, _ = os.Pipe()
-		os.Stdout, os.Stderr = wStdout, wStderr
-	}
-
-	CheckErr(rootCmd.Execute())
-
-	if isOutputJSON() {
-		_, err := getRedirectedOutput()
-		outStr := jsonOutput(err)
+		outputMixed := captureOutput(rootCmd.Execute)
+		outStr := jsonOutput(outputMixed)
 		fmt.Println(outStr)
+	} else {
+		CheckErr(rootCmd.Execute())
 	}
+
 }
 
 func init() {
@@ -161,8 +189,8 @@ func Fatal(msg string, code int) {
 	if len(msg) > 0 {
 
 		if isOutputJSON() {
-			_, err := getRedirectedOutput()
-			outStr := jsonOutput(err)
+
+			outStr := jsonOutput(outputMixed)
 
 			if outStr != "" {
 				fmt.Fprintln(os.Stderr, outStr)
