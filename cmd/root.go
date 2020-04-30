@@ -5,12 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"log"
 	"os"
 	"regexp"
 	"strings"
-	"sync"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -31,7 +28,7 @@ var jsonPositionToShow int = -1
 func isOutputJSON() bool {
 	// We need to check the command line Args because rootCmd.Execute() has not run yet
 	argsWithoutProg := os.Args[1:]
-	matched, _ := regexp.MatchString(`(?i)--output json$`, strings.Join(argsWithoutProg, " "))
+	matched, _ := regexp.MatchString(`(?i)--output json`, strings.Join(argsWithoutProg, " "))
 	return matched
 }
 
@@ -91,66 +88,86 @@ var rootCmd = &cobra.Command{
 	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
-var rescueStdout, rStdout, wStdout *os.File
-var rescueStderr, rStderr, wStderr *os.File
-
-func getRedirectedOutput() ([]byte, []byte) {
-	wStdout.Close()
-	wStderr.Close()
-	out, _ := ioutil.ReadAll(rStdout)
-	err, _ := ioutil.ReadAll(rStderr)
-	os.Stdout = rescueStdout
-	os.Stderr = rescueStderr
-	return out, err
-}
-
-func captureOutput(f func() error) string {
-	reader, writer, err := os.Pipe()
+// stream is os.Stdout or os.Stderr
+func captureOut() func() (string, error) {
+	r, w, err := os.Pipe()
 	if err != nil {
 		panic(err)
 	}
-	stdout := os.Stdout
-	stderr := os.Stderr
-	defer func() {
-		os.Stdout = stdout
-		os.Stderr = stderr
-		log.SetOutput(os.Stderr)
-	}()
-	os.Stdout = writer
-	os.Stderr = writer
-	log.SetOutput(writer)
-	out := make(chan string)
-	wg := new(sync.WaitGroup)
-	wg.Add(1)
+
+	done := make(chan error, 1)
+
+	save := os.Stdout
+	os.Stdout = w
+
+	var buf strings.Builder
+
 	go func() {
-		var buf bytes.Buffer
-		wg.Done()
-		io.Copy(&buf, reader)
-		out <- buf.String()
+		_, err := io.Copy(&buf, r)
+		r.Close()
+		done <- err
 	}()
-	wg.Wait()
-	res := f()
-	writer.Close()
-	CheckErr(res)
-	return <-out
+
+	return func() (string, error) {
+		os.Stdout = save
+		w.Close()
+		err := <-done
+		return buf.String(), err
+	}
 }
 
-var outputMixed string
+// stream is os.Stdout or os.Stderr
+func captureErr() func() (string, error) {
+	r, w, err := os.Pipe()
+	if err != nil {
+		panic(err)
+	}
+
+	done := make(chan error, 1)
+
+	save := os.Stderr
+	os.Stderr = w
+
+	var buf strings.Builder
+
+	go func() {
+		_, err := io.Copy(&buf, r)
+		r.Close()
+		done <- err
+	}()
+
+	return func() (string, error) {
+		os.Stderr = save
+		w.Close()
+		err := <-done
+		return buf.String(), err
+	}
+}
+
+var doneErr func() (string, error)
+var doneOut func() (string, error)
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(version, commit string) {
 	rootCmd.Version = fmt.Sprintf("%s-%s", version, commit)
 
+	rootCmd.SetOutput(os.Stderr)
+
 	if isOutputJSON() {
 		os.Setenv("DEBUG", "1")
-		outputMixed := captureOutput(rootCmd.Execute)
-		outStr := jsonOutput(outputMixed)
+		doneErr = captureErr()
+		doneOut = captureOut()
+
+		CheckErr(rootCmd.Execute())
+
+		doneOut()
+		capturedErr, _ := doneErr()
+		outStr := jsonOutput(capturedErr)
 		fmt.Println(outStr)
 	} else {
 		CheckErr(rootCmd.Execute())
 	}
-
 }
 
 func init() {
@@ -189,13 +206,15 @@ func Fatal(msg string, code int) {
 	if len(msg) > 0 {
 
 		if isOutputJSON() {
+			doneOut()
+			capturedErr, _ := doneErr()
 
-			outStr := jsonOutput(outputMixed)
+			outStr := jsonOutput(capturedErr)
 
 			if outStr != "" {
 				fmt.Fprintln(os.Stderr, outStr)
 			} else {
-				fmt.Fprintf(os.Stderr, `{"error": "%s"}\\n`, msg)
+				fmt.Fprintf(os.Stderr, "{\"error\": \"%s\"}\n", msg)
 			}
 		} else {
 			// add newline if needed
