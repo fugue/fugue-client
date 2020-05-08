@@ -8,6 +8,7 @@ import (
 
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/format"
+	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
 )
 
@@ -42,21 +43,31 @@ func NewListEnvironmentsCommand() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
+			var envs []*models.Environment
+			var offset int64
+			for {
+				params := environments.NewListEnvironmentsParams()
+				params.Offset = &offset
+				resp, err := client.Environments.ListEnvironments(params, auth)
+				CheckErr(err)
+				for _, env := range resp.Payload.Items {
+					envs = append(envs, env)
+				}
+				if resp.Payload.IsTruncated {
+					offset = resp.Payload.NextOffset
+					continue
+				}
+				break
+			}
 
-			params := environments.NewListEnvironmentsParams()
-			resp, err := client.Environments.ListEnvironments(params, auth)
-			CheckErr(err)
-
-			environments := resp.Payload.Items
-
-			sort.Slice(environments, func(i, j int) bool {
-				return environments[i].Name < environments[j].Name
+			sort.Slice(envs, func(i, j int) bool {
+				return envs[i].Name < envs[j].Name
 			})
 
 			nameFilter := strings.ToLower(opts.NameFilter)
 
 			var rows []interface{}
-			for _, env := range environments {
+			for _, env := range envs {
 
 				// Optionally filter by provider
 				if opts.Provider != "" {
