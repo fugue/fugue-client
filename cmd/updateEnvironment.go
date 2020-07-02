@@ -86,6 +86,8 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 					params.Environment.SurveyResourceTypes = opts.SurveyResourceTypes
 				case "remediate-resource-types":
 					params.Environment.RemediateResourceTypes = opts.RemediateResourceTypes
+				case "scan-schedule-enabled":
+					params.Environment.ScanScheduleEnabled = &opts.ScanScheduleEnabled
 				}
 			})
 
@@ -161,6 +163,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Environment name")
 	cmd.Flags().StringVar(&opts.BaselineID, "baseline-id", "", "Baseline scan ID")
 	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 0, "Scan interval (seconds)")
+	cmd.Flags().BoolVar(&opts.ScanScheduleEnabled, "scan-schedule-enabled", true, "Enable automatic scanning schedule")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", nil, "Compliance families")
 	cmd.Flags().StringSliceVar(&opts.RemediateResourceTypes, "remediate-resource-types", nil, "Remediation resource types")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types")
