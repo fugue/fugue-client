@@ -65,13 +65,13 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 				}
 			}
 
-			// The generated Go models have omitempty set on boolean flags.
-			// This means we can't send "false" values for these fields:
-			// * remediation
-			// * scan_schedule_enabled
-			// For now we won't support setting these flags in the CLI.
-
 			// Using Visit here allows us to process only flags that were set
+			//
+			// Note that the generated Go models have `omitempty` set.  This
+			// means that any booleans that are `false` are simply dropped from
+			// the JSON.  We work around this questionable design decision
+			// by using pointers to booleans for `ScanScheduleEnabled` and
+			// `Remediation`.
 			cmd.Flags().Visit(func(f *pflag.Flag) {
 				switch f.Name {
 				case "name":
@@ -88,6 +88,8 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 					params.Environment.RemediateResourceTypes = opts.RemediateResourceTypes
 				case "scan-schedule-enabled":
 					params.Environment.ScanScheduleEnabled = &opts.ScanScheduleEnabled
+				case "remediation":
+					params.Environment.Remediation = &opts.Remediation
 				}
 			})
 
@@ -165,6 +167,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 0, "Scan interval (seconds)")
 	cmd.Flags().BoolVar(&opts.ScanScheduleEnabled, "scan-schedule-enabled", true, "Enable automatic scanning schedule")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", nil, "Compliance families")
+	cmd.Flags().BoolVar(&opts.Remediation, "remediation", false, "Enable automatic remediation")
 	cmd.Flags().StringSliceVar(&opts.RemediateResourceTypes, "remediate-resource-types", nil, "Remediation resource types")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types")
 	cmd.Flags().StringSliceVar(&opts.Regions, "regions", nil, "AWS regions")
