@@ -37,7 +37,7 @@ type CreateEnvironmentInput struct {
 
 	// Time in seconds between the end of one scan to the start of the next. Must also set scan_schedule_enabled to true.
 	// Minimum: 300
-	ScanInterval int64 `json:"scan_interval,omitempty"`
+	ScanInterval *int64 `json:"scan_interval,omitempty"`
 
 	// Indicates if the new environment should have scans run on a schedule upon creation.
 	ScanScheduleEnabled bool `json:"scan_schedule_enabled,omitempty"`
@@ -138,7 +138,7 @@ func (m *CreateEnvironmentInput) validateScanInterval(formats strfmt.Registry) e
 		return nil
 	}
 
-	if err := validate.MinimumInt("scan_interval", "body", int64(m.ScanInterval), 300, false); err != nil {
+	if err := validate.MinimumInt("scan_interval", "body", int64(*m.ScanInterval), 300, false); err != nil {
 		return err
 	}
 

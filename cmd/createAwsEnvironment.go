@@ -62,15 +62,22 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				surveyTypes = resp.Payload.ResourceTypes
 			}
 
+			scanInterval := opts.ScanInterval
+			var scanIntervalPtr *int64
+			if opts.ScanInterval > 0 {
+				scanIntervalPtr = &scanInterval
+			}
+			scanScheduleEnabled := scanInterval != 0
+
 			params := environments.NewCreateEnvironmentParams()
 			params.Environment = &models.CreateEnvironmentInput{
 				ComplianceFamilies:     opts.ComplianceFamilies,
 				Name:                   opts.Name,
 				Provider:               opts.Provider,
-				ScanInterval:           opts.ScanInterval,
+				ScanInterval:           scanIntervalPtr,
 				SurveyResourceTypes:    surveyTypes,
 				RemediateResourceTypes: opts.RemediationResourceTypes,
-				ScanScheduleEnabled:    true,
+				ScanScheduleEnabled:    scanScheduleEnabled,
 			}
 
 			providerOpts := &models.ProviderOptionsAws{
@@ -164,7 +171,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringSliceVar(&opts.Regions, "regions", []string{}, "AWS regions (default all regions)")
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider if cannot be resolved from regions")
 	cmd.Flags().StringVar(&opts.Role, "role", "", "AWS IAM role arn")
-	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 86400, "Scan interval (seconds)")
+	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 0, "Scan interval (seconds)")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", []string{}, "Compliance families")
 	cmd.Flags().StringSliceVar(&opts.RemediationResourceTypes, "remediation-resource-types", []string{}, "Remediation resource types")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types (defaults to all available types)")

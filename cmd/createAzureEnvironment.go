@@ -35,15 +35,22 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 
 			client, auth := getClient()
 
+			scanInterval := opts.ScanInterval
+			var scanIntervalPtr *int64
+			if opts.ScanInterval > 0 {
+				scanIntervalPtr = &scanInterval
+			}
+			scanScheduleEnabled := scanInterval != 0
+
 			params := environments.NewCreateEnvironmentParams()
 			params.Environment = &models.CreateEnvironmentInput{
 				ComplianceFamilies:     opts.ComplianceFamilies,
 				Name:                   opts.Name,
 				Provider:               "azure",
-				ScanInterval:           opts.ScanInterval,
+				ScanInterval:           scanIntervalPtr,
 				SurveyResourceTypes:    []string{},
 				RemediateResourceTypes: []string{},
-				ScanScheduleEnabled:    true,
+				ScanScheduleEnabled:    scanScheduleEnabled,
 				ProviderOptions: &models.ProviderOptions{
 					Azure: &models.ProviderOptionsAzure{
 						ApplicationID:           opts.ApplicationID,
@@ -94,7 +101,7 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.SubscriptionID, "sub", "", "Azure Subscription ID")
 	cmd.Flags().StringVar(&opts.TenantID, "tenant", "", "Azure Tenant ID")
 
-	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 86400, "Scan interval (seconds)")
+	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 0, "Scan interval (seconds)")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", []string{}, "Compliance families")
 	cmd.Flags().StringSliceVar(&opts.RemediateResourceGroups, "remediation-resource-groups", []string{}, "Remediation resource groups")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceGroups, "survey-resource-groups", nil, "Survey resource groups")
