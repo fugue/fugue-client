@@ -40,7 +40,7 @@ type CreateEnvironmentInput struct {
 	ScanInterval *int64 `json:"scan_interval,omitempty"`
 
 	// Indicates if the new environment should have scans run on a schedule upon creation.
-	ScanScheduleEnabled bool `json:"scan_schedule_enabled,omitempty"`
+	ScanScheduleEnabled *bool `json:"scan_schedule_enabled,omitempty"`
 
 	// List of resource types to be surveyed.
 	SurveyResourceTypes []string `json:"survey_resource_types"`
