@@ -17,6 +17,7 @@ type listRulesViewItem struct {
 	Name         string
 	Description  string
 	Provider     string
+	Severity     string
 	ResourceType string
 	RuleText     string
 	Status       string
@@ -59,6 +60,7 @@ func NewListRulesCommand() *cobra.Command {
 					Name:         rule.Name,
 					Description:  description,
 					Provider:     rule.Provider,
+					Severity:	  rule.Severity,
 					ResourceType: rule.ResourceType,
 					RuleText:     rule.RuleText,
 					Status:       rule.Status,
@@ -86,6 +88,7 @@ func NewListRulesCommand() *cobra.Command {
 		"ID",
 		"Name",
 		"Provider",
+		"Severity",
 		"ResourceType",
 		"Status",
 		"Description",

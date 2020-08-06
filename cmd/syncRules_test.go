@@ -10,6 +10,7 @@ func TestParseRego(t *testing.T) {
 		rego        *regoFile
 		expProvider string
 		expResource string
+		expSeverity string
 	}{
 		{
 			"single-aws",
@@ -17,11 +18,13 @@ func TestParseRego(t *testing.T) {
 				Text: `
 # Provider: AWS
 # Resource-Type: AWS.EC2.Instance
+# Severity: Low
 # Description: fake
 deny{}`,
 			},
 			"AWS",
 			"AWS.EC2.Instance",
+			"Low",
 		},
 		{
 			"multiple-aws",
@@ -30,10 +33,12 @@ deny{}`,
 # Provider: AWS
 # Resource-Type: MULTIPLE
 # Description: fake
+# Severity: Medium
 deny{}`,
 			},
 			"AWS",
 			"MULTIPLE",
+			"Medium",
 		},
 		{
 			"single-aws-govcloud",
@@ -42,11 +47,12 @@ deny{}`,
 # Provider: AWS_GOVCLOUD
 # Resource-Type: AWS.EC2.Instance
 # Description: fake
-
+# Severity: High
 deny{}`,
 			},
 			"AWS_GOVCLOUD",
 			"AWS.EC2.Instance",
+			"High",
 		},
 		{
 			"multiple-aws-govcloud",
@@ -55,11 +61,12 @@ deny{}`,
 # Provider: AWS_GOVCLOUD
 # Resource-Type: MULTIPLE
 # Description: fake
-
+# Severity: Critical
 deny{}`,
 			},
 			"AWS_GOVCLOUD",
 			"MULTIPLE",
+			"Critical",
 		},
 		{
 			"single-azure",
@@ -68,10 +75,12 @@ deny{}`,
 # Provider: Azure
 # Resource-Type: Azure.Compute.VirtualMachine
 # Description: fake
+# Severity: Informational
 deny{}`,
 			},
 			"Azure",
 			"Azure.Compute.VirtualMachine",
+			"Informational",
 		},
 		{
 			"multiple-azure",
@@ -80,10 +89,12 @@ deny{}`,
 # Provider: Azure
 # Resource-Type: MULTIPLE
 # Description: fake
+# Severity: Low
 deny{}`,
 			},
 			"Azure",
 			"MULTIPLE",
+			"Low",
 		},
 		{
 			"becki1-aws-s3-bucket-sse",
@@ -92,13 +103,14 @@ deny{}`,
 # Provider: AWS_GOVCLOUD
 # Resource-Type: AWS.S3.Bucket
 # Description: SSE encryption should be enabled for S3 buckets (AES-256 or KMS).
-
+# Severity: Medium
 allow {
   input.server_side_encryption_configuration[_].rule[_][_][_].sse_algorithm = _
 }`,
 			},
 			"AWS_GOVCLOUD",
 			"AWS.S3.Bucket",
+			"Medium",
 		},
 	}
 

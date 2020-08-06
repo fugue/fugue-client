@@ -21,6 +21,7 @@ type regoFile struct {
 	Provider     string
 	ResourceType string
 	Description  string
+	Severity     string
 	Text         string
 }
 
@@ -66,6 +67,7 @@ func (rego *regoFile) ParseText() error {
 	rego.Provider = getHeader("Provider")
 	rego.ResourceType = getHeader("Resource-Type")
 	rego.Description = getHeader("Description")
+	rego.Severity = getHeader("Severity")
 
 	// Throw errors if things are missing.
 	if rego.ResourceType == "" {
@@ -76,6 +78,9 @@ func (rego *regoFile) ParseText() error {
 	}
 	if rego.Provider == "" {
 		return errors.New("expected a provider by the header \"Provider\"")
+	}
+	if rego.Severity == "" {
+		return errors.New("expected a severity by the header \"Severity\"")
 	}
 
 	return nil
@@ -155,6 +160,7 @@ func NewSyncRulesCommand() *cobra.Command {
 						Description:  rego.Description,
 						ResourceType: rego.ResourceType,
 						Provider:     rego.Provider,
+						Severity:     rego.Severity,
 						RuleText:     rego.Text,
 					}
 					client.CustomRules.CreateCustomRule(params, auth)
@@ -165,6 +171,7 @@ func NewSyncRulesCommand() *cobra.Command {
 					params.Rule = &models.UpdateCustomRuleInput{
 						Description:  rego.Description,
 						ResourceType: rego.ResourceType,
+						Severity:     rego.Severity,
 						RuleText:     rego.Text,
 					}
 					client.CustomRules.UpdateCustomRule(params, auth)
