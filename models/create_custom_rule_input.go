@@ -35,6 +35,10 @@ type CreateCustomRuleInput struct {
 	// The rego source code for the rule
 	RuleText string `json:"rule_text,omitempty"`
 
+	// Severity level of the custom rule.
+	// Enum: [INFORMATIONAL LOW MEDIUM HIGH CRITICAL]
+	Severity string `json:"severity,omitempty"`
+
 	// The origin of this rule
 	// Enum: [FUGUE CUSTOM]
 	Source string `json:"source,omitempty"`
@@ -45,6 +49,10 @@ func (m *CreateCustomRuleInput) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateProvider(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSeverity(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,6 +106,58 @@ func (m *CreateCustomRuleInput) validateProvider(formats strfmt.Registry) error 
 
 	// value enum
 	if err := m.validateProviderEnum("provider", "body", m.Provider); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var createCustomRuleInputTypeSeverityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["INFORMATIONAL","LOW","MEDIUM","HIGH","CRITICAL"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		createCustomRuleInputTypeSeverityPropEnum = append(createCustomRuleInputTypeSeverityPropEnum, v)
+	}
+}
+
+const (
+
+	// CreateCustomRuleInputSeverityINFORMATIONAL captures enum value "INFORMATIONAL"
+	CreateCustomRuleInputSeverityINFORMATIONAL string = "INFORMATIONAL"
+
+	// CreateCustomRuleInputSeverityLOW captures enum value "LOW"
+	CreateCustomRuleInputSeverityLOW string = "LOW"
+
+	// CreateCustomRuleInputSeverityMEDIUM captures enum value "MEDIUM"
+	CreateCustomRuleInputSeverityMEDIUM string = "MEDIUM"
+
+	// CreateCustomRuleInputSeverityHIGH captures enum value "HIGH"
+	CreateCustomRuleInputSeverityHIGH string = "HIGH"
+
+	// CreateCustomRuleInputSeverityCRITICAL captures enum value "CRITICAL"
+	CreateCustomRuleInputSeverityCRITICAL string = "CRITICAL"
+)
+
+// prop value enum
+func (m *CreateCustomRuleInput) validateSeverityEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, createCustomRuleInputTypeSeverityPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *CreateCustomRuleInput) validateSeverity(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Severity) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateSeverityEnum("severity", "body", m.Severity); err != nil {
 		return err
 	}
 

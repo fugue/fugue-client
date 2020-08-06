@@ -31,6 +31,10 @@ type UpdateCustomRuleInput struct {
 	// Rego code used by the rule
 	RuleText string `json:"rule_text,omitempty"`
 
+	// Severity level of the custom rule.
+	// Enum: [INFORMATIONAL LOW MEDIUM HIGH CRITICAL]
+	Severity string `json:"severity,omitempty"`
+
 	// Status of the custom rule
 	// Enum: [ENABLED DISABLED]
 	Status string `json:"status,omitempty"`
@@ -40,6 +44,10 @@ type UpdateCustomRuleInput struct {
 func (m *UpdateCustomRuleInput) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateSeverity(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -47,6 +55,58 @@ func (m *UpdateCustomRuleInput) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+var updateCustomRuleInputTypeSeverityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["INFORMATIONAL","LOW","MEDIUM","HIGH","CRITICAL"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		updateCustomRuleInputTypeSeverityPropEnum = append(updateCustomRuleInputTypeSeverityPropEnum, v)
+	}
+}
+
+const (
+
+	// UpdateCustomRuleInputSeverityINFORMATIONAL captures enum value "INFORMATIONAL"
+	UpdateCustomRuleInputSeverityINFORMATIONAL string = "INFORMATIONAL"
+
+	// UpdateCustomRuleInputSeverityLOW captures enum value "LOW"
+	UpdateCustomRuleInputSeverityLOW string = "LOW"
+
+	// UpdateCustomRuleInputSeverityMEDIUM captures enum value "MEDIUM"
+	UpdateCustomRuleInputSeverityMEDIUM string = "MEDIUM"
+
+	// UpdateCustomRuleInputSeverityHIGH captures enum value "HIGH"
+	UpdateCustomRuleInputSeverityHIGH string = "HIGH"
+
+	// UpdateCustomRuleInputSeverityCRITICAL captures enum value "CRITICAL"
+	UpdateCustomRuleInputSeverityCRITICAL string = "CRITICAL"
+)
+
+// prop value enum
+func (m *UpdateCustomRuleInput) validateSeverityEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, updateCustomRuleInputTypeSeverityPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *UpdateCustomRuleInput) validateSeverity(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Severity) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateSeverityEnum("severity", "body", m.Severity); err != nil {
+		return err
+	}
+
 	return nil
 }
 
