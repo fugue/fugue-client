@@ -14,6 +14,12 @@ GOPATH?=$(shell go env GOPATH)
 UPDATE_ENV_SRC=models/update_environment_input.go
 UPDATE_RULE_SRC=models/update_custom_rule_input.go
 
+GOSWAGGER=docker run --rm -it \
+	--volume $(shell pwd):/fugue-client \
+	--user $(shell id -u):$(shell id -g) \
+	--workdir /fugue-client \
+	quay.io/goswagger/swagger:v0.23.0
+
 $(BINARY): $(SOURCES)
 	$(GO) build $(LD_FLAGS) -v -o $@
 
@@ -37,7 +43,7 @@ validate: $(SWAGGER)
 .PHONY: gen
 gen: $(SWAGGER)
 	# go-swagger: https://goswagger.io/
-	swagger generate client -f $(SWAGGER)
+	$(GOSWAGGER) generate client -f $(SWAGGER)
 	# Workaround for deficiencies in generated swagger types
 	sed -i "" "s/BaselineID string/BaselineID *string/g" $(UPDATE_ENV_SRC)
 	sed -i "" "s/Remediation bool/Remediation *bool/g" $(UPDATE_ENV_SRC)
