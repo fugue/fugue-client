@@ -51,6 +51,7 @@ gen: $(SWAGGER)
 	sed -i "" "s/ScanScheduleEnabled bool/ScanScheduleEnabled *bool/g" $(UPDATE_ENV_SRC)
 	sed -i "" "s/ScanScheduleEnabled bool/ScanScheduleEnabled *bool/g" $(UPDATE_RULE_SRC)
 	sed -i "" "s/ScanInterval int64/ScanInterval *int64/g" $(CREATE_ENV_SRC)
+	sed -i "" "s/ScanScheduleEnabled bool/ScanScheduleEnabled *bool/g" $(CREATE_ENV_SRC)
 	sed -i "" "s/int64(m.ScanInterval)/int64(*m.ScanInterval)/g" $(CREATE_ENV_SRC)
 
 .PHONY: test
