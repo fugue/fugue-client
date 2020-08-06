@@ -18,3 +18,4 @@ vendor/
 fugue
 fugue.exe
 swagger.yaml
+fugue-client

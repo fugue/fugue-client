@@ -108,11 +108,17 @@ type ComplianceDiffRulesItems0 struct {
 	// The rule's evaluation state after an event.
 	NewState string `json:"new_state,omitempty"`
 
+	// The rule's waived status after an event.
+	NewWaived bool `json:"new_waived,omitempty"`
+
 	// The rule's error message before an event.
 	OldMessage string `json:"old_message,omitempty"`
 
 	// The rule's evaluation state before an event.
 	OldState string `json:"old_state,omitempty"`
+
+	// The rule's waived status before an event.
+	OldWaived bool `json:"old_waived,omitempty"`
 
 	// Summary of the rule a resource was evaluated against.
 	Summary string `json:"summary,omitempty"`
