@@ -10,8 +10,9 @@ SWAGGER=swagger.yaml
 SWAGGER_URL=https://api.riskmanager.fugue.co/v0/swagger
 SOURCES=$(shell find . -name '*.go')
 GOPATH?=$(shell go env GOPATH)
-UPDATE_ENV_SRC=$(shell find models -name "update_environment_input.go")
-UPDATE_RULE_SRC=$(shell find models -name "update_custom_rule_input.go")
+
+UPDATE_ENV_SRC=models/update_environment_input.go
+UPDATE_RULE_SRC=models/update_custom_rule_input.go
 
 $(BINARY): $(SOURCES)
 	$(GO) build $(LD_FLAGS) -v -o $@

@@ -16,7 +16,7 @@ import (
 type TestCustomRuleInputScan struct {
 
 	// resources
-	Resources []interface{} `json:"resources"`
+	Resources interface{} `json:"resources,omitempty"`
 }
 
 // Validate validates this test custom rule input scan
