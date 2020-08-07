@@ -22,7 +22,6 @@ type regoFile struct {
 	ResourceType string
 	Description  string
 	Text         string
-	Severity     string
 }
 
 func (rego *regoFile) ParseText() error {
@@ -67,7 +66,6 @@ func (rego *regoFile) ParseText() error {
 	rego.Provider = getHeader("Provider")
 	rego.ResourceType = getHeader("Resource-Type")
 	rego.Description = getHeader("Description")
-	rego.Severity = getHeader("Severity")
 
 	// Throw errors if things are missing.
 	if rego.ResourceType == "" {
