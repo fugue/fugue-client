@@ -60,7 +60,7 @@ func NewListRulesCommand() *cobra.Command {
 					Name:         rule.Name,
 					Description:  description,
 					Provider:     rule.Provider,
-					Severity:	  rule.Severity,
+					Severity:     rule.Severity,
 					ResourceType: rule.ResourceType,
 					RuleText:     rule.RuleText,
 					Status:       rule.Status,
