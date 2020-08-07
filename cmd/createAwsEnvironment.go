@@ -62,15 +62,21 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				surveyTypes = resp.Payload.ResourceTypes
 			}
 
+			scanScheduleEnabled := opts.ScanInterval != 0
+			var scanIntervalPtr *int64
+			if scanScheduleEnabled {
+				scanIntervalPtr = &opts.ScanInterval
+			}
+
 			params := environments.NewCreateEnvironmentParams()
 			params.Environment = &models.CreateEnvironmentInput{
 				ComplianceFamilies:     opts.ComplianceFamilies,
 				Name:                   opts.Name,
 				Provider:               opts.Provider,
-				ScanInterval:           opts.ScanInterval,
+				ScanInterval:           scanIntervalPtr,
 				SurveyResourceTypes:    surveyTypes,
 				RemediateResourceTypes: opts.RemediationResourceTypes,
-				ScanScheduleEnabled:    true,
+				ScanScheduleEnabled:    &scanScheduleEnabled,
 			}
 
 			providerOpts := &models.ProviderOptionsAws{
