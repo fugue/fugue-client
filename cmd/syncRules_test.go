@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -132,7 +131,7 @@ deny{}`,
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.rego.ParseText()
 
-			if err != nil && !strings.Contains(err.Error(), "severity") {
+			if err != nil {
 				t.Errorf("Error in parseRego %s", err.Error())
 			}
 			if tt.rego.Provider != tt.expProvider {
