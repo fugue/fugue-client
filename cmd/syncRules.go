@@ -80,7 +80,8 @@ func (rego *regoFile) ParseText() error {
 		return errors.New("expected a provider by the header \"Provider\"")
 	}
 	if rego.Severity == "" {
-		return errors.New("expected a severity by the header \"Severity\"")
+		rego.Severity = "High"
+		return errors.New("expected a severity by the header \"Severity\" -- setting severity to default High")
 	}
 
 	return nil
@@ -145,7 +146,9 @@ func NewSyncRulesCommand() *cobra.Command {
 				rego, err := loadRego(path)
 				if err != nil {
 					fmt.Println("WARN:", err)
-					return nil
+					if !strings.Contains(err.Error(), "severity") {
+						return nil
+					}
 				}
 				if rego == nil {
 					return nil

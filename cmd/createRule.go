@@ -57,7 +57,7 @@ func NewCreateRuleCommand() *cobra.Command {
 				Item{"DESCRIPTION", rule.Description},
 				Item{"PROVIDER", rule.Provider},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
-				Item{"SEVERIY", rule.Severity},
+				Item{"SEVERITY", rule.Severity},
 				Item{"STATUS", rule.Status},
 			}
 
@@ -84,7 +84,6 @@ func NewCreateRuleCommand() *cobra.Command {
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("description")
 	cmd.MarkFlagRequired("provider")
-	cmd.MarkFlagRequired("severity")
 	cmd.MarkFlagRequired("resource-type")
 	cmd.MarkFlagRequired("text")
 

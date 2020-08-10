@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -112,13 +113,26 @@ allow {
 			"AWS.S3.Bucket",
 			"Medium",
 		},
+		{
+			"single-aws-no-severity",
+			&regoFile{
+				Text: `
+# Provider: AWS
+# Resource-Type: AWS.EC2.Instance
+# Description: fake
+deny{}`,
+			},
+			"AWS",
+			"AWS.EC2.Instance",
+			"High",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.rego.ParseText()
 
-			if err != nil {
+			if err != nil && !strings.Contains(err.Error(), "severity") {
 				t.Errorf("Error in parseRego %s", err.Error())
 			}
 			if tt.rego.Provider != tt.expProvider {
@@ -126,6 +140,9 @@ allow {
 			}
 			if tt.rego.ResourceType != tt.expResource {
 				t.Errorf("Expected %s, actual %s", tt.expResource, tt.rego.ResourceType)
+			}
+			if tt.rego.Severity != tt.expSeverity {
+				t.Errorf("Expected %s, actual %s", tt.expSeverity, tt.rego.Severity)
 			}
 		})
 	}
