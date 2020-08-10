@@ -29,6 +29,12 @@ func (o *DeleteCustomRuleReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewDeleteCustomRuleBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewDeleteCustomRuleUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -70,6 +76,39 @@ func (o *DeleteCustomRuleNoContent) Error() string {
 }
 
 func (o *DeleteCustomRuleNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteCustomRuleBadRequest creates a DeleteCustomRuleBadRequest with default headers values
+func NewDeleteCustomRuleBadRequest() *DeleteCustomRuleBadRequest {
+	return &DeleteCustomRuleBadRequest{}
+}
+
+/*DeleteCustomRuleBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type DeleteCustomRuleBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *DeleteCustomRuleBadRequest) Error() string {
+	return fmt.Sprintf("[DELETE /rules/{rule_id}][%d] deleteCustomRuleBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *DeleteCustomRuleBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *DeleteCustomRuleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

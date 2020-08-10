@@ -29,6 +29,12 @@ func (o *TestCustomRuleReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewTestCustomRuleBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewTestCustomRuleUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -77,6 +83,39 @@ func (o *TestCustomRuleOK) GetPayload() *models.TestCustomRuleOutput {
 func (o *TestCustomRuleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.TestCustomRuleOutput)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewTestCustomRuleBadRequest creates a TestCustomRuleBadRequest with default headers values
+func NewTestCustomRuleBadRequest() *TestCustomRuleBadRequest {
+	return &TestCustomRuleBadRequest{}
+}
+
+/*TestCustomRuleBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type TestCustomRuleBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *TestCustomRuleBadRequest) Error() string {
+	return fmt.Sprintf("[POST /rules/test][%d] testCustomRuleBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *TestCustomRuleBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *TestCustomRuleBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

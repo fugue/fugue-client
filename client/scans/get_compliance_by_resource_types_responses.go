@@ -29,6 +29,12 @@ func (o *GetComplianceByResourceTypesReader) ReadResponse(response runtime.Clien
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewGetComplianceByResourceTypesBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewGetComplianceByResourceTypesUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -83,6 +89,39 @@ func (o *GetComplianceByResourceTypesOK) GetPayload() *models.ComplianceByResour
 func (o *GetComplianceByResourceTypesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ComplianceByResourceTypeOutput)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetComplianceByResourceTypesBadRequest creates a GetComplianceByResourceTypesBadRequest with default headers values
+func NewGetComplianceByResourceTypesBadRequest() *GetComplianceByResourceTypesBadRequest {
+	return &GetComplianceByResourceTypesBadRequest{}
+}
+
+/*GetComplianceByResourceTypesBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type GetComplianceByResourceTypesBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *GetComplianceByResourceTypesBadRequest) Error() string {
+	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_resource_types][%d] getComplianceByResourceTypesBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *GetComplianceByResourceTypesBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *GetComplianceByResourceTypesBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

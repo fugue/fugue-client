@@ -29,6 +29,12 @@ func (o *UpdateNotificationReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewUpdateNotificationBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewUpdateNotificationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -83,6 +89,39 @@ func (o *UpdateNotificationOK) GetPayload() *models.Notification {
 func (o *UpdateNotificationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.Notification)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewUpdateNotificationBadRequest creates a UpdateNotificationBadRequest with default headers values
+func NewUpdateNotificationBadRequest() *UpdateNotificationBadRequest {
+	return &UpdateNotificationBadRequest{}
+}
+
+/*UpdateNotificationBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type UpdateNotificationBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *UpdateNotificationBadRequest) Error() string {
+	return fmt.Sprintf("[PUT /notifications/{notification_id}][%d] updateNotificationBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *UpdateNotificationBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *UpdateNotificationBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
