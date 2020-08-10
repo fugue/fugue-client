@@ -29,6 +29,12 @@ func (o *TestCustomRuleInputReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewTestCustomRuleInputBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewTestCustomRuleInputUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -77,6 +83,39 @@ func (o *TestCustomRuleInputOK) GetPayload() *models.TestCustomRuleInputScan {
 func (o *TestCustomRuleInputOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.TestCustomRuleInputScan)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewTestCustomRuleInputBadRequest creates a TestCustomRuleInputBadRequest with default headers values
+func NewTestCustomRuleInputBadRequest() *TestCustomRuleInputBadRequest {
+	return &TestCustomRuleInputBadRequest{}
+}
+
+/*TestCustomRuleInputBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type TestCustomRuleInputBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *TestCustomRuleInputBadRequest) Error() string {
+	return fmt.Sprintf("[GET /rules/test/input][%d] testCustomRuleInputBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *TestCustomRuleInputBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *TestCustomRuleInputBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

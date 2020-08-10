@@ -29,6 +29,12 @@ func (o *GetComplianceByRulesReader) ReadResponse(response runtime.ClientRespons
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewGetComplianceByRulesBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewGetComplianceByRulesUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -83,6 +89,39 @@ func (o *GetComplianceByRulesOK) GetPayload() *models.ComplianceByRules {
 func (o *GetComplianceByRulesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ComplianceByRules)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetComplianceByRulesBadRequest creates a GetComplianceByRulesBadRequest with default headers values
+func NewGetComplianceByRulesBadRequest() *GetComplianceByRulesBadRequest {
+	return &GetComplianceByRulesBadRequest{}
+}
+
+/*GetComplianceByRulesBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type GetComplianceByRulesBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *GetComplianceByRulesBadRequest) Error() string {
+	return fmt.Sprintf("[GET /scans/{scan_id}/compliance_by_rules][%d] getComplianceByRulesBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *GetComplianceByRulesBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *GetComplianceByRulesBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

@@ -29,6 +29,12 @@ func (o *GetEnvironmentReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewGetEnvironmentBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewGetEnvironmentUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -83,6 +89,39 @@ func (o *GetEnvironmentOK) GetPayload() *models.EnvironmentWithSummary {
 func (o *GetEnvironmentOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.EnvironmentWithSummary)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetEnvironmentBadRequest creates a GetEnvironmentBadRequest with default headers values
+func NewGetEnvironmentBadRequest() *GetEnvironmentBadRequest {
+	return &GetEnvironmentBadRequest{}
+}
+
+/*GetEnvironmentBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type GetEnvironmentBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *GetEnvironmentBadRequest) Error() string {
+	return fmt.Sprintf("[GET /environments/{environment_id}][%d] getEnvironmentBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *GetEnvironmentBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *GetEnvironmentBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

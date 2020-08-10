@@ -29,6 +29,12 @@ func (o *ListCustomRulesReader) ReadResponse(response runtime.ClientResponse, co
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewListCustomRulesBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewListCustomRulesUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -77,6 +83,39 @@ func (o *ListCustomRulesOK) GetPayload() *models.CustomRules {
 func (o *ListCustomRulesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.CustomRules)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewListCustomRulesBadRequest creates a ListCustomRulesBadRequest with default headers values
+func NewListCustomRulesBadRequest() *ListCustomRulesBadRequest {
+	return &ListCustomRulesBadRequest{}
+}
+
+/*ListCustomRulesBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type ListCustomRulesBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *ListCustomRulesBadRequest) Error() string {
+	return fmt.Sprintf("[GET /rules][%d] listCustomRulesBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *ListCustomRulesBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *ListCustomRulesBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
