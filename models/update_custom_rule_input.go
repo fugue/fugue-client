@@ -32,7 +32,7 @@ type UpdateCustomRuleInput struct {
 	RuleText string `json:"rule_text,omitempty"`
 
 	// Severity level of the custom rule.
-	// Enum: [INFORMATIONAL LOW MEDIUM HIGH CRITICAL]
+	// Enum: [Informational Low Medium High Critical]
 	Severity string `json:"severity,omitempty"`
 
 	// Status of the custom rule
@@ -62,7 +62,7 @@ var updateCustomRuleInputTypeSeverityPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["INFORMATIONAL","LOW","MEDIUM","HIGH","CRITICAL"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Informational","Low","Medium","High","Critical"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -72,20 +72,20 @@ func init() {
 
 const (
 
-	// UpdateCustomRuleInputSeverityINFORMATIONAL captures enum value "INFORMATIONAL"
-	UpdateCustomRuleInputSeverityINFORMATIONAL string = "INFORMATIONAL"
+	// UpdateCustomRuleInputSeverityInformational captures enum value "Informational"
+	UpdateCustomRuleInputSeverityInformational string = "Informational"
 
-	// UpdateCustomRuleInputSeverityLOW captures enum value "LOW"
-	UpdateCustomRuleInputSeverityLOW string = "LOW"
+	// UpdateCustomRuleInputSeverityLow captures enum value "Low"
+	UpdateCustomRuleInputSeverityLow string = "Low"
 
-	// UpdateCustomRuleInputSeverityMEDIUM captures enum value "MEDIUM"
-	UpdateCustomRuleInputSeverityMEDIUM string = "MEDIUM"
+	// UpdateCustomRuleInputSeverityMedium captures enum value "Medium"
+	UpdateCustomRuleInputSeverityMedium string = "Medium"
 
-	// UpdateCustomRuleInputSeverityHIGH captures enum value "HIGH"
-	UpdateCustomRuleInputSeverityHIGH string = "HIGH"
+	// UpdateCustomRuleInputSeverityHigh captures enum value "High"
+	UpdateCustomRuleInputSeverityHigh string = "High"
 
-	// UpdateCustomRuleInputSeverityCRITICAL captures enum value "CRITICAL"
-	UpdateCustomRuleInputSeverityCRITICAL string = "CRITICAL"
+	// UpdateCustomRuleInputSeverityCritical captures enum value "Critical"
+	UpdateCustomRuleInputSeverityCritical string = "Critical"
 )
 
 // prop value enum

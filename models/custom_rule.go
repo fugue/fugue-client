@@ -51,7 +51,7 @@ type CustomRule struct {
 	RuleText string `json:"rule_text,omitempty"`
 
 	// Severity level of the custom rule.
-	// Enum: [INFORMATIONAL LOW MEDIUM HIGH CRITICAL]
+	// Enum: [Informational Low Medium High Critical]
 	Severity string `json:"severity,omitempty"`
 
 	// The origin of this rule.
@@ -148,7 +148,7 @@ var customRuleTypeSeverityPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["INFORMATIONAL","LOW","MEDIUM","HIGH","CRITICAL"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Informational","Low","Medium","High","Critical"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -158,20 +158,20 @@ func init() {
 
 const (
 
-	// CustomRuleSeverityINFORMATIONAL captures enum value "INFORMATIONAL"
-	CustomRuleSeverityINFORMATIONAL string = "INFORMATIONAL"
+	// CustomRuleSeverityInformational captures enum value "Informational"
+	CustomRuleSeverityInformational string = "Informational"
 
-	// CustomRuleSeverityLOW captures enum value "LOW"
-	CustomRuleSeverityLOW string = "LOW"
+	// CustomRuleSeverityLow captures enum value "Low"
+	CustomRuleSeverityLow string = "Low"
 
-	// CustomRuleSeverityMEDIUM captures enum value "MEDIUM"
-	CustomRuleSeverityMEDIUM string = "MEDIUM"
+	// CustomRuleSeverityMedium captures enum value "Medium"
+	CustomRuleSeverityMedium string = "Medium"
 
-	// CustomRuleSeverityHIGH captures enum value "HIGH"
-	CustomRuleSeverityHIGH string = "HIGH"
+	// CustomRuleSeverityHigh captures enum value "High"
+	CustomRuleSeverityHigh string = "High"
 
-	// CustomRuleSeverityCRITICAL captures enum value "CRITICAL"
-	CustomRuleSeverityCRITICAL string = "CRITICAL"
+	// CustomRuleSeverityCritical captures enum value "Critical"
+	CustomRuleSeverityCritical string = "Critical"
 )
 
 // prop value enum
