@@ -16,6 +16,7 @@ type updateRuleOptions struct {
 	ID           string
 	Name         string
 	Description  string
+	Severity     string
 	ResourceType string
 	RuleText     string
 }
@@ -47,6 +48,8 @@ func NewUpdateRuleCommand() *cobra.Command {
 					params.Rule.Name = opts.Name
 				case "description":
 					params.Rule.Description = opts.Description
+				case "severity":
+					params.Rule.Severity = opts.Severity
 				case "resource-type":
 					params.Rule.ResourceType = opts.ResourceType
 				case "text":
@@ -67,6 +70,7 @@ func NewUpdateRuleCommand() *cobra.Command {
 				Item{"NAME", rule.Name},
 				Item{"DESCRIPTION", rule.Description},
 				Item{"PROVIDER", rule.Provider},
+				Item{"SEVERITY", rule.Severity},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"STATUS", rule.Status},
 			}
@@ -86,6 +90,7 @@ func NewUpdateRuleCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Rule name")
 	cmd.Flags().StringVar(&opts.Description, "description", "", "Description")
+	cmd.Flags().StringVar(&opts.Severity, "severity", "", "Severity")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "", "Resource type")
 	cmd.Flags().StringVar(&opts.RuleText, "text", "", "Rule text")
 

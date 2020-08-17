@@ -13,6 +13,7 @@ type createRuleOptions struct {
 	Name         string
 	Description  string
 	Provider     string
+	Severity     string
 	ResourceType string
 	RuleText     string
 }
@@ -34,6 +35,7 @@ func NewCreateRuleCommand() *cobra.Command {
 				Name:         opts.Name,
 				Description:  opts.Description,
 				ResourceType: opts.ResourceType,
+				Severity:     opts.Severity,
 				Provider:     opts.Provider,
 				RuleText:     opts.RuleText,
 			}
@@ -55,6 +57,7 @@ func NewCreateRuleCommand() *cobra.Command {
 				Item{"DESCRIPTION", rule.Description},
 				Item{"PROVIDER", rule.Provider},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
+				Item{"SEVERITY", rule.Severity},
 				Item{"STATUS", rule.Status},
 			}
 
@@ -74,6 +77,7 @@ func NewCreateRuleCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Rule name")
 	cmd.Flags().StringVar(&opts.Description, "description", "", "Description")
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider")
+	cmd.Flags().StringVar(&opts.Severity, "severity", "", "Severity")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "", "Resource type")
 	cmd.Flags().StringVar(&opts.RuleText, "text", "", "Rule text")
 

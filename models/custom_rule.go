@@ -50,6 +50,10 @@ type CustomRule struct {
 	// The rego source code for the rule.
 	RuleText string `json:"rule_text,omitempty"`
 
+	// Severity level of the custom rule.
+	// Enum: [Informational Low Medium High Critical]
+	Severity string `json:"severity,omitempty"`
+
 	// The origin of this rule.
 	// Enum: [CUSTOM]
 	Source string `json:"source,omitempty"`
@@ -73,6 +77,10 @@ func (m *CustomRule) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateProvider(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSeverity(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -130,6 +138,58 @@ func (m *CustomRule) validateProvider(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateProviderEnum("provider", "body", m.Provider); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var customRuleTypeSeverityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Informational","Low","Medium","High","Critical"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		customRuleTypeSeverityPropEnum = append(customRuleTypeSeverityPropEnum, v)
+	}
+}
+
+const (
+
+	// CustomRuleSeverityInformational captures enum value "Informational"
+	CustomRuleSeverityInformational string = "Informational"
+
+	// CustomRuleSeverityLow captures enum value "Low"
+	CustomRuleSeverityLow string = "Low"
+
+	// CustomRuleSeverityMedium captures enum value "Medium"
+	CustomRuleSeverityMedium string = "Medium"
+
+	// CustomRuleSeverityHigh captures enum value "High"
+	CustomRuleSeverityHigh string = "High"
+
+	// CustomRuleSeverityCritical captures enum value "Critical"
+	CustomRuleSeverityCritical string = "Critical"
+)
+
+// prop value enum
+func (m *CustomRule) validateSeverityEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, customRuleTypeSeverityPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *CustomRule) validateSeverity(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Severity) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateSeverityEnum("severity", "body", m.Severity); err != nil {
 		return err
 	}
 
