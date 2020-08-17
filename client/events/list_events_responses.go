@@ -29,6 +29,12 @@ func (o *ListEventsReader) ReadResponse(response runtime.ClientResponse, consume
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewListEventsBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewListEventsUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -83,6 +89,39 @@ func (o *ListEventsOK) GetPayload() *models.Events {
 func (o *ListEventsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.Events)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewListEventsBadRequest creates a ListEventsBadRequest with default headers values
+func NewListEventsBadRequest() *ListEventsBadRequest {
+	return &ListEventsBadRequest{}
+}
+
+/*ListEventsBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type ListEventsBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *ListEventsBadRequest) Error() string {
+	return fmt.Sprintf("[GET /events][%d] listEventsBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *ListEventsBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *ListEventsBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

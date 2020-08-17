@@ -35,15 +35,21 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 
 			client, auth := getClient()
 
+			scanScheduleEnabled := opts.ScanInterval != 0
+			var scanIntervalPtr *int64
+			if scanScheduleEnabled {
+				scanIntervalPtr = &opts.ScanInterval
+			}
+
 			params := environments.NewCreateEnvironmentParams()
 			params.Environment = &models.CreateEnvironmentInput{
 				ComplianceFamilies:     opts.ComplianceFamilies,
 				Name:                   opts.Name,
 				Provider:               "azure",
-				ScanInterval:           opts.ScanInterval,
+				ScanInterval:           scanIntervalPtr,
 				SurveyResourceTypes:    []string{},
 				RemediateResourceTypes: []string{},
-				ScanScheduleEnabled:    true,
+				ScanScheduleEnabled:    &scanScheduleEnabled,
 				ProviderOptions: &models.ProviderOptions{
 					Azure: &models.ProviderOptionsAzure{
 						ApplicationID:           opts.ApplicationID,

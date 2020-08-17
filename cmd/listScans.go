@@ -100,7 +100,7 @@ func NewListScansCommand() *cobra.Command {
 	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 20, "max items to return")
 	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "", "order by attribute")
 	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "", "order by direction [asc | desc]")
-	cmd.Flags().StringSliceVar(&opts.Status, "status", nil, "Scan status filter [IN-PROGRESS | SUCCESS | ERROR]")
+	cmd.Flags().StringSliceVar(&opts.Status, "status", nil, "Scan status filter [IN_PROGRESS | SUCCESS | ERROR]")
 	cmd.Flags().Int64Var(&opts.RangeFrom, "range-from", 0, "Range from time filter")
 	cmd.Flags().Int64Var(&opts.RangeTo, "range-to", 0, "Range to time filter")
 

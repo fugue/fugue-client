@@ -42,6 +42,7 @@ func NewGetRuleCommand() *cobra.Command {
 				Item{"NAME", rule.Name},
 				Item{"DESCRIPTION", rule.Description},
 				Item{"PROVIDER", rule.Provider},
+				Item{"SEVERITY", rule.Severity},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"STATUS", rule.Status},
 			}

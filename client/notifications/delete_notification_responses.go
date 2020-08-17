@@ -29,6 +29,12 @@ func (o *DeleteNotificationReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewDeleteNotificationBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewDeleteNotificationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -76,6 +82,39 @@ func (o *DeleteNotificationNoContent) Error() string {
 }
 
 func (o *DeleteNotificationNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteNotificationBadRequest creates a DeleteNotificationBadRequest with default headers values
+func NewDeleteNotificationBadRequest() *DeleteNotificationBadRequest {
+	return &DeleteNotificationBadRequest{}
+}
+
+/*DeleteNotificationBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type DeleteNotificationBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *DeleteNotificationBadRequest) Error() string {
+	return fmt.Sprintf("[DELETE /notifications/{notification_id}][%d] deleteNotificationBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *DeleteNotificationBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *DeleteNotificationBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

@@ -29,6 +29,12 @@ func (o *GetScanReader) ReadResponse(response runtime.ClientResponse, consumer r
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewGetScanBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewGetScanUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -83,6 +89,39 @@ func (o *GetScanOK) GetPayload() *models.ScanWithSummary {
 func (o *GetScanOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ScanWithSummary)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetScanBadRequest creates a GetScanBadRequest with default headers values
+func NewGetScanBadRequest() *GetScanBadRequest {
+	return &GetScanBadRequest{}
+}
+
+/*GetScanBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type GetScanBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *GetScanBadRequest) Error() string {
+	return fmt.Sprintf("[GET /scans/{scan_id}][%d] getScanBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *GetScanBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *GetScanBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

@@ -29,6 +29,12 @@ func (o *DeleteEnvironmentReader) ReadResponse(response runtime.ClientResponse, 
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewDeleteEnvironmentBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewDeleteEnvironmentUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -76,6 +82,39 @@ func (o *DeleteEnvironmentNoContent) Error() string {
 }
 
 func (o *DeleteEnvironmentNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteEnvironmentBadRequest creates a DeleteEnvironmentBadRequest with default headers values
+func NewDeleteEnvironmentBadRequest() *DeleteEnvironmentBadRequest {
+	return &DeleteEnvironmentBadRequest{}
+}
+
+/*DeleteEnvironmentBadRequest handles this case with default header values.
+
+Bad request error.
+*/
+type DeleteEnvironmentBadRequest struct {
+	Payload *models.BadRequestError
+}
+
+func (o *DeleteEnvironmentBadRequest) Error() string {
+	return fmt.Sprintf("[DELETE /environments/{environment_id}][%d] deleteEnvironmentBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *DeleteEnvironmentBadRequest) GetPayload() *models.BadRequestError {
+	return o.Payload
+}
+
+func (o *DeleteEnvironmentBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.BadRequestError)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }
