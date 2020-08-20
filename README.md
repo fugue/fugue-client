@@ -16,9 +16,7 @@ change as we incorporate feedback.
 The easiest way to install the client is to download a prebuilt binary
 from [the releases page](https://github.com/fugue/fugue-client/releases).
 
-Currently only MacOS builds are available.
-
-Place the `fugue` binary in your $PATH, for example in `/usr/local/bin`.
+Place the `fugue` binary in your \$PATH, for example in `/usr/local/bin`.
 
 Change file permissions:
 
@@ -30,10 +28,10 @@ For more information, see the [CLI documentation](https://docs.fugue.co/cli.html
 
 ## Environment Variables
 
-The client uses the following *required* environment variables:
+The client uses the following _required_ environment variables:
 
-* `FUGUE_API_ID` - your API [client ID](https://docs.fugue.co/api.html#steps)
-* `FUGUE_API_SECRET` - your API [client secret](https://docs.fugue.co/api.html#steps)
+- `FUGUE_API_ID` - your API [client ID](https://docs.fugue.co/api.html#steps)
+- `FUGUE_API_SECRET` - your API [client secret](https://docs.fugue.co/api.html#steps)
 
 ## Build from Source
 
@@ -49,7 +47,7 @@ Build the client executable:
 make build
 ```
 
-Install to $GOPATH/bin:
+Install to \$GOPATH/bin:
 
 ```
 make install
@@ -57,7 +55,7 @@ make install
 
 ## Usage
 
-Show usage: 
+Show usage:
 
 ```
 fugue -h
