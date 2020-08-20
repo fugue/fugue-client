@@ -2,19 +2,24 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/format"
+	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
 )
 
 type listEnvironmentsOptions struct {
-	Columns    []string
-	Provider   string
-	NameFilter string
+	Columns        []string
+	Provider       string
+	NameFilter     string
+	Offset         int64
+	MaxItems       int64
+	OrderBy        string
+	OrderDirection string
+	FetchAll       bool
 }
 
 type listEnvironmentsViewItem struct {
@@ -43,20 +48,44 @@ func NewListEnvironmentsCommand() *cobra.Command {
 
 			client, auth := getClient()
 
-			params := environments.NewListEnvironmentsParams()
-			resp, err := client.Environments.ListEnvironments(params, auth)
-			CheckErr(err)
+			if opts.MaxItems < 1 {
+				opts.MaxItems = 1
+			}
+			if opts.MaxItems > 100 || opts.FetchAll {
+				opts.MaxItems = 100
+			}
+			if opts.Offset < 0 {
+				opts.Offset = 0
+			}
 
-			environments := resp.Payload.Items
-
-			sort.Slice(environments, func(i, j int) bool {
-				return environments[i].Name < environments[j].Name
-			})
+			var envs []*models.Environment
+			offset := opts.Offset
+			for {
+				params := environments.NewListEnvironmentsParams()
+				params.Offset = &offset
+				params.MaxItems = &opts.MaxItems
+				if opts.OrderBy != "" {
+					params.OrderBy = &opts.OrderBy
+				}
+				if opts.OrderDirection != "" {
+					params.OrderDirection = &opts.OrderDirection
+				}
+				resp, err := client.Environments.ListEnvironments(params, auth)
+				CheckErr(err)
+				for _, env := range resp.Payload.Items {
+					envs = append(envs, env)
+				}
+				if opts.FetchAll && resp.Payload.IsTruncated {
+					offset = resp.Payload.NextOffset
+					continue
+				}
+				break
+			}
 
 			nameFilter := strings.ToLower(opts.NameFilter)
 
 			var rows []interface{}
-			for _, env := range environments {
+			for _, env := range envs {
 
 				// Optionally filter by provider
 				if opts.Provider != "" {
@@ -129,6 +158,11 @@ func NewListEnvironmentsCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider filter")
 	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")
+	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset into results")
+	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 100, "Max items to return")
+	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "name", "Order by attribute")
+	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "asc", "Order by direction [asc | desc]")
+	cmd.Flags().BoolVar(&opts.FetchAll, "all", false, "Retrieve all environments")
 
 	return cmd
 }
