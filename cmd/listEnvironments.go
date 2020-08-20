@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -13,9 +12,14 @@ import (
 )
 
 type listEnvironmentsOptions struct {
-	Columns    []string
-	Provider   string
-	NameFilter string
+	Columns        []string
+	Provider       string
+	NameFilter     string
+	Offset         int64
+	MaxItems       int64
+	OrderBy        string
+	OrderDirection string
+	FetchAll       bool
 }
 
 type listEnvironmentsViewItem struct {
@@ -43,26 +47,40 @@ func NewListEnvironmentsCommand() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
+
+			if opts.MaxItems < 1 {
+				opts.MaxItems = 1
+			}
+			if opts.MaxItems > 100 || opts.FetchAll {
+				opts.MaxItems = 100
+			}
+			if opts.Offset < 0 {
+				opts.Offset = 0
+			}
+
 			var envs []*models.Environment
-			var offset int64
+			offset := opts.Offset
 			for {
 				params := environments.NewListEnvironmentsParams()
 				params.Offset = &offset
+				params.MaxItems = &opts.MaxItems
+				if opts.OrderBy != "" {
+					params.OrderBy = &opts.OrderBy
+				}
+				if opts.OrderDirection != "" {
+					params.OrderDirection = &opts.OrderDirection
+				}
 				resp, err := client.Environments.ListEnvironments(params, auth)
 				CheckErr(err)
 				for _, env := range resp.Payload.Items {
 					envs = append(envs, env)
 				}
-				if resp.Payload.IsTruncated {
+				if opts.FetchAll && resp.Payload.IsTruncated {
 					offset = resp.Payload.NextOffset
 					continue
 				}
 				break
 			}
-
-			sort.Slice(envs, func(i, j int) bool {
-				return envs[i].Name < envs[j].Name
-			})
 
 			nameFilter := strings.ToLower(opts.NameFilter)
 
@@ -140,6 +158,11 @@ func NewListEnvironmentsCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider filter")
 	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")
+	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset into results")
+	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 100, "Max items to return")
+	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "name", "Order by attribute")
+	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "asc", "Order by direction [asc | desc]")
+	cmd.Flags().BoolVar(&opts.FetchAll, "all", false, "Retrieve all environments")
 
 	return cmd
 }
