@@ -10,7 +10,6 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/fugue/fugue-client/client/c_o_r_s"
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/client/events"

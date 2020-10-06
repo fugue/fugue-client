@@ -15,6 +15,9 @@ import (
 // swagger:model TestCustomRuleInputScan
 type TestCustomRuleInputScan struct {
 
+	// links
+	Links map[string]string `json:"links,omitempty"`
+
 	// resources
 	Resources interface{} `json:"resources,omitempty"`
 }

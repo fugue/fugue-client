@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 
 	"github.com/fugue/fugue-client/models"
 )
@@ -67,6 +68,11 @@ type TestCustomRuleParams struct {
 
 	*/
 	Rule *models.TestCustomRuleInput
+	/*ViaDownload
+	  Force output to be downloadable.
+
+	*/
+	ViaDownload *bool
 
 	timeout    time.Duration
 	Context    context.Context
@@ -117,6 +123,17 @@ func (o *TestCustomRuleParams) SetRule(rule *models.TestCustomRuleInput) {
 	o.Rule = rule
 }
 
+// WithViaDownload adds the viaDownload to the test custom rule params
+func (o *TestCustomRuleParams) WithViaDownload(viaDownload *bool) *TestCustomRuleParams {
+	o.SetViaDownload(viaDownload)
+	return o
+}
+
+// SetViaDownload adds the viaDownload to the test custom rule params
+func (o *TestCustomRuleParams) SetViaDownload(viaDownload *bool) {
+	o.ViaDownload = viaDownload
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *TestCustomRuleParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -129,6 +146,22 @@ func (o *TestCustomRuleParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		if err := r.SetBodyParam(o.Rule); err != nil {
 			return err
 		}
+	}
+
+	if o.ViaDownload != nil {
+
+		// query param via_download
+		var qrViaDownload bool
+		if o.ViaDownload != nil {
+			qrViaDownload = *o.ViaDownload
+		}
+		qViaDownload := swag.FormatBool(qrViaDownload)
+		if qViaDownload != "" {
+			if err := r.SetQueryParam("via_download", qViaDownload); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	if len(res) > 0 {
