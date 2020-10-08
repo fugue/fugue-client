@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/format"
@@ -16,7 +15,6 @@ import (
 type testRuleOptions struct {
 	ScanID       string
 	ResourceType string
-	Input        bool
 }
 
 type testRuleResource struct {
@@ -89,53 +87,27 @@ func testRule(opts testRuleOptions, regoFile string) error {
 	return nil
 }
 
-// getRuleInput retrieves the rule input rather than running the rule.
-func getRuleInput(opts testRuleOptions) error {
-	client, auth := getClient()
-
-	viaDownload := true
-	params := custom_rules.NewTestCustomRuleInputParams()
-	params.ScanID = opts.ScanID
-	params.ViaDownload = &viaDownload
-
-	resp, err := client.CustomRules.TestCustomRuleInput(params, auth)
-	if err != nil {
-		return err
-	}
-
-	downloadResult, err := getDownloadResult(resp.Payload.Links)
-	if err != nil {
-		return err
-	}
-
-	bytes, err := json.MarshalIndent(downloadResult.Input, "", "    ")
-	if err != nil {
-		return err
-	}
-	os.Stdout.Write(bytes)
-	fmt.Println("") // Add final newline after JSON.
-	return nil
-}
-
 // downloadResult describes the scheme that we download from the
 // `links["output"]` key, which is slightly different than what we usually
 // expect, so we need to do some conversions here.
+//
+// Note that these types are reused in `cmd/getRuleInput.go`.
 type downloadResult struct {
 	Input  *models.TestCustomRuleInputScan `json:"input,omitempty"`
-	Errors []*tmpError                     `json:"errors,omitempty"`
-	Report *tmpReport                      `json:"report,omitempty"`
+	Errors []*downloadError                `json:"errors,omitempty"`
+	Report *downloadReport                 `json:"report,omitempty"`
 }
 
-type tmpReport struct {
-	Resources []*tmpResource `json:"resources"`
+type downloadReport struct {
+	Resources []*downloadResource `json:"resources"`
 }
 
-type tmpError struct {
+type downloadError struct {
 	Text     string `json:"_text,omitempty"`
 	Severity string `json:"severity,omitempty"`
 }
 
-type tmpResource struct {
+type downloadResource struct {
 	ID    string `json:"id,omitempty"`
 	Valid *bool  `json:"valid,omitempty"`
 	Type  string `json:"type,omitempty"`
@@ -177,27 +149,16 @@ func NewTestRuleCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rule [rego file]",
 		Short: "Test a custom rule",
-		Args: func(cmd *cobra.Command, args []string) error {
-			if opts.Input {
-				return cobra.ExactArgs(0)(cmd, args)
-			} else {
-				return cobra.ExactArgs(1)(cmd, args)
-			}
-		},
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			if opts.Input {
-				CheckErr(getRuleInput(opts))
-			} else {
-				CheckErr(testRule(opts, args[0]))
-			}
+			CheckErr(testRule(opts, args[0]))
 		},
 	}
 
 	cmd.Flags().StringVar(&opts.ScanID, "scan", "", "Scan ID")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "", "Resource type")
-	cmd.Flags().BoolVar(&opts.Input, "input", false, "Retrieve rule input")
-
 	cmd.MarkFlagRequired("scan")
+	cmd.MarkFlagRequired("resource-type")
 
 	return cmd
 }
