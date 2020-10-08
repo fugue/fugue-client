@@ -36,7 +36,9 @@ func testRule(opts testRuleOptions, regoFile string) error {
 	}
 	regoText := string(regoBytes)
 
+	viaDownload := true
 	params := custom_rules.NewTestCustomRuleParams()
+	params.ViaDownload = &viaDownload
 	params.Rule = &models.TestCustomRuleInput{
 		ScanID:       &opts.ScanID,
 		ResourceType: opts.ResourceType,
@@ -48,44 +50,28 @@ func testRule(opts testRuleOptions, regoFile string) error {
 		return err
 	}
 
-	testOutput := resp.Payload
-	if url, ok := testOutput.Links["output"]; ok {
-		// Download temporary file and perform conversions.
-		if tmpResult, err := getTmpResult(url); err == nil {
-			testOutput.Errors = make([]*models.CustomRuleError, 0)
-			for _, tmpError := range tmpResult.Errors {
-				testOutput.Errors = append(testOutput.Errors, fromTmpError(tmpError))
-			}
-			if tmpResult.Report != nil {
-				testOutput.Resources = make([]*models.TestCustomRuleOutputResource, 0)
-				for _, tmpResource := range tmpResult.Report.Resources {
-					testOutput.Resources = append(testOutput.Resources, fromTmpResource(tmpResource))
-				}
-			}
-		} else {
-			return err
-		}
+	// Download temporary file and perform conversions.
+	downloadResult, err := getDownloadResult(resp.Payload.Links)
+	if err != nil {
+		return err
 	}
 
-	// Check if we need to do a trip through `links["output"]`.
-	// if url, ok := resp.Payload.Links["output"]; ok {
-	// result, err := getTmpResult(url)
-	// }
-
-	if len(testOutput.Errors) > 0 {
-		for _, regoError := range testOutput.Errors {
+	if len(downloadResult.Errors) > 0 {
+		for _, regoError := range downloadResult.Errors {
 			fmt.Println(regoError.Text)
 		}
 		return nil
 	}
 
 	var rows []interface{}
-	for _, resource := range testOutput.Resources {
-		rows = append(rows, testRuleResource{
-			ID:     resource.ID,
-			Result: resource.Result,
-			Type:   resource.Type,
-		})
+	if downloadResult.Report != nil {
+		for _, resource := range downloadResult.Report.Resources {
+			rows = append(rows, testRuleResource{
+				ID:     resource.ID,
+				Result: validToString(resource.Valid),
+				Type:   resource.Type,
+			})
+		}
 	}
 
 	table, err := format.Table(format.TableOpts{
@@ -107,24 +93,22 @@ func testRule(opts testRuleOptions, regoFile string) error {
 func getRuleInput(opts testRuleOptions) error {
 	client, auth := getClient()
 
+	viaDownload := true
 	params := custom_rules.NewTestCustomRuleInputParams()
 	params.ScanID = opts.ScanID
+	params.ViaDownload = &viaDownload
 
 	resp, err := client.CustomRules.TestCustomRuleInput(params, auth)
 	if err != nil {
 		return err
 	}
 
-	if url, ok := resp.Payload.Links["output"]; ok {
-		// If the response is too big, it is provided as a download link.
-		if downloadResult, err := getTmpResult(url); err == nil {
-			resp.Payload = downloadResult.Input
-		} else {
-			return err
-		}
+	downloadResult, err := getDownloadResult(resp.Payload.Links)
+	if err != nil {
+		return err
 	}
 
-	bytes, err := json.MarshalIndent(resp.Payload, "", "    ")
+	bytes, err := json.MarshalIndent(downloadResult.Input, "", "    ")
 	if err != nil {
 		return err
 	}
@@ -133,10 +117,10 @@ func getRuleInput(opts testRuleOptions) error {
 	return nil
 }
 
-// tmpResult describes the scheme that we download from the
+// downloadResult describes the scheme that we download from the
 // `links["output"]` key, which is slightly different than what we usually
 // expect, so we need to do some conversions here.
-type tmpResult struct {
+type downloadResult struct {
 	Input  *models.TestCustomRuleInputScan `json:"input,omitempty"`
 	Errors []*tmpError                     `json:"errors,omitempty"`
 	Report *tmpReport                      `json:"report,omitempty"`
@@ -157,39 +141,29 @@ type tmpResource struct {
 	Type  string `json:"type,omitempty"`
 }
 
-// fromTmpError converts a tmpError to a models.CustomRuleError
-func fromTmpError(tmp *tmpError) *models.CustomRuleError {
-	return &models.CustomRuleError{
-		Text:     tmp.Text,
-		Severity: tmp.Severity,
-	}
-}
-
-// fromTmpResource convers a tmpResource to a models.TestCustomRuleOutputResource
-func fromTmpResource(tmp *tmpResource) *models.TestCustomRuleOutputResource {
-	resource := models.TestCustomRuleOutputResource{
-		ID:   tmp.ID,
-		Type: tmp.Type,
-	}
-	if tmp.Valid == nil {
-		resource.Result = models.TestCustomRuleOutputResourceResultUNKNOWN
-	} else if *tmp.Valid {
-		resource.Result = models.TestCustomRuleOutputResourceResultPASS
+// fromDownloadResource convers a tmpResource to a models.TestCustomRuleOutputResource
+func validToString(valid *bool) string {
+	if valid == nil {
+		return models.TestCustomRuleOutputResourceResultUNKNOWN
+	} else if *valid {
+		return models.TestCustomRuleOutputResourceResultPASS
 	} else {
-		resource.Result = models.TestCustomRuleOutputResultFAIL
+		return models.TestCustomRuleOutputResultFAIL
 	}
-	return &resource
 }
 
-func getTmpResult(url string) (*tmpResult, error) {
+func getDownloadResult(links map[string]string) (*downloadResult, error) {
+	url, ok := links["output"]
+	if !ok {
+		return nil, fmt.Errorf("missing 'output' link in result")
+	}
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	var result tmpResult
+	var result downloadResult
 	bytes, err := ioutil.ReadAll(resp.Body)
-	print(string(bytes))
 	if err != nil {
 		return nil, err
 	}
