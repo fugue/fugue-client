@@ -10,7 +10,6 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/fugue/fugue-client/client/c_o_r_s"
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/client/events"
@@ -61,7 +60,6 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Fugue {
 
 	cli := new(Fugue)
 	cli.Transport = transport
-	cli.Cors = c_o_r_s.New(transport, formats)
 	cli.CustomRules = custom_rules.New(transport, formats)
 	cli.Environments = environments.New(transport, formats)
 	cli.Events = events.New(transport, formats)
@@ -112,8 +110,6 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Fugue is a client for fugue
 type Fugue struct {
-	Cors c_o_r_s.ClientService
-
 	CustomRules custom_rules.ClientService
 
 	Environments environments.ClientService
@@ -132,7 +128,6 @@ type Fugue struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Fugue) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-	c.Cors.SetTransport(transport)
 	c.CustomRules.SetTransport(transport)
 	c.Environments.SetTransport(transport)
 	c.Events.SetTransport(transport)

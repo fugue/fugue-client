@@ -23,6 +23,9 @@ type TestCustomRuleOutput struct {
 	// errors
 	Errors []*CustomRuleError `json:"errors"`
 
+	// links
+	Links map[string]string `json:"links,omitempty"`
+
 	// resources
 	Resources []*TestCustomRuleOutputResource `json:"resources"`
 
