@@ -16,22 +16,129 @@ change as we incorporate feedback.
 The easiest way to install the client is to download a prebuilt binary
 from [the releases page](https://github.com/fugue/fugue-client/releases).
 
-Place the `fugue` binary in your \$PATH, for example in `/usr/local/bin`.
+Detailed installation steps are below:
 
-Change file permissions:
+- [macOS](#macos)
+- [Linux](#linux)
+- [Windows](#windows)
 
+You can also [build from source.](#build-from-source)
+
+For more information, see the [CLI documentation](https://docs.fugue.co/cli.html#installation).
+
+### macOS
+
+1. Select the prebuilt `fugue-darwin-amd64` binary from the [releases page](https://github.com/fugue/fugue-client/releases) and **save it to disk** (do not open it):
+
+![Download the macOS binary fugue-darwin-amd64](docs/fugue-client-download-mac-1.png)
+
+2. `cd` into the directory where you downloaded `fugue-darwin-amd64`.
+
+3. Rename the binary `fugue` and move it to a location in your `$PATH`, such as `/usr/local/bin`. You can do both with the following command:
+
+```bash
+mv fugue-darwin-amd64 /usr/local/bin/fugue
 ```
+
+4. Change file permissions to enable execution:
+
+```bash
 chmod 755 /usr/local/bin/fugue
 ```
 
-For more information, see the [CLI documentation](https://docs.fugue.co/cli.html#installation).
+5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](https://docs.fugue.co/api.html#api-client-id-secret):
+
+```bash
+export FUGUE_API_ID=61ae1bed-1b6f-1234-5678-1a2b3c4d5e6f
+export FUGUE_API_SECRET=f7a89ac99cab9dd2948712345678901234567890
+```
+
+6. You should be able to run the `fugue` executable now:
+
+```bash
+fugue
+```
+
+If you get an error message that the application cannot be opened, see [these instructions](https://docs.fugue.co/cli.html#cli-install-error).
+
+### Linux
+
+1. Select the prebuilt `fugue-linux-amd64` binary from the [releases page](https://github.com/fugue/fugue-client/releases) and **save it to disk** (do not open it):
+
+![Download the Linux binary fugue-linux-amd64](docs/fugue-client-download-linux-1.png)
+
+2. `cd` into the directory where you downloaded `fugue-linux-amd64`.
+
+3. Rename the binary `fugue` and move it to a location in your `$PATH`, such as `/usr/local/bin`. You can do both with the following command:
+
+```bash
+sudo mv fugue-linux-amd64 /usr/local/bin/fugue
+```
+
+4. Change file permissions to enable execution:
+
+```bash
+chmod 755 /usr/local/bin/fugue
+```
+
+5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](https://docs.fugue.co/api.html#api-client-id-secret):
+
+```bash
+export FUGUE_API_ID=61ae1bed-1b6f-1234-5678-1a2b3c4d5e6f
+export FUGUE_API_SECRET=f7a89ac99cab9dd2948712345678901234567890
+```
+
+6. You should be able to run the `fugue` executable now:
+
+```bash
+fugue
+```
+
+### Windows
+
+1. Download the prebuilt `fugue.exe` binary from the [releases page](https://github.com/fugue/fugue-client/releases) and **save it to disk** (do not open it):
+
+![Download the Windows fugue.exe binary](docs/fugue-client-download-windows-1.png)
+
+2. Open up **cmd** (Windows Command Shell) and create the directory `C:\Fugue\bin`:
+
+```
+md C:\Fugue\bin
+```
+
+3. `cd` into the directory where you downloaded `fugue.exe` and move the binary to `C:\Fugue\bin`:
+
+```
+move fugue.exe C:\Fugue\bin
+```
+
+4. Update `PATH` environment variable to add the new directory to your user path:
+
+```
+setx PATH "%PATH%;C:\Fugue\bin"
+```
+
+5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](https://docs.fugue.co/api.html#api-client-id-secret):
+
+```
+setx FUGUE_API_ID 61ae1bed-1b6f-1234-5678-1a2b3c4d5e6f
+setx FUGUE_API_SECRET f7a89ac99cab9dd2948712345678901234567890
+```
+
+6. Close the cmd window and open a new one so the environment variables take effect.
+
+7. You should be able to run the `fugue` executable now:
+
+```
+fugue --version
+```
 
 ## Environment Variables
 
 The client uses the following _required_ environment variables:
 
-- `FUGUE_API_ID` - your API [client ID](https://docs.fugue.co/api.html#steps)
-- `FUGUE_API_SECRET` - your API [client secret](https://docs.fugue.co/api.html#steps)
+- `FUGUE_API_ID` - your API [client ID](https://docs.fugue.co/api.html#api-client-id-secret)
+- `FUGUE_API_SECRET` - your API [client secret](https://docs.fugue.co/api.html#api-client-id-secret)
 
 ## Build from Source
 
