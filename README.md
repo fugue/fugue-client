@@ -46,7 +46,7 @@ mv fugue-darwin-amd64 /usr/local/bin/fugue
 chmod 755 /usr/local/bin/fugue
 ```
 
-5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](http://docs.fugue.co/api.html#api-client-id-secret):
+5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](https://docs.fugue.co/api.html#api-client-id-secret):
 
 ```bash
 export FUGUE_API_ID=61ae1bed-1b6f-1234-5678-1a2b3c4d5e6f
@@ -81,7 +81,7 @@ sudo mv fugue-linux-amd64 /usr/local/bin/fugue
 chmod 755 /usr/local/bin/fugue
 ```
 
-5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](http://docs.fugue.co/api.html#api-client-id-secret):
+5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](https://docs.fugue.co/api.html#api-client-id-secret):
 
 ```bash
 export FUGUE_API_ID=61ae1bed-1b6f-1234-5678-1a2b3c4d5e6f
@@ -118,7 +118,7 @@ move fugue.exe C:\Fugue\bin
 setx PATH "%PATH%;C:\Fugue\bin"
 ```
 
-5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](http://docs.fugue.co/api.html#api-client-id-secret):
+5. Set environment variables [FUGUE_API_ID and FUGUE_API_SECRET](https://docs.fugue.co/api.html#api-client-id-secret):
 
 ```
 setx FUGUE_API_ID 61ae1bed-1b6f-1234-5678-1a2b3c4d5e6f
@@ -137,8 +137,8 @@ fugue --version
 
 The client uses the following _required_ environment variables:
 
-- `FUGUE_API_ID` - your API [client ID](http://docs.fugue.co/api.html#api-client-id-secret)
-- `FUGUE_API_SECRET` - your API [client secret](http://docs.fugue.co/api.html#api-client-id-secret)
+- `FUGUE_API_ID` - your API [client ID](https://docs.fugue.co/api.html#api-client-id-secret)
+- `FUGUE_API_SECRET` - your API [client secret](https://docs.fugue.co/api.html#api-client-id-secret)
 
 ## Build from Source
 
