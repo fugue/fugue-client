@@ -30,7 +30,7 @@ For more information, see the [CLI documentation](https://docs.fugue.co/cli.html
 
 1. Select the prebuilt `fugue-darwin-amd64` binary from the [releases page](https://github.com/fugue/fugue-client/releases) and **save it to disk** (do not open it):
 
-![Download the macOS binary fugue-darwin-amd64](docs/fugue-client-download-mac-1.png)
+[![Download the macOS binary fugue-darwin-amd64](docs/fugue-client-download-mac-1.png)](https://github.com/fugue/fugue-client/releases)
 
 2. `cd` into the directory where you downloaded `fugue-darwin-amd64`.
 
@@ -65,7 +65,7 @@ If you get an error message that the application cannot be opened, see [these in
 
 1. Select the prebuilt `fugue-linux-amd64` binary from the [releases page](https://github.com/fugue/fugue-client/releases) and **save it to disk** (do not open it):
 
-![Download the Linux binary fugue-linux-amd64](docs/fugue-client-download-linux-1.png)
+[![Download the Linux binary fugue-linux-amd64](docs/fugue-client-download-linux-1.png)](https://github.com/fugue/fugue-client/releases)
 
 2. `cd` into the directory where you downloaded `fugue-linux-amd64`.
 
@@ -98,7 +98,7 @@ fugue
 
 1. Download the prebuilt `fugue.exe` binary from the [releases page](https://github.com/fugue/fugue-client/releases) and **save it to disk** (do not open it):
 
-![Download the Windows fugue.exe binary](docs/fugue-client-download-windows-1.png)
+[![Download the Windows fugue.exe binary](docs/fugue-client-download-windows-1.png)](https://github.com/fugue/fugue-client/releases)
 
 2. Open up **cmd** (Windows Command Shell) and create the directory `C:\Fugue\bin`:
 
