@@ -94,7 +94,7 @@ func NewCreateInviteCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&opts.Email, "email", "", "Email")
 	cmd.Flags().StringSliceVar(&opts.GroupIds, "group-ids", []string{}, "Groups to assign the user once they accept the issued invitation")
-	cmd.Flags().BoolVar(&opts.Expires, "expires", false, "Indicates if the invite should expire")
+	cmd.Flags().BoolVar(&opts.Expires, "expires", true, "Indicates if the invite should expire")
 
 	cmd.MarkFlagRequired("email")
 	cmd.MarkFlagRequired("group-ids")
