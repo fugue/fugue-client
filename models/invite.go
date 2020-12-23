@@ -29,8 +29,8 @@ type Invite struct {
 	// Required: true
 	ExpiresAt *int64 `json:"expires_at"`
 
-	// groups
-	Groups interface{} `json:"groups,omitempty"`
+	// Map from group id to name.
+	Groups map[string]string `json:"groups,omitempty"`
 
 	// id
 	// Required: true

@@ -27,32 +27,34 @@ type Client struct {
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	BasicAuth(params *BasicAuthParams, authInfo runtime.ClientAuthInfoWriter) (*BasicAuthOK, error)
+	EditUsersGroupAssignments(params *EditUsersGroupAssignmentsParams, authInfo runtime.ClientAuthInfoWriter) (*EditUsersGroupAssignmentsOK, error)
+
+	ListGroups(params *ListGroupsParams, authInfo runtime.ClientAuthInfoWriter) (*ListGroupsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  BasicAuth edits a list of users group assignments
+  EditUsersGroupAssignments edits a list of users group assignments
 
   Edit a list of Users' Group assignment.
 
 */
-func (a *Client) BasicAuth(params *BasicAuthParams, authInfo runtime.ClientAuthInfoWriter) (*BasicAuthOK, error) {
+func (a *Client) EditUsersGroupAssignments(params *EditUsersGroupAssignmentsParams, authInfo runtime.ClientAuthInfoWriter) (*EditUsersGroupAssignmentsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewBasicAuthParams()
+		params = NewEditUsersGroupAssignmentsParams()
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "basicAuth",
+		ID:                 "editUsersGroupAssignments",
 		Method:             "PATCH",
 		PathPattern:        "/users",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &BasicAuthReader{formats: a.formats},
+		Reader:             &EditUsersGroupAssignmentsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -60,13 +62,51 @@ func (a *Client) BasicAuth(params *BasicAuthParams, authInfo runtime.ClientAuthI
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*BasicAuthOK)
+	success, ok := result.(*EditUsersGroupAssignmentsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for basicAuth: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for editUsersGroupAssignments: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  ListGroups lists groups
+
+  Return a list of groups.
+
+*/
+func (a *Client) ListGroups(params *ListGroupsParams, authInfo runtime.ClientAuthInfoWriter) (*ListGroupsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewListGroupsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "listGroups",
+		Method:             "GET",
+		PathPattern:        "/groups",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ListGroupsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ListGroupsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listGroups: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

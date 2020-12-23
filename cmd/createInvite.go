@@ -54,7 +54,7 @@ func NewCreateInviteCommand() *cobra.Command {
 			invite := resp.Payload
 			
 			var groups []string
-			for key, value := range invite.Groups.(map[string]interface{}) {
+			for key, value := range invite.Groups {
 				groups = append(groups, fmt.Sprintf("%s:%s", key, value))
 			}
 			

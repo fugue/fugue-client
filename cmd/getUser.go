@@ -60,7 +60,7 @@ func NewGetUserCommand() *cobra.Command {
 			}
 			
 			var groups []string
-			for key, value := range user.Groups.(map[string]interface{}) {
+			for key, value := range user.Groups {
 				groups = append(groups, fmt.Sprintf("%s:%s", key, value))
 			}
 			
