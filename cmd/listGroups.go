@@ -102,7 +102,7 @@ func NewListGroupsCommand() *cobra.Command {
 	}
 
 	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset into results")
-	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 100, "Max items to return")
+	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 10, "Max items to return")
 	cmd.Flags().StringVar(&opts.OrderBy, "order-by", "name", "Order by attribute")
 	cmd.Flags().StringVar(&opts.OrderDirection, "order-direction", "asc", "Order by direction [asc | desc]")
 	cmd.Flags().BoolVar(&opts.FetchAll, "all", false, "Retrieve all groups")
