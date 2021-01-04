@@ -75,7 +75,7 @@ func NewListGroupsCommand() *cobra.Command {
 			var rows []interface{}
 			for _, group := range groupsList {
 				numEnvironments := len(group.Environments)
-				environments := "All"
+				environments := "*"
 				if(numEnvironments > 0) {
 					environments = fmt.Sprintf("%v", numEnvironments);
 				}

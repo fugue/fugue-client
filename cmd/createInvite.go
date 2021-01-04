@@ -69,7 +69,7 @@ func NewCreateInviteCommand() *cobra.Command {
 			}
 
 			items := []interface{}{
-				Item{"USER_ID", *invite.ID},
+				Item{"INVITE_ID", *invite.ID},
 				Item{"EMAIL", *invite.Email},
 				Item{"GROUPS", strings.Join(groups, ", ")},
 				Item{"STATUS", *invite.Status},
