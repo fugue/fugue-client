@@ -108,9 +108,9 @@ func NewCreateGroupCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Group name")
-	cmd.Flags().StringVar(&opts.Policy, "policy", "", "Fugue policy to use for the Group")
-	cmd.Flags().StringSliceVar(&opts.EnvironmentIds, "environment-ids", []string{}, "Groups to assign the user once they accept the issued invitation")
-	cmd.Flags().BoolVar(&opts.AllEnvironments, "all-environments", false, "When true, creates the group with all current environments attached")
+	cmd.Flags().StringVar(&opts.Policy, "policy", "", "Fugue policy to use for the group")
+	cmd.Flags().StringSliceVar(&opts.EnvironmentIds, "environment-ids", []string{}, "Environments which this group should be able to access using the provided policy")
+	cmd.Flags().BoolVar(&opts.AllEnvironments, "all-environments", false, "Indicates that the group should be created with all current environments attached")
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("policy")
 
