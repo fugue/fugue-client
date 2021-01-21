@@ -2,26 +2,26 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 	"github.com/fugue/fugue-client/client/invites"
 	"github.com/fugue/fugue-client/format"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 // NewGetInviteCommand returns a command that retrieves invite details
 func NewGetInviteCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "invite [invite_id]",
-		Short:   "Retrieve details for a invite",
-		Args:    cobra.ExactArgs(1),
+		Use:   "invite [invite_id]",
+		Short: "Retrieve details for a invite",
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			// When printing json gets the first (pos 0) API call printed
 			jsonPositionToShow = 0
 			client, auth := getClient()
 
 			inviteID := args[0]
-		
+
 			params := invites.NewGetInviteByIDParams()
 			params.InviteID = inviteID
 
@@ -42,7 +42,7 @@ func NewGetInviteCommand() *cobra.Command {
 			for key, value := range invite.Groups {
 				groups = append(groups, fmt.Sprintf("%s:%s", key, value))
 			}
-			
+
 			var createdAt int64
 			if invite.CreatedAt != nil {
 				createdAt = *invite.CreatedAt
@@ -65,9 +65,9 @@ func NewGetInviteCommand() *cobra.Command {
 			}
 
 			table, err := format.Table(format.TableOpts{
-				Rows:       items,
-				Columns:    []string{"Attribute", "Value"},
-				ShowHeader: true,
+				Rows:         items,
+				Columns:      []string{"Attribute", "Value"},
+				ShowHeader:   true,
 				MaxCellWidth: 70,
 			})
 			CheckErr(err)

@@ -1,13 +1,13 @@
 package format
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
-	"bytes"
-	"unicode"
 	"github.com/fatih/structs"
+	"strings"
+	"unicode"
 )
 
 func getRowMaps(rows []interface{}) []map[string]interface{} {
@@ -105,10 +105,10 @@ func sum(items []int) int {
 
 // TableOpts are options used when rendering a table
 type TableOpts struct {
-	Rows       []interface{}
-	Columns    []string
-	Separator  string
-	ShowHeader bool
+	Rows         []interface{}
+	Columns      []string
+	Separator    string
+	ShowHeader   bool
 	MaxCellWidth int
 }
 
@@ -167,11 +167,11 @@ func Table(opts TableOpts) ([]string, error) {
 		rowItems := make([]string, len(row))
 		columnWidthProgress := 0
 		for h, item := range row {
-			if(opts.MaxCellWidth > 0) {
+			if opts.MaxCellWidth > 0 {
 				itemLength := len(item)
 				columnWidth := columnWidths[h]
 				if itemLength > columnWidth {
-					item = cellWrap(item, uint(columnWidth), columnWidthProgress + len(separator))
+					item = cellWrap(item, uint(columnWidth), columnWidthProgress+len(separator))
 				}
 				columnWidthProgress += columnWidth
 			}

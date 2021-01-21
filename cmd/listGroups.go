@@ -18,11 +18,11 @@ type listGroupsOptions struct {
 }
 
 type listGroupsViewItem struct {
-	ID                 string
-	Name               string
-	Environments       string
-	Users      		   int
-	Policy             string
+	ID           string
+	Name         string
+	Environments string
+	Users        int
+	Policy       string
 }
 
 // NewListGroupsCommand returns a command that lists groups in Fugue
@@ -31,9 +31,9 @@ func NewListGroupsCommand() *cobra.Command {
 	var opts listGroupsOptions
 
 	cmd := &cobra.Command{
-		Use:     "groups",
-		Short:   "Lists details for multiple groups",
-		Long:    `Lists details for multiple groups`,
+		Use:   "groups",
+		Short: "Lists details for multiple groups",
+		Long:  `Lists details for multiple groups`,
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
@@ -75,17 +75,17 @@ func NewListGroupsCommand() *cobra.Command {
 			var rows []interface{}
 			for _, group := range groupsList {
 				numEnvironments := len(group.Environments)
-				environments := fmt.Sprintf("%v", numEnvironments);
+				environments := fmt.Sprintf("%v", numEnvironments)
 
-				if(group.ID == "default-admin-group") {
+				if group.ID == "default-admin-group" {
 					environments = "*"
 				}
 				rows = append(rows, listGroupsViewItem{
-					ID:                 group.ID,
-					Name:              	group.Name,
-					Policy:				group.Policy,
-					Environments: 		environments,
-					Users:				len(group.Users),
+					ID:           group.ID,
+					Name:         group.Name,
+					Policy:       group.Policy,
+					Environments: environments,
+					Users:        len(group.Users),
 				})
 			}
 

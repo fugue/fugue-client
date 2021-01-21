@@ -4,20 +4,19 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fugue/fugue-client/client/groups"
 	"github.com/fugue/fugue-client/client/environments"
+	"github.com/fugue/fugue-client/client/groups"
 	"github.com/fugue/fugue-client/format"
 	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
 )
 
 type createGroupOptions struct {
-	Name                     string
-    EnvironmentIds			 []string
-	Policy                   string
-	AllEnvironments			 bool
+	Name            string
+	EnvironmentIds  []string
+	Policy          string
+	AllEnvironments bool
 }
-
 
 // NewCreateGroupCommand returns a command that creates an group
 func NewCreateGroupCommand() *cobra.Command {
@@ -25,8 +24,8 @@ func NewCreateGroupCommand() *cobra.Command {
 	var opts createGroupOptions
 
 	cmd := &cobra.Command{
-		Use:     "group",
-		Short:   "Create an group",
+		Use:   "group",
+		Short: "Create an group",
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
@@ -34,7 +33,7 @@ func NewCreateGroupCommand() *cobra.Command {
 			params := groups.NewCreateGroupParams()
 
 			var environmentIDs []string
-			
+
 			if opts.AllEnvironments {
 				// Fetch all environment IDs if AllEnvironments option is set
 				var offset int64
@@ -57,15 +56,14 @@ func NewCreateGroupCommand() *cobra.Command {
 					break
 				}
 
-
 			} else {
 				environmentIDs = opts.EnvironmentIds
 			}
 
 			params.Group = &models.CreateGroupInput{
-				Name: opts.Name,
+				Name:           opts.Name,
 				EnvironmentIds: environmentIDs,
-				Policy: opts.Policy,
+				Policy:         opts.Policy,
 			}
 
 			resp, err := client.Groups.CreateGroup(params, auth)
@@ -80,12 +78,12 @@ func NewCreateGroupCommand() *cobra.Command {
 			}
 
 			group := resp.Payload
-			
+
 			var environments []string
 			for key, value := range group.Environments {
 				environments = append(environments, fmt.Sprintf("%s:%s", key, value))
 			}
-			
+
 			items := []interface{}{
 				Item{"GROUP_ID", group.ID},
 				Item{"NAME", group.Name},
@@ -94,9 +92,9 @@ func NewCreateGroupCommand() *cobra.Command {
 			}
 
 			table, err := format.Table(format.TableOpts{
-				Rows:       items,
-				Columns:    []string{"Attribute", "Value"},
-				ShowHeader: true,
+				Rows:         items,
+				Columns:      []string{"Attribute", "Value"},
+				ShowHeader:   true,
 				MaxCellWidth: 70,
 			})
 			CheckErr(err)
@@ -120,4 +118,3 @@ func NewCreateGroupCommand() *cobra.Command {
 func init() {
 	createCmd.AddCommand(NewCreateGroupCommand())
 }
-

@@ -14,16 +14,16 @@ type listInvitesOptions struct {
 	MaxItems       int64
 	OrderDirection string
 	FetchAll       bool
-	Email		   string
+	Email          string
 }
 
 type listInvitesViewItem struct {
-	ID                 string
-	Email              string
-	Status			   string
-	CreatedAt		   string
-	ExpiresAt		   string
-	Groups			   string
+	ID        string
+	Email     string
+	Status    string
+	CreatedAt string
+	ExpiresAt string
+	Groups    string
 }
 
 // NewListInvitesCommand returns a command that lists invites in Fugue
@@ -32,9 +32,9 @@ func NewListInvitesCommand() *cobra.Command {
 	var opts listInvitesOptions
 
 	cmd := &cobra.Command{
-		Use:     "invites",
-		Short:   "Lists details for multiple invites",
-		Long:    `Lists details for multiple invites`,
+		Use:   "invites",
+		Short: "Lists details for multiple invites",
+		Long:  `Lists details for multiple invites`,
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
@@ -84,26 +84,26 @@ func NewListInvitesCommand() *cobra.Command {
 
 					groups = groupNames[0]
 				} else {
-					groups = fmt.Sprintf("%v groups", numGroups);
+					groups = fmt.Sprintf("%v groups", numGroups)
 				}
-				
+
 				var createdAt int64
 				if invite.CreatedAt != nil {
 					createdAt = *invite.CreatedAt
 				}
-	
+
 				var expiresAt int64
 				if invite.ExpiresAt != nil {
 					expiresAt = *invite.ExpiresAt
 				}
-				
+
 				rows = append(rows, listInvitesViewItem{
-					ID:                 *invite.ID,
-					Email: 				*invite.Email,
-					Status:         	*invite.Status,
-					CreatedAt:			format.Unix(createdAt),
-					ExpiresAt:			format.Unix(expiresAt),
-					Groups:				groups,
+					ID:        *invite.ID,
+					Email:     *invite.Email,
+					Status:    *invite.Status,
+					CreatedAt: format.Unix(createdAt),
+					ExpiresAt: format.Unix(expiresAt),
+					Groups:    groups,
 				})
 			}
 

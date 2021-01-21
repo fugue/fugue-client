@@ -11,11 +11,10 @@ import (
 )
 
 type createInviteOptions struct {
-	Email                     string
-	GroupIds					 []string
-	Expires                   bool
+	Email    string
+	GroupIds []string
+	Expires  bool
 }
-
 
 // NewCreateInviteCommand returns a command that creates an invite
 func NewCreateInviteCommand() *cobra.Command {
@@ -23,8 +22,8 @@ func NewCreateInviteCommand() *cobra.Command {
 	var opts createInviteOptions
 
 	cmd := &cobra.Command{
-		Use:     "invite",
-		Short:   "Create an invite",
+		Use:   "invite",
+		Short: "Create an invite",
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
@@ -32,9 +31,9 @@ func NewCreateInviteCommand() *cobra.Command {
 			params := invites.NewCreateInviteParams()
 
 			params.Invite = &models.CreateInviteInput{
-				Email: &opts.Email,
+				Email:    &opts.Email,
 				GroupIds: opts.GroupIds,
-				Expires: &opts.Expires,
+				Expires:  &opts.Expires,
 			}
 
 			resp, err := client.Invites.CreateInvite(params, auth)
@@ -49,12 +48,12 @@ func NewCreateInviteCommand() *cobra.Command {
 			}
 
 			invite := resp.Payload
-			
+
 			var groups []string
 			for key, value := range invite.Groups {
 				groups = append(groups, fmt.Sprintf("%s:%s", key, value))
 			}
-			
+
 			var createdAt int64
 			if invite.CreatedAt != nil {
 				createdAt = *invite.CreatedAt

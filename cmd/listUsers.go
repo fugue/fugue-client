@@ -14,17 +14,17 @@ type listUsersOptions struct {
 	MaxItems       int64
 	OrderDirection string
 	FetchAll       bool
-	Email		   string
+	Email          string
 }
 
 type listUsersViewItem struct {
-	ID                 string
-	Email              string
-	FirstName          string
-	LastName           string
-	Status			   string
-	Groups			   string
-	Owner			   bool
+	ID        string
+	Email     string
+	FirstName string
+	LastName  string
+	Status    string
+	Groups    string
+	Owner     bool
 }
 
 // NewListUsersCommand returns a command that lists users in Fugue
@@ -33,9 +33,9 @@ func NewListUsersCommand() *cobra.Command {
 	var opts listUsersOptions
 
 	cmd := &cobra.Command{
-		Use:     "users",
-		Short:   "Lists details for multiple users",
-		Long:    `Lists details for multiple users`,
+		Use:   "users",
+		Short: "Lists details for multiple users",
+		Long:  `Lists details for multiple users`,
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
@@ -85,17 +85,16 @@ func NewListUsersCommand() *cobra.Command {
 
 					groups = groupNames[0]
 				} else {
-					groups = fmt.Sprintf("%v groups", numGroups);
+					groups = fmt.Sprintf("%v groups", numGroups)
 				}
-				
 
 				rows = append(rows, listUsersViewItem{
-					ID:                 *user.ID,
-					Email: 				*user.Email,
-					FirstName:         	user.FirstName,
-					LastName:         	user.LastName,
-					Groups:				groups,
-					Owner:				user.Owner,
+					ID:        *user.ID,
+					Email:     *user.Email,
+					FirstName: user.FirstName,
+					LastName:  user.LastName,
+					Groups:    groups,
+					Owner:     user.Owner,
 				})
 			}
 

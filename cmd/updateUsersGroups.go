@@ -8,10 +8,9 @@ import (
 )
 
 type updateUsersGroupsOptions struct {
-	UserIds					 []string
-	GroupIds					 []string
+	UserIds  []string
+	GroupIds []string
 }
-
 
 // NewUpdateUsersGroups returns a command that allows updating groups for multiple users
 func NewUpdateUsersGroups() *cobra.Command {
@@ -19,21 +18,20 @@ func NewUpdateUsersGroups() *cobra.Command {
 	var opts updateUsersGroupsOptions
 
 	cmd := &cobra.Command{
-		Use:     "users_groups",
-		Short:   "Batch update users group assignments",
+		Use:   "users_groups",
+		Short: "Batch update users group assignments",
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
 
 			params := groups.NewEditUsersGroupAssignmentsParams()
-			
+
 			params.EditGroupAssignments = &models.EditUsersGroupAssignmentsInput{
-				UserIds: opts.UserIds,
+				UserIds:  opts.UserIds,
 				GroupIds: opts.GroupIds,
 			}
 
 			_, err := client.Groups.EditUsersGroupAssignments(params, auth)
-
 
 			if err != nil {
 				switch respError := err.(type) {
