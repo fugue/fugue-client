@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
@@ -40,8 +39,6 @@ func NewCreateInviteCommand() *cobra.Command {
 
 			resp, err := client.Invites.CreateInvite(params, auth)
 
-			buf := new(bytes.Buffer)
-			fmt.Println(buf)
 			if err != nil {
 				switch respError := err.(type) {
 				case *invites.CreateInviteInternalServerError:

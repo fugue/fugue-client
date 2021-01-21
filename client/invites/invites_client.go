@@ -29,9 +29,9 @@ type Client struct {
 type ClientService interface {
 	CreateInvite(params *CreateInviteParams, authInfo runtime.ClientAuthInfoWriter) (*CreateInviteCreated, error)
 
-	GetInviteByEmail(params *GetInviteByEmailParams, authInfo runtime.ClientAuthInfoWriter) (*GetInviteByEmailOK, error)
-
 	GetInviteByID(params *GetInviteByIDParams, authInfo runtime.ClientAuthInfoWriter) (*GetInviteByIDOK, error)
+
+	ListInvites(params *ListInvitesParams, authInfo runtime.ClientAuthInfoWriter) (*ListInvitesOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -74,43 +74,6 @@ func (a *Client) CreateInvite(params *CreateInviteParams, authInfo runtime.Clien
 }
 
 /*
-  GetInviteByEmail fetches an invite by email
-
-  Fetch an invite by email.
-*/
-func (a *Client) GetInviteByEmail(params *GetInviteByEmailParams, authInfo runtime.ClientAuthInfoWriter) (*GetInviteByEmailOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetInviteByEmailParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "getInviteByEmail",
-		Method:             "GET",
-		PathPattern:        "/invites/",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &GetInviteByEmailReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*GetInviteByEmailOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getInviteByEmail: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
   GetInviteByID fetches an invite by id
 
   Fetch an invite by id.
@@ -144,6 +107,43 @@ func (a *Client) GetInviteByID(params *GetInviteByIDParams, authInfo runtime.Cli
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getInviteById: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  ListInvites lists details for all invites
+
+  List details for all invites.
+*/
+func (a *Client) ListInvites(params *ListInvitesParams, authInfo runtime.ClientAuthInfoWriter) (*ListInvitesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewListInvitesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "listInvites",
+		Method:             "GET",
+		PathPattern:        "/invites",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ListInvitesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ListInvitesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listInvites: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

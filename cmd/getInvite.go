@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/fugue/fugue-client/models"
 	"fmt"
 	"strings"
 	"github.com/fugue/fugue-client/client/invites"
@@ -13,7 +12,7 @@ import (
 func NewGetInviteCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "invite [invite_id or email]",
+		Use:     "invite [invite_id]",
 		Short:   "Retrieve details for a invite",
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -21,44 +20,24 @@ func NewGetInviteCommand() *cobra.Command {
 			jsonPositionToShow = 0
 			client, auth := getClient()
 
-			idOrEmail := args[0]
-			var invite *models.Invite
-			if strings.Contains(idOrEmail, "@") {
-				params := invites.NewGetInviteByEmailParams()
-				params.Email = idOrEmail
-	
-				resp, err := client.Invites.GetInviteByEmail(params, auth)
+			inviteID := args[0]
+		
+			params := invites.NewGetInviteByIDParams()
+			params.InviteID = inviteID
 
-				if err != nil {
-					switch respError := err.(type) {
-					case *invites.GetInviteByEmailNotFound:
-						Fatal(respError.Payload.Message, DefaultErrorExitCode)
-					default:
-						CheckErr(err)
-					}
+			resp, err := client.Invites.GetInviteByID(params, auth)
+
+			if err != nil {
+				switch respError := err.(type) {
+				case *invites.GetInviteByIDNotFound:
+					Fatal(respError.Payload.Message, DefaultErrorExitCode)
+				default:
+					CheckErr(err)
 				}
-
-				invite = resp.Payload
-
-			} else {
-				params := invites.NewGetInviteByIDParams()
-				params.InviteID = idOrEmail
-	
-				resp, err := client.Invites.GetInviteByID(params, auth)
-
-				if err != nil {
-					switch respError := err.(type) {
-					case *invites.GetInviteByIDNotFound:
-						Fatal(respError.Payload.Message, DefaultErrorExitCode)
-					default:
-						CheckErr(err)
-					}
-				}
-
-				invite = resp.Payload
-
 			}
-			
+
+			invite := resp.Payload
+
 			var groups []string
 			for key, value := range invite.Groups {
 				groups = append(groups, fmt.Sprintf("%s:%s", key, value))
@@ -89,6 +68,7 @@ func NewGetInviteCommand() *cobra.Command {
 				Rows:       items,
 				Columns:    []string{"Attribute", "Value"},
 				ShowHeader: true,
+				MaxCellWidth: 70,
 			})
 			CheckErr(err)
 

@@ -25,10 +25,10 @@ type listGroupsViewItem struct {
 	Policy             string
 }
 
-// NewListGroupsCommand returns a command that lists environments in Fugue
+// NewListGroupsCommand returns a command that lists groups in Fugue
 func NewListGroupsCommand() *cobra.Command {
 
-	var opts listEnvironmentsOptions
+	var opts listGroupsOptions
 
 	cmd := &cobra.Command{
 		Use:     "groups",
@@ -75,9 +75,10 @@ func NewListGroupsCommand() *cobra.Command {
 			var rows []interface{}
 			for _, group := range groupsList {
 				numEnvironments := len(group.Environments)
-				environments := "*"
-				if(numEnvironments > 0) {
-					environments = fmt.Sprintf("%v", numEnvironments);
+				environments := fmt.Sprintf("%v", numEnvironments);
+
+				if(group.ID == "default-admin-group") {
+					environments = "*"
 				}
 				rows = append(rows, listGroupsViewItem{
 					ID:                 group.ID,

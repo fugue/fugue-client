@@ -27,11 +27,50 @@ type Client struct {
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	CreateGroup(params *CreateGroupParams, authInfo runtime.ClientAuthInfoWriter) (*CreateGroupCreated, error)
+
 	EditUsersGroupAssignments(params *EditUsersGroupAssignmentsParams, authInfo runtime.ClientAuthInfoWriter) (*EditUsersGroupAssignmentsOK, error)
 
 	ListGroups(params *ListGroupsParams, authInfo runtime.ClientAuthInfoWriter) (*ListGroupsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  CreateGroup creates a new group
+
+  Creates a new group.
+*/
+func (a *Client) CreateGroup(params *CreateGroupParams, authInfo runtime.ClientAuthInfoWriter) (*CreateGroupCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateGroupParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "createGroup",
+		Method:             "POST",
+		PathPattern:        "/groups",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &CreateGroupReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*CreateGroupCreated)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createGroup: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*

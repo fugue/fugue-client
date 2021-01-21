@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/fugue/fugue-client/models"
 	"fmt"
 	"strings"
 	"github.com/fugue/fugue-client/client/users"
@@ -13,7 +12,7 @@ import (
 func NewGetUserCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "user [user_id or email]",
+		Use:     "user [user_id]",
 		Short:   "Retrieve details for a user",
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -21,43 +20,22 @@ func NewGetUserCommand() *cobra.Command {
 			jsonPositionToShow = 0
 			client, auth := getClient()
 
-			idOrEmail := args[0]
-			var user *models.User
-			if strings.Contains(idOrEmail, "@") {
-				params := users.NewGetUserByEmailParams()
-				params.Email = idOrEmail
-	
-				resp, err := client.Users.GetUserByEmail(params, auth)
+			userID := args[0]
+			params := users.NewGetUserByIDParams()
+			params.UserID = userID
 
-				if err != nil {
-					switch respError := err.(type) {
-					case *users.GetUserByEmailNotFound:
-						Fatal(respError.Payload.Message, DefaultErrorExitCode)
-					default:
-						CheckErr(err)
-					}
+			resp, err := client.Users.GetUserByID(params, auth)
+
+			if err != nil {
+				switch respError := err.(type) {
+				case *users.GetUserByIDNotFound:
+					Fatal(respError.Payload.Message, DefaultErrorExitCode)
+				default:
+					CheckErr(err)
 				}
-
-				user = resp.Payload
-
-			} else {
-				params := users.NewGetUserByIDParams()
-				params.UserID = idOrEmail
-	
-				resp, err := client.Users.GetUserByID(params, auth)
-
-				if err != nil {
-					switch respError := err.(type) {
-					case *users.GetUserByIDNotFound:
-						Fatal(respError.Payload.Message, DefaultErrorExitCode)
-					default:
-						CheckErr(err)
-					}
-				}
-
-				user = resp.Payload
-
 			}
+
+			user := resp.Payload
 			
 			var groups []string
 			for key, value := range user.Groups {
@@ -80,6 +58,7 @@ func NewGetUserCommand() *cobra.Command {
 				Rows:       items,
 				Columns:    []string{"Attribute", "Value"},
 				ShowHeader: true,
+				MaxCellWidth: 70,
 			})
 			CheckErr(err)
 

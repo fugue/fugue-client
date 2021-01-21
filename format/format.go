@@ -5,7 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-
+	"bytes"
+	"unicode"
 	"github.com/fatih/structs"
 )
 
@@ -58,8 +59,7 @@ func extractColumn(rows [][]string, column int) []string {
 	return values
 }
 
-func columnWidths(rows [][]string, columnLabels []string, includeCols bool) []int {
-
+func columnWidths(rows [][]string, columnLabels []string, includeCols bool, maxCellLength int) []int {
 	if len(rows) == 0 {
 		return nil
 	}
@@ -76,6 +76,9 @@ func columnWidths(rows [][]string, columnLabels []string, includeCols bool) []in
 	for _, row := range rows {
 		for colIndex, colValue := range row {
 			valLen := len(colValue)
+			if maxCellLength > 0 && valLen > maxCellLength {
+				valLen = maxCellLength
+			}
 			if valLen > widths[colIndex] {
 				widths[colIndex] = valLen
 			}
@@ -106,6 +109,7 @@ type TableOpts struct {
 	Columns    []string
 	Separator  string
 	ShowHeader bool
+	MaxCellWidth int
 }
 
 // Table builds a text table from the given data items and chosen columns.
@@ -137,7 +141,7 @@ func Table(opts TableOpts) ([]string, error) {
 	}
 
 	separatorLen := len(separator)
-	columnWidths := columnWidths(tableData, columnLabels, opts.ShowHeader)
+	columnWidths := columnWidths(tableData, columnLabels, opts.ShowHeader, opts.MaxCellWidth)
 	columnFormats := columnFormats(columnWidths)
 	tableWidth := sum(columnWidths) + separatorLen*(len(opts.Columns)-1)
 
@@ -161,7 +165,16 @@ func Table(opts TableOpts) ([]string, error) {
 
 	for i, row := range tableData {
 		rowItems := make([]string, len(row))
+		columnWidthProgress := 0
 		for h, item := range row {
+			if(opts.MaxCellWidth > 0) {
+				itemLength := len(item)
+				columnWidth := columnWidths[h]
+				if itemLength > columnWidth {
+					item = cellWrap(item, uint(columnWidth), columnWidthProgress + len(separator))
+				}
+				columnWidthProgress += columnWidth
+			}
 			rowItems[h] = fmt.Sprintf(columnFormats[h], item)
 		}
 		rows[i+rowOffset] = strings.Join(rowItems, separator)
@@ -177,4 +190,76 @@ func NormalizeStrings(input []string) []string {
 		output[i] = strings.ToUpper(s)
 	}
 	return output
+}
+
+const nbsp = 0xA0
+
+// Based off https://github.com/mitchellh/go-wordwrap
+func cellWrap(s string, lim uint, indentLength int) string {
+	// Initialize a buffer with a slightly larger size to account for breaks
+	init := make([]byte, 0, len(s))
+	buf := bytes.NewBuffer(init)
+
+	var current uint
+	var wordBuf, spaceBuf bytes.Buffer
+	var wordBufLen, spaceBufLen uint
+
+	for _, char := range s {
+		if char == '\n' {
+			if wordBuf.Len() == 0 {
+				if current+spaceBufLen > lim {
+					current = 0
+				} else {
+					current += spaceBufLen
+					spaceBuf.WriteTo(buf)
+				}
+				spaceBuf.Reset()
+				spaceBufLen = 0
+			} else {
+				current += spaceBufLen + wordBufLen
+				spaceBuf.WriteTo(buf)
+				spaceBuf.Reset()
+				spaceBufLen = 0
+				wordBuf.WriteTo(buf)
+				wordBuf.Reset()
+				wordBufLen = 0
+			}
+			buf.WriteRune(char)
+			current = 0
+		} else if unicode.IsSpace(char) && char != nbsp {
+			if spaceBuf.Len() == 0 || wordBuf.Len() > 0 {
+				current += spaceBufLen + wordBufLen
+				spaceBuf.WriteTo(buf)
+				spaceBuf.Reset()
+				spaceBufLen = 0
+				wordBuf.WriteTo(buf)
+				wordBuf.Reset()
+				wordBufLen = 0
+			}
+
+			spaceBuf.WriteRune(char)
+			spaceBufLen++
+		} else {
+			wordBuf.WriteRune(char)
+			wordBufLen++
+
+			if current+wordBufLen+spaceBufLen > lim && wordBufLen < lim {
+				buf.WriteString("\n" + strings.Repeat(" ", indentLength))
+				current = 0
+				spaceBuf.Reset()
+				spaceBufLen = 0
+			}
+		}
+	}
+
+	if wordBuf.Len() == 0 {
+		if current+spaceBufLen <= lim {
+			spaceBuf.WriteTo(buf)
+		}
+	} else {
+		spaceBuf.WriteTo(buf)
+		wordBuf.WriteTo(buf)
+	}
+
+	return buf.String()
 }
