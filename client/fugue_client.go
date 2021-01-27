@@ -13,9 +13,12 @@ import (
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/client/events"
+	"github.com/fugue/fugue-client/client/groups"
+	"github.com/fugue/fugue-client/client/invites"
 	"github.com/fugue/fugue-client/client/metadata"
 	"github.com/fugue/fugue-client/client/notifications"
 	"github.com/fugue/fugue-client/client/scans"
+	"github.com/fugue/fugue-client/client/users"
 )
 
 // Default fugue HTTP client.
@@ -63,9 +66,12 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Fugue {
 	cli.CustomRules = custom_rules.New(transport, formats)
 	cli.Environments = environments.New(transport, formats)
 	cli.Events = events.New(transport, formats)
+	cli.Groups = groups.New(transport, formats)
+	cli.Invites = invites.New(transport, formats)
 	cli.Metadata = metadata.New(transport, formats)
 	cli.Notifications = notifications.New(transport, formats)
 	cli.Scans = scans.New(transport, formats)
+	cli.Users = users.New(transport, formats)
 	return cli
 }
 
@@ -116,11 +122,17 @@ type Fugue struct {
 
 	Events events.ClientService
 
+	Groups groups.ClientService
+
+	Invites invites.ClientService
+
 	Metadata metadata.ClientService
 
 	Notifications notifications.ClientService
 
 	Scans scans.ClientService
+
+	Users users.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -131,7 +143,10 @@ func (c *Fugue) SetTransport(transport runtime.ClientTransport) {
 	c.CustomRules.SetTransport(transport)
 	c.Environments.SetTransport(transport)
 	c.Events.SetTransport(transport)
+	c.Groups.SetTransport(transport)
+	c.Invites.SetTransport(transport)
 	c.Metadata.SetTransport(transport)
 	c.Notifications.SetTransport(transport)
 	c.Scans.SetTransport(transport)
+	c.Users.SetTransport(transport)
 }
