@@ -25,7 +25,7 @@ func NewCreateGroupCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "group",
-		Short: "Create an group",
+		Short: "Create a group",
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()

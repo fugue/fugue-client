@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/fugue/fugue-client/client/groups"
 	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
@@ -19,7 +20,7 @@ func NewUpdateUsersGroups() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "users_groups",
-		Short: "Batch update users group assignments",
+		Short: "Batch update group assignments for multiple users",
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
