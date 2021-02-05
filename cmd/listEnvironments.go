@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -13,8 +14,12 @@ import (
 
 type listEnvironmentsOptions struct {
 	Columns        []string
+	SearchQuery    string
 	Provider       string
 	NameFilter     string
+	IDFilter       string
+	ArnFilter      string
+	StatusFilter   string
 	Offset         int64
 	MaxItems       int64
 	OrderBy        string
@@ -58,6 +63,38 @@ func NewListEnvironmentsCommand() *cobra.Command {
 				opts.Offset = 0
 			}
 
+			searchParams := []string{}
+
+			// Search query filter
+			if opts.SearchQuery != "" {
+				searchParams = append(searchParams, opts.SearchQuery)
+			}
+
+			// Optionally filter by provider
+			if opts.Provider != "" {
+				searchParams = append(searchParams, fmt.Sprintf("provider:%s", opts.Provider))
+			}
+
+			// Optionally filter by name (substring match, case insensitive)
+			if opts.NameFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("name:%s", opts.NameFilter))
+			}
+
+			// Optionally filter by id (substring match, case insensitive)
+			if opts.IDFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("id:%s", opts.IDFilter))
+			}
+
+			// Optionally filter by AWS arn (substring match, case insensitive)
+			if opts.ArnFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("arn:%s", opts.ArnFilter))
+			}
+
+			// Optionally filter by scan status (substring match, case insensitive)
+			if opts.StatusFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("status:%s", opts.StatusFilter))
+			}
+
 			var envs []*models.Environment
 			offset := opts.Offset
 			for {
@@ -69,6 +106,12 @@ func NewListEnvironmentsCommand() *cobra.Command {
 				}
 				if opts.OrderDirection != "" {
 					params.OrderDirection = &opts.OrderDirection
+				}
+
+				if len(searchParams) > 0 {
+					paramsJSON, _ := json.Marshal(searchParams)
+					jsonString := string(paramsJSON)
+					params.Query = &jsonString
 				}
 				resp, err := client.Environments.ListEnvironments(params, auth)
 				CheckErr(err)
@@ -82,24 +125,8 @@ func NewListEnvironmentsCommand() *cobra.Command {
 				break
 			}
 
-			nameFilter := strings.ToLower(opts.NameFilter)
-
 			var rows []interface{}
 			for _, env := range envs {
-
-				// Optionally filter by provider
-				if opts.Provider != "" {
-					if env.Provider != opts.Provider {
-						continue
-					}
-				}
-
-				// Optionally filter by name (substring match, case insensitive)
-				if nameFilter != "" {
-					if !strings.Contains(strings.ToLower(env.Name), nameFilter) {
-						continue
-					}
-				}
 
 				region := "-"
 				var regionsTmp []string
@@ -155,8 +182,12 @@ func NewListEnvironmentsCommand() *cobra.Command {
 		"ScanStatus",
 	}
 
+	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for id (including provider account identifiers), name, and provider")
 	cmd.Flags().StringVar(&opts.Provider, "provider", "", "Provider filter")
 	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
+	cmd.Flags().StringVar(&opts.IDFilter, "id", "", "ID filter (substring match, including provider account identifiers)")
+	cmd.Flags().StringVar(&opts.ArnFilter, "arn", "", "AWS Role arn filter (substring match)")
+	cmd.Flags().StringVar(&opts.StatusFilter, "status", "", "Scan Status filter (exact match)")
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")
 	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset into results")
 	cmd.Flags().Int64Var(&opts.MaxItems, "max-items", 100, "Max items to return")
