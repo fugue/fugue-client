@@ -117,6 +117,11 @@ type ListRuleWaiversParams struct {
 
 	*/
 	OrderDirection *string
+	/*Query
+	  A stringified JSON array of search parameters.
+
+	*/
+	Query *string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -200,6 +205,17 @@ func (o *ListRuleWaiversParams) SetOrderDirection(orderDirection *string) {
 	o.OrderDirection = orderDirection
 }
 
+// WithQuery adds the query to the list rule waivers params
+func (o *ListRuleWaiversParams) WithQuery(query *string) *ListRuleWaiversParams {
+	o.SetQuery(query)
+	return o
+}
+
+// SetQuery adds the query to the list rule waivers params
+func (o *ListRuleWaiversParams) SetQuery(query *string) {
+	o.Query = query
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *ListRuleWaiversParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -266,6 +282,22 @@ func (o *ListRuleWaiversParams) WriteToRequest(r runtime.ClientRequest, reg strf
 		qOrderDirection := qrOrderDirection
 		if qOrderDirection != "" {
 			if err := r.SetQueryParam("order_direction", qOrderDirection); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	if o.Query != nil {
+
+		// query param query
+		var qrQuery string
+		if o.Query != nil {
+			qrQuery = *o.Query
+		}
+		qQuery := qrQuery
+		if qQuery != "" {
+			if err := r.SetQueryParam("query", qQuery); err != nil {
 				return err
 			}
 		}
