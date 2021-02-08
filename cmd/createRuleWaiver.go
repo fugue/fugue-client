@@ -39,9 +39,9 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				Comment:          opts.Comment,
 				EnvironmentID:    &opts.EnvironmentID,
 				RuleID:           &opts.RuleID,
-				ResourceID:       &opts.ResourceType,
+				ResourceID:       &opts.ResourceID,
 				ResourceType:     &opts.ResourceType,
-				ResourceProvider: &opts.ResourceType,
+				ResourceProvider: &opts.ResourceProvider,
 			}
 
 			resp, err := client.RuleWaivers.CreateRuleWaiver(params, auth)
