@@ -43,6 +43,7 @@ func NewGetRuleWaiverCommand() *cobra.Command {
 			}
 
 			items := []interface{}{
+				Item{"RULE_WAIVER_ID", *waiver.ID},
 				Item{"NAME", *waiver.Name},
 				Item{"COMMENT", waiver.Comment},
 				Item{"ENVIRONMENT_ID", *waiver.EnvironmentID},
