@@ -23,8 +23,8 @@ type DeleteRuleWaiverReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *DeleteRuleWaiverReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewDeleteRuleWaiverOK()
+	case 204:
+		result := NewDeleteRuleWaiverNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -59,23 +59,23 @@ func (o *DeleteRuleWaiverReader) ReadResponse(response runtime.ClientResponse, c
 	}
 }
 
-// NewDeleteRuleWaiverOK creates a DeleteRuleWaiverOK with default headers values
-func NewDeleteRuleWaiverOK() *DeleteRuleWaiverOK {
-	return &DeleteRuleWaiverOK{}
+// NewDeleteRuleWaiverNoContent creates a DeleteRuleWaiverNoContent with default headers values
+func NewDeleteRuleWaiverNoContent() *DeleteRuleWaiverNoContent {
+	return &DeleteRuleWaiverNoContent{}
 }
 
-/*DeleteRuleWaiverOK handles this case with default header values.
+/*DeleteRuleWaiverNoContent handles this case with default header values.
 
 Rule waiver deleted.
 */
-type DeleteRuleWaiverOK struct {
+type DeleteRuleWaiverNoContent struct {
 }
 
-func (o *DeleteRuleWaiverOK) Error() string {
-	return fmt.Sprintf("[DELETE /rule_waivers/{rule_waiver_id}][%d] deleteRuleWaiverOK ", 200)
+func (o *DeleteRuleWaiverNoContent) Error() string {
+	return fmt.Sprintf("[DELETE /rule_waivers/{rule_waiver_id}][%d] deleteRuleWaiverNoContent ", 204)
 }
 
-func (o *DeleteRuleWaiverOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *DeleteRuleWaiverNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

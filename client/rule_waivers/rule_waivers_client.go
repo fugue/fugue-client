@@ -29,7 +29,7 @@ type Client struct {
 type ClientService interface {
 	CreateRuleWaiver(params *CreateRuleWaiverParams, authInfo runtime.ClientAuthInfoWriter) (*CreateRuleWaiverCreated, error)
 
-	DeleteRuleWaiver(params *DeleteRuleWaiverParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteRuleWaiverOK, error)
+	DeleteRuleWaiver(params *DeleteRuleWaiverParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteRuleWaiverNoContent, error)
 
 	GetRuleWaiver(params *GetRuleWaiverParams, authInfo runtime.ClientAuthInfoWriter) (*GetRuleWaiverOK, error)
 
@@ -82,7 +82,7 @@ func (a *Client) CreateRuleWaiver(params *CreateRuleWaiverParams, authInfo runti
 
   Deletes a rule waiver.
 */
-func (a *Client) DeleteRuleWaiver(params *DeleteRuleWaiverParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteRuleWaiverOK, error) {
+func (a *Client) DeleteRuleWaiver(params *DeleteRuleWaiverParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteRuleWaiverNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteRuleWaiverParams()
@@ -104,7 +104,7 @@ func (a *Client) DeleteRuleWaiver(params *DeleteRuleWaiverParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DeleteRuleWaiverOK)
+	success, ok := result.(*DeleteRuleWaiverNoContent)
 	if ok {
 		return success, nil
 	}

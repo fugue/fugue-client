@@ -69,20 +69,20 @@ func NewCreateRuleWaiverCreated() *CreateRuleWaiverCreated {
 New rule waiver details.
 */
 type CreateRuleWaiverCreated struct {
-	Payload *models.RuleWaivers
+	Payload *models.RuleWaiver
 }
 
 func (o *CreateRuleWaiverCreated) Error() string {
 	return fmt.Sprintf("[POST /rule_waivers][%d] createRuleWaiverCreated  %+v", 201, o.Payload)
 }
 
-func (o *CreateRuleWaiverCreated) GetPayload() *models.RuleWaivers {
+func (o *CreateRuleWaiverCreated) GetPayload() *models.RuleWaiver {
 	return o.Payload
 }
 
 func (o *CreateRuleWaiverCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.RuleWaivers)
+	o.Payload = new(models.RuleWaiver)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
