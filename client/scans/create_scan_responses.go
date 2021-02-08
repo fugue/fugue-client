@@ -99,7 +99,7 @@ func NewCreateScanBadRequest() *CreateScanBadRequest {
 
 /*CreateScanBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type CreateScanBadRequest struct {
 	Payload *models.BadRequestError
@@ -132,7 +132,7 @@ func NewCreateScanUnauthorized() *CreateScanUnauthorized {
 
 /*CreateScanUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type CreateScanUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -165,7 +165,7 @@ func NewCreateScanForbidden() *CreateScanForbidden {
 
 /*CreateScanForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type CreateScanForbidden struct {
 	Payload *models.AuthorizationError
@@ -198,7 +198,7 @@ func NewCreateScanInternalServerError() *CreateScanInternalServerError {
 
 /*CreateScanInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type CreateScanInternalServerError struct {
 	Payload *models.InternalServerError

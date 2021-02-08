@@ -93,7 +93,7 @@ func NewDeleteEnvironmentBadRequest() *DeleteEnvironmentBadRequest {
 
 /*DeleteEnvironmentBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type DeleteEnvironmentBadRequest struct {
 	Payload *models.BadRequestError
@@ -126,7 +126,7 @@ func NewDeleteEnvironmentUnauthorized() *DeleteEnvironmentUnauthorized {
 
 /*DeleteEnvironmentUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type DeleteEnvironmentUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -159,7 +159,7 @@ func NewDeleteEnvironmentForbidden() *DeleteEnvironmentForbidden {
 
 /*DeleteEnvironmentForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type DeleteEnvironmentForbidden struct {
 	Payload *models.AuthorizationError
@@ -192,7 +192,7 @@ func NewDeleteEnvironmentNotFound() *DeleteEnvironmentNotFound {
 
 /*DeleteEnvironmentNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type DeleteEnvironmentNotFound struct {
 	Payload *models.NotFoundError
@@ -225,7 +225,7 @@ func NewDeleteEnvironmentInternalServerError() *DeleteEnvironmentInternalServerE
 
 /*DeleteEnvironmentInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type DeleteEnvironmentInternalServerError struct {
 	Payload *models.InternalServerError

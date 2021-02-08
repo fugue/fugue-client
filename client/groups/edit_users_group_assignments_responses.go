@@ -93,7 +93,7 @@ func NewEditUsersGroupAssignmentsBadRequest() *EditUsersGroupAssignmentsBadReque
 
 /*EditUsersGroupAssignmentsBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type EditUsersGroupAssignmentsBadRequest struct {
 	Payload *models.BadRequestError
@@ -126,7 +126,7 @@ func NewEditUsersGroupAssignmentsUnauthorized() *EditUsersGroupAssignmentsUnauth
 
 /*EditUsersGroupAssignmentsUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type EditUsersGroupAssignmentsUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -159,7 +159,7 @@ func NewEditUsersGroupAssignmentsForbidden() *EditUsersGroupAssignmentsForbidden
 
 /*EditUsersGroupAssignmentsForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type EditUsersGroupAssignmentsForbidden struct {
 	Payload *models.AuthorizationError
@@ -192,7 +192,7 @@ func NewEditUsersGroupAssignmentsNotFound() *EditUsersGroupAssignmentsNotFound {
 
 /*EditUsersGroupAssignmentsNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type EditUsersGroupAssignmentsNotFound struct {
 	Payload *models.NotFoundError
@@ -225,7 +225,7 @@ func NewEditUsersGroupAssignmentsInternalServerError() *EditUsersGroupAssignment
 
 /*EditUsersGroupAssignmentsInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type EditUsersGroupAssignmentsInternalServerError struct {
 	Payload *models.InternalServerError

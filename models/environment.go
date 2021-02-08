@@ -41,7 +41,7 @@ type Environment struct {
 	NextScanAt int64 `json:"next_scan_at,omitempty"`
 
 	// Name of the cloud service provider for the environment.
-	// Enum: [aws aws_govcloud azure]
+	// Enum: [aws aws_govcloud azure google]
 	Provider string `json:"provider,omitempty"`
 
 	// provider options
@@ -96,7 +96,7 @@ var environmentTypeProviderPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["aws","aws_govcloud","azure"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["aws","aws_govcloud","azure","google"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -114,6 +114,9 @@ const (
 
 	// EnvironmentProviderAzure captures enum value "azure"
 	EnvironmentProviderAzure string = "azure"
+
+	// EnvironmentProviderGoogle captures enum value "google"
+	EnvironmentProviderGoogle string = "google"
 )
 
 // prop value enum

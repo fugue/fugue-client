@@ -105,7 +105,7 @@ func NewGetScanBadRequest() *GetScanBadRequest {
 
 /*GetScanBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type GetScanBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewGetScanUnauthorized() *GetScanUnauthorized {
 
 /*GetScanUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type GetScanUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewGetScanForbidden() *GetScanForbidden {
 
 /*GetScanForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type GetScanForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewGetScanNotFound() *GetScanNotFound {
 
 /*GetScanNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type GetScanNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewGetScanInternalServerError() *GetScanInternalServerError {
 
 /*GetScanInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetScanInternalServerError struct {
 	Payload *models.InternalServerError

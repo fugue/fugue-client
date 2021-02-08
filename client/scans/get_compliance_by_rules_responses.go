@@ -105,7 +105,7 @@ func NewGetComplianceByRulesBadRequest() *GetComplianceByRulesBadRequest {
 
 /*GetComplianceByRulesBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type GetComplianceByRulesBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewGetComplianceByRulesUnauthorized() *GetComplianceByRulesUnauthorized {
 
 /*GetComplianceByRulesUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type GetComplianceByRulesUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewGetComplianceByRulesForbidden() *GetComplianceByRulesForbidden {
 
 /*GetComplianceByRulesForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type GetComplianceByRulesForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewGetComplianceByRulesNotFound() *GetComplianceByRulesNotFound {
 
 /*GetComplianceByRulesNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type GetComplianceByRulesNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewGetComplianceByRulesInternalServerError() *GetComplianceByRulesInternalS
 
 /*GetComplianceByRulesInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetComplianceByRulesInternalServerError struct {
 	Payload *models.InternalServerError

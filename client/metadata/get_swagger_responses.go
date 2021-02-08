@@ -79,7 +79,7 @@ func NewGetSwaggerInternalServerError() *GetSwaggerInternalServerError {
 
 /*GetSwaggerInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetSwaggerInternalServerError struct {
 	Payload *models.InternalServerError

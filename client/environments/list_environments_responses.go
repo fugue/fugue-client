@@ -99,7 +99,7 @@ func NewListEnvironmentsBadRequest() *ListEnvironmentsBadRequest {
 
 /*ListEnvironmentsBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type ListEnvironmentsBadRequest struct {
 	Payload *models.BadRequestError
@@ -132,7 +132,7 @@ func NewListEnvironmentsUnauthorized() *ListEnvironmentsUnauthorized {
 
 /*ListEnvironmentsUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type ListEnvironmentsUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -165,7 +165,7 @@ func NewListEnvironmentsForbidden() *ListEnvironmentsForbidden {
 
 /*ListEnvironmentsForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type ListEnvironmentsForbidden struct {
 	Payload *models.AuthorizationError
@@ -198,7 +198,7 @@ func NewListEnvironmentsInternalServerError() *ListEnvironmentsInternalServerErr
 
 /*ListEnvironmentsInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type ListEnvironmentsInternalServerError struct {
 	Payload *models.InternalServerError

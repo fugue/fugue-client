@@ -105,7 +105,7 @@ func NewListInvitesBadRequest() *ListInvitesBadRequest {
 
 /*ListInvitesBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type ListInvitesBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewListInvitesUnauthorized() *ListInvitesUnauthorized {
 
 /*ListInvitesUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type ListInvitesUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewListInvitesForbidden() *ListInvitesForbidden {
 
 /*ListInvitesForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type ListInvitesForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewListInvitesNotFound() *ListInvitesNotFound {
 
 /*ListInvitesNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type ListInvitesNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewListInvitesInternalServerError() *ListInvitesInternalServerError {
 
 /*ListInvitesInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type ListInvitesInternalServerError struct {
 	Payload *models.InternalServerError

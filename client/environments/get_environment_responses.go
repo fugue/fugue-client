@@ -105,7 +105,7 @@ func NewGetEnvironmentBadRequest() *GetEnvironmentBadRequest {
 
 /*GetEnvironmentBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type GetEnvironmentBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewGetEnvironmentUnauthorized() *GetEnvironmentUnauthorized {
 
 /*GetEnvironmentUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type GetEnvironmentUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewGetEnvironmentForbidden() *GetEnvironmentForbidden {
 
 /*GetEnvironmentForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type GetEnvironmentForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewGetEnvironmentNotFound() *GetEnvironmentNotFound {
 
 /*GetEnvironmentNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type GetEnvironmentNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewGetEnvironmentInternalServerError() *GetEnvironmentInternalServerError {
 
 /*GetEnvironmentInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetEnvironmentInternalServerError struct {
 	Payload *models.InternalServerError

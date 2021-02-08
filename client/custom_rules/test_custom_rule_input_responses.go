@@ -99,7 +99,7 @@ func NewTestCustomRuleInputBadRequest() *TestCustomRuleInputBadRequest {
 
 /*TestCustomRuleInputBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type TestCustomRuleInputBadRequest struct {
 	Payload *models.BadRequestError

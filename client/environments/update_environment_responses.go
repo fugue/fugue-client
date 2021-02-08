@@ -105,7 +105,7 @@ func NewUpdateEnvironmentBadRequest() *UpdateEnvironmentBadRequest {
 
 /*UpdateEnvironmentBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type UpdateEnvironmentBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewUpdateEnvironmentUnauthorized() *UpdateEnvironmentUnauthorized {
 
 /*UpdateEnvironmentUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type UpdateEnvironmentUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewUpdateEnvironmentForbidden() *UpdateEnvironmentForbidden {
 
 /*UpdateEnvironmentForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type UpdateEnvironmentForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewUpdateEnvironmentNotFound() *UpdateEnvironmentNotFound {
 
 /*UpdateEnvironmentNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type UpdateEnvironmentNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewUpdateEnvironmentInternalServerError() *UpdateEnvironmentInternalServerE
 
 /*UpdateEnvironmentInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type UpdateEnvironmentInternalServerError struct {
 	Payload *models.InternalServerError

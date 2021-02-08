@@ -99,7 +99,7 @@ func NewCreatePolicyBadRequest() *CreatePolicyBadRequest {
 
 /*CreatePolicyBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type CreatePolicyBadRequest struct {
 	Payload *models.BadRequestError
@@ -132,7 +132,7 @@ func NewCreatePolicyUnauthorized() *CreatePolicyUnauthorized {
 
 /*CreatePolicyUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type CreatePolicyUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -165,7 +165,7 @@ func NewCreatePolicyForbidden() *CreatePolicyForbidden {
 
 /*CreatePolicyForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type CreatePolicyForbidden struct {
 	Payload *models.AuthorizationError
@@ -198,7 +198,7 @@ func NewCreatePolicyInternalServerError() *CreatePolicyInternalServerError {
 
 /*CreatePolicyInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type CreatePolicyInternalServerError struct {
 	Payload *models.InternalServerError

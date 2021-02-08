@@ -99,7 +99,7 @@ func NewListGroupsBadRequest() *ListGroupsBadRequest {
 
 /*ListGroupsBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type ListGroupsBadRequest struct {
 	Payload *models.BadRequestError
@@ -132,7 +132,7 @@ func NewListGroupsUnauthorized() *ListGroupsUnauthorized {
 
 /*ListGroupsUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type ListGroupsUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -165,7 +165,7 @@ func NewListGroupsForbidden() *ListGroupsForbidden {
 
 /*ListGroupsForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type ListGroupsForbidden struct {
 	Payload *models.AuthorizationError
@@ -198,7 +198,7 @@ func NewListGroupsInternalServerError() *ListGroupsInternalServerError {
 
 /*ListGroupsInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type ListGroupsInternalServerError struct {
 	Payload *models.InternalServerError

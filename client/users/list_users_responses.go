@@ -105,7 +105,7 @@ func NewListUsersBadRequest() *ListUsersBadRequest {
 
 /*ListUsersBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type ListUsersBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewListUsersUnauthorized() *ListUsersUnauthorized {
 
 /*ListUsersUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type ListUsersUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewListUsersForbidden() *ListUsersForbidden {
 
 /*ListUsersForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type ListUsersForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewListUsersNotFound() *ListUsersNotFound {
 
 /*ListUsersNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type ListUsersNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewListUsersInternalServerError() *ListUsersInternalServerError {
 
 /*ListUsersInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type ListUsersInternalServerError struct {
 	Payload *models.InternalServerError

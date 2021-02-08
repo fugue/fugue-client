@@ -99,7 +99,7 @@ func NewListNotificationsBadRequest() *ListNotificationsBadRequest {
 
 /*ListNotificationsBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type ListNotificationsBadRequest struct {
 	Payload *models.BadRequestError
@@ -132,7 +132,7 @@ func NewListNotificationsUnauthorized() *ListNotificationsUnauthorized {
 
 /*ListNotificationsUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type ListNotificationsUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -165,7 +165,7 @@ func NewListNotificationsForbidden() *ListNotificationsForbidden {
 
 /*ListNotificationsForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type ListNotificationsForbidden struct {
 	Payload *models.AuthorizationError
@@ -198,7 +198,7 @@ func NewListNotificationsInternalServerError() *ListNotificationsInternalServerE
 
 /*ListNotificationsInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type ListNotificationsInternalServerError struct {
 	Payload *models.InternalServerError
