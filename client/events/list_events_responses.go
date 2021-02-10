@@ -105,7 +105,7 @@ func NewListEventsBadRequest() *ListEventsBadRequest {
 
 /*ListEventsBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type ListEventsBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewListEventsUnauthorized() *ListEventsUnauthorized {
 
 /*ListEventsUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type ListEventsUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewListEventsForbidden() *ListEventsForbidden {
 
 /*ListEventsForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type ListEventsForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewListEventsNotFound() *ListEventsNotFound {
 
 /*ListEventsNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type ListEventsNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewListEventsInternalServerError() *ListEventsInternalServerError {
 
 /*ListEventsInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type ListEventsInternalServerError struct {
 	Payload *models.InternalServerError

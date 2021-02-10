@@ -99,7 +99,7 @@ func NewCreateCustomRuleBadRequest() *CreateCustomRuleBadRequest {
 
 /*CreateCustomRuleBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type CreateCustomRuleBadRequest struct {
 	Payload *models.BadRequestError

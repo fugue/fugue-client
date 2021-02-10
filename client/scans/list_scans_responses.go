@@ -99,7 +99,7 @@ func NewListScansBadRequest() *ListScansBadRequest {
 
 /*ListScansBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type ListScansBadRequest struct {
 	Payload *models.BadRequestError
@@ -132,7 +132,7 @@ func NewListScansUnauthorized() *ListScansUnauthorized {
 
 /*ListScansUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type ListScansUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -165,7 +165,7 @@ func NewListScansForbidden() *ListScansForbidden {
 
 /*ListScansForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type ListScansForbidden struct {
 	Payload *models.AuthorizationError
@@ -198,7 +198,7 @@ func NewListScansInternalServerError() *ListScansInternalServerError {
 
 /*ListScansInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type ListScansInternalServerError struct {
 	Payload *models.InternalServerError

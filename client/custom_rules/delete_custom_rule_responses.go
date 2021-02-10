@@ -87,7 +87,7 @@ func NewDeleteCustomRuleBadRequest() *DeleteCustomRuleBadRequest {
 
 /*DeleteCustomRuleBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type DeleteCustomRuleBadRequest struct {
 	Payload *models.BadRequestError

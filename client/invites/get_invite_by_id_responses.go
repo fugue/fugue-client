@@ -105,7 +105,7 @@ func NewGetInviteByIDBadRequest() *GetInviteByIDBadRequest {
 
 /*GetInviteByIDBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type GetInviteByIDBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewGetInviteByIDUnauthorized() *GetInviteByIDUnauthorized {
 
 /*GetInviteByIDUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type GetInviteByIDUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewGetInviteByIDForbidden() *GetInviteByIDForbidden {
 
 /*GetInviteByIDForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type GetInviteByIDForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewGetInviteByIDNotFound() *GetInviteByIDNotFound {
 
 /*GetInviteByIDNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type GetInviteByIDNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewGetInviteByIDInternalServerError() *GetInviteByIDInternalServerError {
 
 /*GetInviteByIDInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetInviteByIDInternalServerError struct {
 	Payload *models.InternalServerError

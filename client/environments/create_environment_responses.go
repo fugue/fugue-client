@@ -105,7 +105,7 @@ func NewCreateEnvironmentBadRequest() *CreateEnvironmentBadRequest {
 
 /*CreateEnvironmentBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type CreateEnvironmentBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewCreateEnvironmentUnauthorized() *CreateEnvironmentUnauthorized {
 
 /*CreateEnvironmentUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type CreateEnvironmentUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewCreateEnvironmentForbidden() *CreateEnvironmentForbidden {
 
 /*CreateEnvironmentForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type CreateEnvironmentForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewCreateEnvironmentNotFound() *CreateEnvironmentNotFound {
 
 /*CreateEnvironmentNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type CreateEnvironmentNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewCreateEnvironmentInternalServerError() *CreateEnvironmentInternalServerE
 
 /*CreateEnvironmentInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type CreateEnvironmentInternalServerError struct {
 	Payload *models.InternalServerError

@@ -105,7 +105,7 @@ func NewCreateInviteBadRequest() *CreateInviteBadRequest {
 
 /*CreateInviteBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type CreateInviteBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewCreateInviteUnauthorized() *CreateInviteUnauthorized {
 
 /*CreateInviteUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type CreateInviteUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewCreateInviteForbidden() *CreateInviteForbidden {
 
 /*CreateInviteForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type CreateInviteForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewCreateInviteNotFound() *CreateInviteNotFound {
 
 /*CreateInviteNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type CreateInviteNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewCreateInviteInternalServerError() *CreateInviteInternalServerError {
 
 /*CreateInviteInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type CreateInviteInternalServerError struct {
 	Payload *models.InternalServerError

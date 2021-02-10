@@ -105,7 +105,7 @@ func NewCreateGroupBadRequest() *CreateGroupBadRequest {
 
 /*CreateGroupBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type CreateGroupBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewCreateGroupUnauthorized() *CreateGroupUnauthorized {
 
 /*CreateGroupUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type CreateGroupUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewCreateGroupForbidden() *CreateGroupForbidden {
 
 /*CreateGroupForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type CreateGroupForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewCreateGroupNotFound() *CreateGroupNotFound {
 
 /*CreateGroupNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type CreateGroupNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewCreateGroupInternalServerError() *CreateGroupInternalServerError {
 
 /*CreateGroupInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type CreateGroupInternalServerError struct {
 	Payload *models.InternalServerError

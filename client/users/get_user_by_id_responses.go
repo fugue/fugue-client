@@ -105,7 +105,7 @@ func NewGetUserByIDBadRequest() *GetUserByIDBadRequest {
 
 /*GetUserByIDBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type GetUserByIDBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewGetUserByIDUnauthorized() *GetUserByIDUnauthorized {
 
 /*GetUserByIDUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type GetUserByIDUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewGetUserByIDForbidden() *GetUserByIDForbidden {
 
 /*GetUserByIDForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type GetUserByIDForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewGetUserByIDNotFound() *GetUserByIDNotFound {
 
 /*GetUserByIDNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type GetUserByIDNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewGetUserByIDInternalServerError() *GetUserByIDInternalServerError {
 
 /*GetUserByIDInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetUserByIDInternalServerError struct {
 	Payload *models.InternalServerError

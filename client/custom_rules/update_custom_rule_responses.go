@@ -105,7 +105,7 @@ func NewUpdateCustomRuleBadRequest() *UpdateCustomRuleBadRequest {
 
 /*UpdateCustomRuleBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type UpdateCustomRuleBadRequest struct {
 	Payload *models.BadRequestError
@@ -204,7 +204,7 @@ func NewUpdateCustomRuleNotFound() *UpdateCustomRuleNotFound {
 
 /*UpdateCustomRuleNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type UpdateCustomRuleNotFound struct {
 	Payload *models.NotFoundError

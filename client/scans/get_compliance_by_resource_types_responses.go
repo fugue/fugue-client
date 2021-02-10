@@ -105,7 +105,7 @@ func NewGetComplianceByResourceTypesBadRequest() *GetComplianceByResourceTypesBa
 
 /*GetComplianceByResourceTypesBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type GetComplianceByResourceTypesBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewGetComplianceByResourceTypesUnauthorized() *GetComplianceByResourceTypes
 
 /*GetComplianceByResourceTypesUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type GetComplianceByResourceTypesUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewGetComplianceByResourceTypesForbidden() *GetComplianceByResourceTypesFor
 
 /*GetComplianceByResourceTypesForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type GetComplianceByResourceTypesForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewGetComplianceByResourceTypesNotFound() *GetComplianceByResourceTypesNotF
 
 /*GetComplianceByResourceTypesNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type GetComplianceByResourceTypesNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewGetComplianceByResourceTypesInternalServerError() *GetComplianceByResour
 
 /*GetComplianceByResourceTypesInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetComplianceByResourceTypesInternalServerError struct {
 	Payload *models.InternalServerError

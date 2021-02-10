@@ -93,7 +93,7 @@ func NewDeleteNotificationBadRequest() *DeleteNotificationBadRequest {
 
 /*DeleteNotificationBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type DeleteNotificationBadRequest struct {
 	Payload *models.BadRequestError
@@ -126,7 +126,7 @@ func NewDeleteNotificationUnauthorized() *DeleteNotificationUnauthorized {
 
 /*DeleteNotificationUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type DeleteNotificationUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -159,7 +159,7 @@ func NewDeleteNotificationForbidden() *DeleteNotificationForbidden {
 
 /*DeleteNotificationForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type DeleteNotificationForbidden struct {
 	Payload *models.AuthorizationError
@@ -192,7 +192,7 @@ func NewDeleteNotificationNotFound() *DeleteNotificationNotFound {
 
 /*DeleteNotificationNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type DeleteNotificationNotFound struct {
 	Payload *models.NotFoundError
@@ -225,7 +225,7 @@ func NewDeleteNotificationInternalServerError() *DeleteNotificationInternalServe
 
 /*DeleteNotificationInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type DeleteNotificationInternalServerError struct {
 	Payload *models.InternalServerError

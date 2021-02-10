@@ -99,7 +99,7 @@ func NewGetResourceTypesBadRequest() *GetResourceTypesBadRequest {
 
 /*GetResourceTypesBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type GetResourceTypesBadRequest struct {
 	Payload *models.BadRequestError
@@ -132,7 +132,7 @@ func NewGetResourceTypesUnauthorized() *GetResourceTypesUnauthorized {
 
 /*GetResourceTypesUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type GetResourceTypesUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -165,7 +165,7 @@ func NewGetResourceTypesForbidden() *GetResourceTypesForbidden {
 
 /*GetResourceTypesForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type GetResourceTypesForbidden struct {
 	Payload *models.AuthorizationError
@@ -198,7 +198,7 @@ func NewGetResourceTypesInternalServerError() *GetResourceTypesInternalServerErr
 
 /*GetResourceTypesInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type GetResourceTypesInternalServerError struct {
 	Payload *models.InternalServerError

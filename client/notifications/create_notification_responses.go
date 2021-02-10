@@ -105,7 +105,7 @@ func NewCreateNotificationBadRequest() *CreateNotificationBadRequest {
 
 /*CreateNotificationBadRequest handles this case with default header values.
 
-Bad request error.
+BadRequestError
 */
 type CreateNotificationBadRequest struct {
 	Payload *models.BadRequestError
@@ -138,7 +138,7 @@ func NewCreateNotificationUnauthorized() *CreateNotificationUnauthorized {
 
 /*CreateNotificationUnauthorized handles this case with default header values.
 
-Authentication error.
+AuthenticationError
 */
 type CreateNotificationUnauthorized struct {
 	Payload *models.AuthenticationError
@@ -171,7 +171,7 @@ func NewCreateNotificationForbidden() *CreateNotificationForbidden {
 
 /*CreateNotificationForbidden handles this case with default header values.
 
-Authorization error.
+AuthorizationError
 */
 type CreateNotificationForbidden struct {
 	Payload *models.AuthorizationError
@@ -204,7 +204,7 @@ func NewCreateNotificationNotFound() *CreateNotificationNotFound {
 
 /*CreateNotificationNotFound handles this case with default header values.
 
-Not found error.
+NotFoundError
 */
 type CreateNotificationNotFound struct {
 	Payload *models.NotFoundError
@@ -237,7 +237,7 @@ func NewCreateNotificationInternalServerError() *CreateNotificationInternalServe
 
 /*CreateNotificationInternalServerError handles this case with default header values.
 
-Internal server error.
+InternalServerError
 */
 type CreateNotificationInternalServerError struct {
 	Payload *models.InternalServerError
