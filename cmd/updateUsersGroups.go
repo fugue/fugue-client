@@ -19,8 +19,9 @@ func NewUpdateUsersGroups() *cobra.Command {
 	var opts updateUsersGroupsOptions
 
 	cmd := &cobra.Command{
-		Use:   "users_groups",
-		Short: "Batch update group assignments for multiple users",
+		Use:     "users-groups",
+		Short:   "Batch update group assignments for multiple users",
+		Aliases: []string{"users_groups"},
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
