@@ -51,10 +51,10 @@ func NewListRuleWaiversCommand() *cobra.Command {
 	var opts listRuleWaiversOptions
 
 	cmd := &cobra.Command{
-		Use:     "rule_waivers",
+		Use:     "rule-waivers",
 		Short:   "Lists details for multiple rule waivers",
 		Long:    `Lists details for multiple rule waivers`,
-		Aliases: []string{"waivers"},
+		Aliases: []string{"waivers", "rule_waivers"},
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()

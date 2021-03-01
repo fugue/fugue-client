@@ -26,9 +26,9 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	var opts createRuleWaiverOptions
 
 	cmd := &cobra.Command{
-		Use:     "rule_waiver",
+		Use:     "rule-waiver",
 		Short:   "Create a rule waiver",
-		Aliases: []string{"waiver"},
+		Aliases: []string{"waiver", "rule_waiver"},
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()

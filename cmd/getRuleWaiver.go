@@ -13,9 +13,9 @@ import (
 func NewGetRuleWaiverCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "rule_waiver [rule_waiver_id]",
+		Use:     "rule-waiver [rule_waiver_id]",
 		Short:   "Retrieve details for a rule waiver",
-		Aliases: []string{"waiver"},
+		Aliases: []string{"waiver", "rule_waiver"},
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 

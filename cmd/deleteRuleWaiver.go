@@ -9,9 +9,9 @@ import (
 func NewDeleteRuleWaiverCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "waiver [rule_waiver_id]",
+		Use:     "rule-waiver [rule_waiver_id]",
 		Short:   "Deletes a rule waiver",
-		Aliases: []string{"waiver"},
+		Aliases: []string{"waiver", "rule_waiver"},
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 

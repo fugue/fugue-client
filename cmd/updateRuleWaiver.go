@@ -24,10 +24,10 @@ func NewUpdateRuleWaiverCommand() *cobra.Command {
 	var opts updateRuleWaiverOptions
 
 	cmd := &cobra.Command{
-		Use:     "rule_waiver [rule_waiver_id]",
+		Use:     "rule-waiver [rule_waiver_id]",
 		Short:   "Update rule waiver settings",
 		Args:    cobra.ExactArgs(1),
-		Aliases: []string{"waiver"},
+		Aliases: []string{"waiver", "rule_waiver"},
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
