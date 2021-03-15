@@ -96,7 +96,6 @@ func NewCreateGoogleEnvironmentCommand() *cobra.Command {
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("email")
-	cmd.MarkFlagRequired("survey-resource-groups")
 
 	return cmd
 }
