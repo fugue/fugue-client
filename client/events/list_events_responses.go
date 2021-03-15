@@ -72,7 +72,7 @@ func NewListEventsOK() *ListEventsOK {
 
 /*ListEventsOK handles this case with default header values.
 
-List of drift and remediation events.
+List of drift, remediation, and compliance events.
 */
 type ListEventsOK struct {
 	Payload *models.Events
