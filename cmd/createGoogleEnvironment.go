@@ -70,8 +70,7 @@ func NewCreateGoogleEnvironmentCommand() *cobra.Command {
 				Item{"NEXT_SCAN_AT", format.Unix(env.NextScanAt)},
 				Item{"SCAN_STATUS", env.ScanStatus},
 				Item{"COMPLIANCE_FAMILIES", families},
-				Item{"DRIFT", env.Drift},
-				Item{"REMEDIATION", env.Remediation},
+				Item{"PROJECT_ID", env.ProviderOptions.Google.ProjectID},
 			}
 
 			table, err := format.Table(format.TableOpts{
