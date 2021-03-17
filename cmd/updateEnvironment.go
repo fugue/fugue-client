@@ -149,6 +149,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 				items = append(items, Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID})
 			case "google":
 				items = append(items, Item{"PROJECT_ID", env.ProviderOptions.Google.ProjectID})
+				items = append(items, Item{"SERVICE_ACCOUNT_EMAIL", env.ProviderOptions.Google.ServiceAccountEmail})
 			}
 
 			table, err := format.Table(format.TableOpts{

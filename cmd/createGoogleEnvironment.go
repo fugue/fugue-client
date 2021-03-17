@@ -71,6 +71,7 @@ func NewCreateGoogleEnvironmentCommand() *cobra.Command {
 				Item{"SCAN_STATUS", env.ScanStatus},
 				Item{"COMPLIANCE_FAMILIES", families},
 				Item{"PROJECT_ID", env.ProviderOptions.Google.ProjectID},
+				Item{"SERVICE_ACCOUNT_EMAIL", env.ProviderOptions.Google.ServiceAccountEmail},
 			}
 
 			table, err := format.Table(format.TableOpts{

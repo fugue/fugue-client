@@ -79,6 +79,8 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 				Item{"COMPLIANCE_FAMILIES", families},
 				Item{"DRIFT", env.Drift},
 				Item{"REMEDIATION", env.Remediation},
+				Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID},
+				Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID},
 			}
 
 			table, err := format.Table(format.TableOpts{
