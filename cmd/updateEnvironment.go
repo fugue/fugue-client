@@ -131,14 +131,14 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 
 			switch env.Provider {
 			case "aws":
-				items = append(items, Item{"ROLE", env.ProviderOptions.Aws.RoleArn})
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.Aws.RoleArn})
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
 					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
 				}
 			case "aws_govcloud":
-				items = append(items, Item{"ROLE", env.ProviderOptions.AwsGovcloud.RoleArn})
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.AwsGovcloud.RoleArn})
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
