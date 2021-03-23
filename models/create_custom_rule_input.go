@@ -26,7 +26,7 @@ type CreateCustomRuleInput struct {
 	Name string `json:"name,omitempty"`
 
 	// Provider of the custom rule
-	// Enum: [AWS AWS_GOVCLOUD AZURE]
+	// Enum: [AWS AWS_GOVCLOUD AZURE GOOGLE]
 	Provider string `json:"provider,omitempty"`
 
 	// Resource type to which the custom rule applies
@@ -70,7 +70,7 @@ var createCustomRuleInputTypeProviderPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["AWS","AWS_GOVCLOUD","AZURE"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["AWS","AWS_GOVCLOUD","AZURE","GOOGLE"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -88,6 +88,9 @@ const (
 
 	// CreateCustomRuleInputProviderAZURE captures enum value "AZURE"
 	CreateCustomRuleInputProviderAZURE string = "AZURE"
+
+	// CreateCustomRuleInputProviderGOOGLE captures enum value "GOOGLE"
+	CreateCustomRuleInputProviderGOOGLE string = "GOOGLE"
 )
 
 // prop value enum
