@@ -10,26 +10,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type createAzureEnvironmentOptions struct {
-	Name                    string
-	ApplicationID           string
-	ClientSecret            string
-	SubscriptionID          string
-	TenantID                string
-	ScanInterval            int64
-	ComplianceFamilies      []string
-	SurveyResourceGroups    []string
-	RemediateResourceGroups []string
+type createGoogleEnvironmentOptions struct {
+	Name                string
+	ServiceAccountEmail string
+	ProjectID           string
+	ScanInterval        int64
+	ComplianceFamilies  []string
 }
 
-// NewCreateAzureEnvironmentCommand returns a command that creates an environment
-func NewCreateAzureEnvironmentCommand() *cobra.Command {
+// NewCreateGoogleEnvironmentCommand returns a command that creates an environment
+func NewCreateGoogleEnvironmentCommand() *cobra.Command {
 
-	var opts createAzureEnvironmentOptions
+	var opts createGoogleEnvironmentOptions
 
 	cmd := &cobra.Command{
 		Use:     "environment",
-		Short:   "Create an Azure environment",
+		Short:   "Create an Google environment",
 		Aliases: []string{"env"},
 		Run: func(cmd *cobra.Command, args []string) {
 
@@ -45,19 +41,16 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 			params.Environment = &models.CreateEnvironmentInput{
 				ComplianceFamilies:     opts.ComplianceFamilies,
 				Name:                   opts.Name,
-				Provider:               "azure",
+				Provider:               "google",
 				ScanInterval:           scanIntervalPtr,
 				SurveyResourceTypes:    []string{},
 				RemediateResourceTypes: []string{},
 				ScanScheduleEnabled:    &scanScheduleEnabled,
+
 				ProviderOptions: &models.ProviderOptions{
-					Azure: &models.ProviderOptionsAzure{
-						ApplicationID:           opts.ApplicationID,
-						ClientSecret:            opts.ClientSecret,
-						SubscriptionID:          opts.SubscriptionID,
-						TenantID:                opts.TenantID,
-						SurveyResourceGroups:    opts.SurveyResourceGroups,
-						RemediateResourceGroups: opts.RemediateResourceGroups,
+					Google: &models.ProviderOptionsGoogle{
+						ServiceAccountEmail: opts.ServiceAccountEmail,
+						ProjectID:           opts.ProjectID,
 					},
 				},
 			}
@@ -77,10 +70,8 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 				Item{"NEXT_SCAN_AT", format.Unix(env.NextScanAt)},
 				Item{"SCAN_STATUS", env.ScanStatus},
 				Item{"COMPLIANCE_FAMILIES", families},
-				Item{"DRIFT", env.Drift},
-				Item{"REMEDIATION", env.Remediation},
-				Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID},
-				Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID},
+				Item{"PROJECT_ID", env.ProviderOptions.Google.ProjectID},
+				Item{"SERVICE_ACCOUNT_EMAIL", env.ProviderOptions.Google.ServiceAccountEmail},
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -97,26 +88,18 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Environment name")
-	cmd.Flags().StringVar(&opts.ApplicationID, "app", "", "Azure Application ID")
-	cmd.Flags().StringVar(&opts.ClientSecret, "secret", "", "Azure Client Secret")
-	cmd.Flags().StringVar(&opts.SubscriptionID, "sub", "", "Azure Subscription ID")
-	cmd.Flags().StringVar(&opts.TenantID, "tenant", "", "Azure Tenant ID")
+	cmd.Flags().StringVar(&opts.ServiceAccountEmail, "email", "", "Google Service Account Email")
+	cmd.Flags().StringVar(&opts.ProjectID, "project-id", "", "Google Project ID (if not given, the project_id is extracted from the service acccount email)")
 
 	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 86400, "Scan interval (seconds)")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", []string{}, "Compliance families")
-	cmd.Flags().StringSliceVar(&opts.RemediateResourceGroups, "remediation-resource-groups", []string{}, "Remediation resource groups")
-	cmd.Flags().StringSliceVar(&opts.SurveyResourceGroups, "survey-resource-groups", nil, "Survey resource groups")
 
 	cmd.MarkFlagRequired("name")
-	cmd.MarkFlagRequired("app")
-	cmd.MarkFlagRequired("secret")
-	cmd.MarkFlagRequired("sub")
-	cmd.MarkFlagRequired("tenant")
-	cmd.MarkFlagRequired("survey-resource-groups")
+	cmd.MarkFlagRequired("email")
 
 	return cmd
 }
 
 func init() {
-	azureCmd.AddCommand(NewCreateAzureEnvironmentCommand())
+	googleCmd.AddCommand(NewCreateGoogleEnvironmentCommand())
 }

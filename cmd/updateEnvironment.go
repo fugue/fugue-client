@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/fugue/fugue-client/client"
 	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/format"
 	"github.com/fugue/fugue-client/models"
+	"github.com/go-openapi/runtime"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -21,6 +23,22 @@ type updateEnvironmentOptions struct {
 	Remediation            bool
 	ScanScheduleEnabled    bool
 	Regions                []string
+	ServiceAccountEmail    string
+}
+
+func getEnvironmentToUpdate(client *client.Fugue, auth runtime.ClientAuthInfoWriter, environmentID string) *models.EnvironmentWithSummary {
+	paramsGet := environments.NewGetEnvironmentParams()
+	paramsGet.EnvironmentID = environmentID
+	resp, err := client.Environments.GetEnvironment(paramsGet, auth)
+	if err != nil {
+		switch respError := err.(type) {
+		case *environments.GetEnvironmentNotFound:
+			Fatal(respError.Payload.Message, DefaultErrorExitCode)
+		default:
+			CheckErr(err)
+		}
+	}
+	return resp.Payload
 }
 
 // NewUpdateEnvironmentCommand returns a command that updates an environment
@@ -43,18 +61,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 
 			if len(opts.Regions) > 0 {
 				// trying to update the regions. See if this environment has regions already
-				paramsGet := environments.NewGetEnvironmentParams()
-				paramsGet.EnvironmentID = params.EnvironmentID
-				resp, err := client.Environments.GetEnvironment(paramsGet, auth)
-				if err != nil {
-					switch respError := err.(type) {
-					case *environments.GetEnvironmentNotFound:
-						Fatal(respError.Payload.Message, DefaultErrorExitCode)
-					default:
-						CheckErr(err)
-					}
-				}
-				env := resp.Payload
+				env := getEnvironmentToUpdate(client, auth, params.EnvironmentID)
 
 				if env.Provider == "aws" && len(env.ProviderOptions.Aws.Regions) > 0 {
 					params.Environment.ProviderOptions = &models.ProviderOptionsUpdateInput{}
@@ -62,6 +69,14 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 				} else if env.Provider == "aws_govcloud" && len(env.ProviderOptions.AwsGovcloud.Regions) > 0 {
 					params.Environment.ProviderOptions = &models.ProviderOptionsUpdateInput{}
 					params.Environment.ProviderOptions.AwsGovcloud = &models.ProviderOptionsAwsUpdateInput{Regions: opts.Regions}
+				}
+			}
+
+			if opts.ServiceAccountEmail != "" {
+				env := getEnvironmentToUpdate(client, auth, params.EnvironmentID)
+				if env.Provider == "google" {
+					params.Environment.ProviderOptions = &models.ProviderOptionsUpdateInput{}
+					params.Environment.ProviderOptions.Google = &models.ProviderOptionsGoogleUpdateInput{ServiceAccountEmail: opts.ServiceAccountEmail}
 				}
 			}
 
@@ -131,14 +146,14 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 
 			switch env.Provider {
 			case "aws":
-				items = append(items, Item{"ROLE", env.ProviderOptions.Aws.RoleArn})
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.Aws.RoleArn})
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
 					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
 				}
 			case "aws_govcloud":
-				items = append(items, Item{"ROLE", env.ProviderOptions.AwsGovcloud.RoleArn})
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.AwsGovcloud.RoleArn})
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
@@ -147,6 +162,9 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 			case "azure":
 				items = append(items, Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID})
 				items = append(items, Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID})
+			case "google":
+				items = append(items, Item{"PROJECT_ID", env.ProviderOptions.Google.ProjectID})
+				items = append(items, Item{"SERVICE_ACCOUNT_EMAIL", env.ProviderOptions.Google.ServiceAccountEmail})
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -171,6 +189,7 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringSliceVar(&opts.RemediateResourceTypes, "remediate-resource-types", nil, "Remediation resource types")
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types")
 	cmd.Flags().StringSliceVar(&opts.Regions, "regions", nil, "AWS regions")
+	cmd.Flags().StringVar(&opts.ServiceAccountEmail, "service-account-email", "", "Google service account email")
 
 	return cmd
 }

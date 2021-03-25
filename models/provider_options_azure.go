@@ -10,7 +10,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// ProviderOptionsAzure Provider options for Azire.
+// ProviderOptionsAzure Provider options for Azure.
 //
 // swagger:model ProviderOptionsAzure
 type ProviderOptionsAzure struct {

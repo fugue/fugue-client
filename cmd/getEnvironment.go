@@ -83,14 +83,14 @@ func NewGetEnvironmentCommand() *cobra.Command {
 
 			switch env.Provider {
 			case "aws":
-				items = append(items, Item{"ROLE", env.ProviderOptions.Aws.RoleArn})
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.Aws.RoleArn})
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
 					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
 				}
 			case "aws_govcloud":
-				items = append(items, Item{"ROLE", env.ProviderOptions.AwsGovcloud.RoleArn})
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.AwsGovcloud.RoleArn})
 				if env.ProviderOptions.AwsGovcloud.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
 				} else if len(env.ProviderOptions.AwsGovcloud.Regions) > 0 {
@@ -99,6 +99,9 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			case "azure":
 				items = append(items, Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID})
 				items = append(items, Item{"APPLICATION_ID", env.ProviderOptions.Azure.ApplicationID})
+			case "google":
+				items = append(items, Item{"PROJECT_ID", env.ProviderOptions.Google.ProjectID})
+				items = append(items, Item{"SERVICE_ACCOUNT_EMAIL", env.ProviderOptions.Google.ServiceAccountEmail})
 			}
 
 			table, err := format.Table(format.TableOpts{

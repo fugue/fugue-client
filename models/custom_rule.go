@@ -41,7 +41,7 @@ type CustomRule struct {
 	Name string `json:"name,omitempty"`
 
 	// Provider of the custom rule.
-	// Enum: [AWS AWS_GOVCLOUD AZURE]
+	// Enum: [AWS AWS_GOVCLOUD AZURE GOOGLE]
 	Provider string `json:"provider,omitempty"`
 
 	// Resource type to which the custom rule applies.
@@ -102,7 +102,7 @@ var customRuleTypeProviderPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["AWS","AWS_GOVCLOUD","AZURE"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["AWS","AWS_GOVCLOUD","AZURE","GOOGLE"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -120,6 +120,9 @@ const (
 
 	// CustomRuleProviderAZURE captures enum value "AZURE"
 	CustomRuleProviderAZURE string = "AZURE"
+
+	// CustomRuleProviderGOOGLE captures enum value "GOOGLE"
+	CustomRuleProviderGOOGLE string = "GOOGLE"
 )
 
 // prop value enum

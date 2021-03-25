@@ -56,7 +56,7 @@ type RuleWaiver struct {
 	// Required: true
 	ResourceType *string `json:"resource_type"`
 
-	// Mapping of this rule in compliance families and their controls.
+	// Mapping of this rule in compliance families and their controls which are enabled in a given environment.
 	RuleComplianceMapping interface{} `json:"rule_compliance_mapping,omitempty"`
 
 	// Description of the rule.

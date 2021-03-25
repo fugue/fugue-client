@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Event A drift or remediation event.
+// Event A drift, remediation or compliance event.
 //
 // swagger:model Event
 type Event struct {

@@ -10,28 +10,22 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// ProviderOptionsGoogle Provider options for Google.
+// ProviderOptionsGoogleUpdateInput Mutable provider options for Google.
 //
-// swagger:model ProviderOptionsGoogle
-type ProviderOptionsGoogle struct {
+// swagger:model ProviderOptionsGoogleUpdateInput
+type ProviderOptionsGoogleUpdateInput struct {
 
-	// creds file
-	CredsFile string `json:"creds_file,omitempty"`
-
-	// project id
-	ProjectID string `json:"project_id,omitempty"`
-
-	// service account email
+	// The service account email that will be used to scan infrastructure.
 	ServiceAccountEmail string `json:"service_account_email,omitempty"`
 }
 
-// Validate validates this provider options google
-func (m *ProviderOptionsGoogle) Validate(formats strfmt.Registry) error {
+// Validate validates this provider options google update input
+func (m *ProviderOptionsGoogleUpdateInput) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *ProviderOptionsGoogle) MarshalBinary() ([]byte, error) {
+func (m *ProviderOptionsGoogleUpdateInput) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -39,8 +33,8 @@ func (m *ProviderOptionsGoogle) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *ProviderOptionsGoogle) UnmarshalBinary(b []byte) error {
-	var res ProviderOptionsGoogle
+func (m *ProviderOptionsGoogleUpdateInput) UnmarshalBinary(b []byte) error {
+	var res ProviderOptionsGoogleUpdateInput
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

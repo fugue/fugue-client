@@ -121,6 +121,23 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				Item{"REMEDIATION", env.Remediation},
 			}
 
+			switch env.Provider {
+			case "aws":
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.Aws.RoleArn})
+				if env.ProviderOptions.Aws.Region != "" {
+					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
+				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
+				}
+			case "aws_govcloud":
+				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.AwsGovcloud.RoleArn})
+				if env.ProviderOptions.Aws.Region != "" {
+					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
+				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ",")})
+				}
+			}
+
 			table, err := format.Table(format.TableOpts{
 				Rows:       items,
 				Columns:    []string{"Attribute", "Value"},
