@@ -88,14 +88,14 @@ func NewCreateGoogleEnvironmentCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Environment name")
-	cmd.Flags().StringVar(&opts.ServiceAccountEmail, "email", "", "Google Service Account Email")
+	cmd.Flags().StringVar(&opts.ServiceAccountEmail, "service-account-email", "", "Google Service Account Email")
 	cmd.Flags().StringVar(&opts.ProjectID, "project-id", "", "Google Project ID (if not given, the project_id is extracted from the service acccount email)")
 
 	cmd.Flags().Int64Var(&opts.ScanInterval, "scan-interval", 86400, "Scan interval (seconds)")
 	cmd.Flags().StringSliceVar(&opts.ComplianceFamilies, "compliance-families", []string{}, "Compliance families")
 
 	cmd.MarkFlagRequired("name")
-	cmd.MarkFlagRequired("email")
+	cmd.MarkFlagRequired("service-account-email")
 
 	return cmd
 }
