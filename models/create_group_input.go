@@ -26,7 +26,7 @@ type CreateGroupInput struct {
 	Name string `json:"name,omitempty"`
 
 	// policy
-	// Enum: [fugue:READONLY fugue:AUDITOR fugue:EDITOR fugue:CONTRIBUTOR]
+	// Enum: [fugue:READONLY fugue:AUDITOR fugue:EDITOR fugue:CONTRIBUTOR fugue:MANAGER]
 	Policy string `json:"policy,omitempty"`
 }
 
@@ -48,7 +48,7 @@ var createGroupInputTypePolicyPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["fugue:READONLY","fugue:AUDITOR","fugue:EDITOR","fugue:CONTRIBUTOR"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["fugue:READONLY","fugue:AUDITOR","fugue:EDITOR","fugue:CONTRIBUTOR","fugue:MANAGER"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -69,6 +69,9 @@ const (
 
 	// CreateGroupInputPolicyFugueCONTRIBUTOR captures enum value "fugue:CONTRIBUTOR"
 	CreateGroupInputPolicyFugueCONTRIBUTOR string = "fugue:CONTRIBUTOR"
+
+	// CreateGroupInputPolicyFugueMANAGER captures enum value "fugue:MANAGER"
+	CreateGroupInputPolicyFugueMANAGER string = "fugue:MANAGER"
 )
 
 // prop value enum

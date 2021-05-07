@@ -36,6 +36,9 @@ type CreateRuleWaiverInput struct {
 	// Required: true
 	ResourceProvider *string `json:"resource_provider"`
 
+	// resource tag
+	ResourceTag string `json:"resource_tag,omitempty"`
+
 	// resource type
 	// Required: true
 	ResourceType *string `json:"resource_type"`
@@ -43,6 +46,9 @@ type CreateRuleWaiverInput struct {
 	// rule id
 	// Required: true
 	RuleID *string `json:"rule_id"`
+
+	// wildcard mode
+	WildcardMode bool `json:"wildcard_mode,omitempty"`
 }
 
 // Validate validates this create rule waiver input
