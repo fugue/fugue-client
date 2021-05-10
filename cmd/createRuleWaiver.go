@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/rule_waivers"
@@ -9,6 +11,16 @@ import (
 	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
 )
+
+func containsWildcards(entry string) bool {
+
+	entry = strings.Replace(entry, "\\*", "", -1)
+	entry = strings.Replace(entry, "\\?", "", -1)
+	if strings.Contains(entry, "*") || strings.Contains(entry, "?") {
+		return true
+	}
+	return false
+}
 
 type createRuleWaiverOptions struct {
 	Name             string
@@ -18,6 +30,8 @@ type createRuleWaiverOptions struct {
 	ResourceID       string
 	ResourceType     string
 	ResourceProvider string
+	ResourceTag      string
+	WildcardMode     bool
 }
 
 // NewCreateRuleWaiverCommand returns a command that creates a custom rule
@@ -28,7 +42,7 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "rule-waiver",
 		Short:   "Create a rule waiver",
-		Aliases: []string{"waiver", "rule_waiver"},
+		Aliases: []string{"waiver", "rule_waiver", "rule-waivers", "waivers", "rule_waivers"},
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()
@@ -42,6 +56,8 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				ResourceID:       &opts.ResourceID,
 				ResourceType:     &opts.ResourceType,
 				ResourceProvider: &opts.ResourceProvider,
+				ResourceTag:      opts.ResourceTag,
+				WildcardMode:     opts.WildcardMode,
 			}
 
 			resp, err := client.RuleWaivers.CreateRuleWaiver(params, auth)
@@ -66,6 +82,8 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				Item{"RESOURCE_ID", *waiver.ResourceID},
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},
+				Item{"RESOURCE_TAG", *waiver.ResourceTag},
+				Item{"WILDCARD_MODE", *waiver.WildcardMode},
 				Item{"CREATED_AT", format.Unix(waiver.CreatedAt)},
 				Item{"CREATED_BY", waiver.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", waiver.CreatedByDisplayName},
@@ -85,15 +103,27 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				fmt.Println(tableRow)
 			}
 		},
+		Args: func(cmd *cobra.Command, args []string) error {
+			// validate 'resource-id', 'resource-type', 'resource-provider' and 'resource-tag' when 'wildcard-mode=false'
+			if !opts.WildcardMode && (containsWildcards(opts.ResourceID) ||
+				containsWildcards(opts.ResourceType) ||
+				containsWildcards(opts.ResourceProvider) ||
+				containsWildcards(opts.ResourceTag)) {
+				return errors.New("'wildcard-mode=false' must only be used for exact matches. No wildcards are allowed")
+			}
+			return nil
+		},
 	}
 
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Waiver name")
 	cmd.Flags().StringVar(&opts.Comment, "comment", "", "Comment describing the rule waiver purpose")
 	cmd.Flags().StringVar(&opts.RuleID, "rule-id", "", "Rule ID (e.g. FG_R00217, <UUID Custom Rule ID>)")
 	cmd.Flags().StringVar(&opts.EnvironmentID, "environment-id", "", "Environment ID")
-	cmd.Flags().StringVar(&opts.ResourceID, "resource-id", "*", "Resource ID")
+	cmd.Flags().StringVar(&opts.ResourceID, "resource-id", "*", "Resource ID (e.g. resource-123, 'resource-*')")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "*", "Resource Type (e.g. AWS.S3.Bucket, '*')")
 	cmd.Flags().StringVar(&opts.ResourceProvider, "resource-provider", "*", "Resource Provider (e.g. aws.us-east-1, azure, '*')")
+	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "*", "Resource Tag (e.g. 'env:prod', 'fugue:*', '*')")
+	cmd.Flags().BoolVar(&opts.WildcardMode, "wildcard-mode", true, "Wildcard Mode defaults to True. When doing exact matches with 'resource-id', 'resource-type', 'resource-provider' and 'resource-tag' use 'wildcard-mode=false'")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")
