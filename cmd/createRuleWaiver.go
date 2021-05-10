@@ -12,6 +12,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func isValidTag(tag string) bool {
+	if tag == "*" || strings.Contains(tag, ":") {
+		return true
+	}
+	return false
+}
+
 func containsWildcards(entry string) bool {
 
 	entry = strings.Replace(entry, "\\*", "", -1)
@@ -110,6 +117,9 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				containsWildcards(opts.ResourceProvider) ||
 				containsWildcards(opts.ResourceTag)) {
 				return errors.New("'wildcard-mode=false' must only be used for exact matches. No wildcards are allowed")
+			}
+			if !isValidTag(opts.ResourceTag) {
+				return errors.New("'resource-tag' must be of the form 'key:value'")
 			}
 			return nil
 		},
