@@ -132,8 +132,8 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.ResourceID, "resource-id", "*", "Resource ID (e.g. resource-123, 'resource-*')")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "*", "Resource Type (e.g. AWS.S3.Bucket, '*')")
 	cmd.Flags().StringVar(&opts.ResourceProvider, "resource-provider", "*", "Resource Provider (e.g. aws.us-east-1, azure, '*')")
-	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "*", "Resource Tag (e.g. 'env:prod', 'fugue:*', '*')")
-	cmd.Flags().BoolVar(&opts.WildcardMode, "wildcard-mode", true, "Wildcard Mode defaults to True. When doing exact matches with 'resource-id', 'resource-type', 'resource-provider' and 'resource-tag' use 'wildcard-mode=false'")
+	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "*", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
+	cmd.Flags().BoolVar(&opts.WildcardMode, "wildcard-mode", true, "Controls whether glob-style wildcard characters are expanded")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")
