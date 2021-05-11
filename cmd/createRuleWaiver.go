@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/rule_waivers"
@@ -11,23 +9,6 @@ import (
 	"github.com/fugue/fugue-client/models"
 	"github.com/spf13/cobra"
 )
-
-func isValidTag(tag string) bool {
-	if tag == "*" || strings.Contains(tag, ":") {
-		return true
-	}
-	return false
-}
-
-func containsWildcards(entry string) bool {
-
-	entry = strings.Replace(entry, "\\*", "", -1)
-	entry = strings.Replace(entry, "\\?", "", -1)
-	if strings.Contains(entry, "*") || strings.Contains(entry, "?") {
-		return true
-	}
-	return false
-}
 
 type createRuleWaiverOptions struct {
 	Name             string
@@ -109,19 +90,6 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 			for _, tableRow := range table {
 				fmt.Println(tableRow)
 			}
-		},
-		Args: func(cmd *cobra.Command, args []string) error {
-			// validate 'resource-id', 'resource-type', 'resource-provider' and 'resource-tag' when 'wildcard-mode=false'
-			if !opts.WildcardMode && (containsWildcards(opts.ResourceID) ||
-				containsWildcards(opts.ResourceType) ||
-				containsWildcards(opts.ResourceProvider) ||
-				containsWildcards(opts.ResourceTag)) {
-				return errors.New("'wildcard-mode=false' must only be used for exact matches. No wildcards are allowed")
-			}
-			if !isValidTag(opts.ResourceTag) {
-				return errors.New("'resource-tag' must be of the form 'key:value'")
-			}
-			return nil
 		},
 	}
 
