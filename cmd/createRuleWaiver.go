@@ -60,6 +60,15 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 
 			waiver := resp.Payload
 
+			var item Item
+			if waiver.ResourceTag != nil {
+				item = Item{"RESOURCE_TAG", *waiver.ResourceTag}
+			} else if *waiver.WildcardMode {
+				item = Item{"RESOURCE_TAG", "*"}
+			} else {
+				item = Item{"RESOURCE_TAG", ""}
+			}
+
 			items := []interface{}{
 				Item{"RULE_WAIVER_ID", *waiver.ID},
 				Item{"NAME", *waiver.Name},
@@ -70,7 +79,7 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				Item{"RESOURCE_ID", *waiver.ResourceID},
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},
-				Item{"RESOURCE_TAG", *waiver.ResourceTag},
+				item,
 				Item{"WILDCARD_MODE", *waiver.WildcardMode},
 				Item{"CREATED_AT", format.Unix(waiver.CreatedAt)},
 				Item{"CREATED_BY", waiver.CreatedBy},
@@ -97,15 +106,18 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Comment, "comment", "", "Comment describing the rule waiver purpose")
 	cmd.Flags().StringVar(&opts.RuleID, "rule-id", "", "Rule ID (e.g. FG_R00217, <UUID Custom Rule ID>)")
 	cmd.Flags().StringVar(&opts.EnvironmentID, "environment-id", "", "Environment ID")
-	cmd.Flags().StringVar(&opts.ResourceID, "resource-id", "*", "Resource ID (e.g. resource-123, 'resource-*')")
-	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "*", "Resource Type (e.g. AWS.S3.Bucket, '*')")
-	cmd.Flags().StringVar(&opts.ResourceProvider, "resource-provider", "*", "Resource Provider (e.g. aws.us-east-1, azure, '*')")
-	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "*", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
+	cmd.Flags().StringVar(&opts.ResourceID, "resource-id", "", "Resource ID (e.g. resource-123, 'resource-*')")
+	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "", "Resource Type (e.g. AWS.S3.Bucket, '*')")
+	cmd.Flags().StringVar(&opts.ResourceProvider, "resource-provider", "", "Resource Provider (e.g. aws.us-east-1, azure, '*')")
+	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
 	cmd.Flags().BoolVar(&opts.WildcardMode, "wildcard-mode", true, "Controls whether glob-style wildcard characters are expanded")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")
 	cmd.MarkFlagRequired("environment-id")
+	cmd.MarkFlagRequired("resource-id")
+	cmd.MarkFlagRequired("resource-type")
+	cmd.MarkFlagRequired("resource-provider")
 
 	return cmd
 }

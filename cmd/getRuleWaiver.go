@@ -48,7 +48,6 @@ func NewGetRuleWaiverCommand() *cobra.Command {
 			} else if *waiver.WildcardMode {
 				item = Item{"RESOURCE_TAG", "*"}
 			} else {
-				// this should never happen
 				item = Item{"RESOURCE_TAG", ""}
 			}
 			items := []interface{}{

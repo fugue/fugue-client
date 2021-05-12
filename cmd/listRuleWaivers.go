@@ -167,7 +167,6 @@ func NewListRuleWaiversCommand() *cobra.Command {
 				} else if *waiver.WildcardMode {
 					row.ResourceTag = "*"
 				} else {
-					// this should never happen
 					row.ResourceTag = ""
 				}
 				rows = append(rows, row)
