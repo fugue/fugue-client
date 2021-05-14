@@ -78,10 +78,6 @@ type RuleWaiver struct {
 
 	// Display name of the user that last updated the rule waiver.
 	UpdatedByDisplayName string `json:"updated_by_display_name,omitempty"`
-
-	// wildcard mode
-	// Required: true
-	WildcardMode *bool `json:"wildcard_mode"`
 }
 
 // Validate validates this rule waiver
@@ -117,10 +113,6 @@ func (m *RuleWaiver) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateRuleID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateWildcardMode(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -196,15 +188,6 @@ func (m *RuleWaiver) validateResourceType(formats strfmt.Registry) error {
 func (m *RuleWaiver) validateRuleID(formats strfmt.Registry) error {
 
 	if err := validate.Required("rule_id", "body", m.RuleID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *RuleWaiver) validateWildcardMode(formats strfmt.Registry) error {
-
-	if err := validate.Required("wildcard_mode", "body", m.WildcardMode); err != nil {
 		return err
 	}
 

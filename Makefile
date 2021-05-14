@@ -14,7 +14,6 @@ UPDATE_ENV_SRC=models/update_environment_input.go
 UPDATE_RULE_SRC=models/update_custom_rule_input.go
 CREATE_ENV_SRC=models/create_environment_input.go
 INVITE_SRC=models/invite.go
-CREATE_RULE_WAIVER_SRC=models/create_rule_waiver_input.go
 
 GOSWAGGER=docker run --rm -it \
 	--volume $(shell pwd):/fugue-client \
@@ -64,7 +63,6 @@ gen: $(SWAGGER)
 	sed -i "" "s/ScanScheduleEnabled bool/ScanScheduleEnabled *bool/g" $(CREATE_ENV_SRC)
 	sed -i "" "s/int64(m.ScanInterval)/int64(*m.ScanInterval)/g" $(CREATE_ENV_SRC)
 	sed -i "" "s/float64/int64/g" $(INVITE_SRC)
-	sed -i "" "s/WildcardMode bool \\\`json:\"wildcard_mode,omitempty\"\\\`/WildcardMode bool \\\`json:\"wildcard_mode\"\\\`/g" $(CREATE_RULE_WAIVER_SRC)
 
 .PHONY: test
 test:

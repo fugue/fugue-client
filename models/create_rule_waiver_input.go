@@ -46,9 +46,6 @@ type CreateRuleWaiverInput struct {
 	// rule id
 	// Required: true
 	RuleID *string `json:"rule_id"`
-
-	// wildcard mode
-	WildcardMode bool `json:"wildcard_mode"`
 }
 
 // Validate validates this create rule waiver input

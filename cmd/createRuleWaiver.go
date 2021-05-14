@@ -19,7 +19,6 @@ type createRuleWaiverOptions struct {
 	ResourceType     string
 	ResourceProvider string
 	ResourceTag      string
-	WildcardMode     bool
 }
 
 // NewCreateRuleWaiverCommand returns a command that creates a custom rule
@@ -45,7 +44,6 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				ResourceType:     &opts.ResourceType,
 				ResourceProvider: &opts.ResourceProvider,
 				ResourceTag:      opts.ResourceTag,
-				WildcardMode:     opts.WildcardMode,
 			}
 
 			resp, err := client.RuleWaivers.CreateRuleWaiver(params, auth)
@@ -63,10 +61,8 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 			var item Item
 			if waiver.ResourceTag != nil {
 				item = Item{"RESOURCE_TAG", *waiver.ResourceTag}
-			} else if *waiver.WildcardMode {
-				item = Item{"RESOURCE_TAG", "*"}
 			} else {
-				item = Item{"RESOURCE_TAG", ""}
+				item = Item{"RESOURCE_TAG", "-"}
 			}
 
 			items := []interface{}{
@@ -80,7 +76,6 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},
 				item,
-				Item{"WILDCARD_MODE", *waiver.WildcardMode},
 				Item{"CREATED_AT", format.Unix(waiver.CreatedAt)},
 				Item{"CREATED_BY", waiver.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", waiver.CreatedByDisplayName},
@@ -109,8 +104,8 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.ResourceID, "resource-id", "", "Resource ID (e.g. resource-123, 'resource-*')")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "", "Resource Type (e.g. AWS.S3.Bucket, '*')")
 	cmd.Flags().StringVar(&opts.ResourceProvider, "resource-provider", "", "Resource Provider (e.g. aws.us-east-1, azure, '*')")
+	// resource-tag is optional in the API: if resource-tag == "", the CLI is not posting the resource-tag json field
 	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
-	cmd.Flags().BoolVar(&opts.WildcardMode, "wildcard-mode", true, "Controls whether glob-style wildcard characters are expanded")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")

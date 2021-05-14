@@ -39,7 +39,6 @@ type listRuleWaiversViewItem struct {
 	ResourceProvider     string
 	ResourceType         string
 	ResourceTag          string
-	WildcardMode         bool
 	CreatedAt            string
 	CreatedBy            string
 	CreatedByDisplayName string
@@ -144,6 +143,11 @@ func NewListRuleWaiversCommand() *cobra.Command {
 
 			var rows []interface{}
 			for _, waiver := range waivers {
+
+				resourceTag := "-"
+				if waiver.ResourceTag != nil {
+					resourceTag = *waiver.ResourceTag
+				}
 				row := listRuleWaiversViewItem{
 					ID:                   *waiver.ID,
 					Name:                 *waiver.Name,
@@ -154,7 +158,7 @@ func NewListRuleWaiversCommand() *cobra.Command {
 					ResourceID:           *waiver.ResourceID,
 					ResourceType:         *waiver.ResourceType,
 					ResourceProvider:     *waiver.ResourceProvider,
-					WildcardMode:         *waiver.WildcardMode,
+					ResourceTag:          resourceTag,
 					CreatedAt:            format.Unix(waiver.CreatedAt),
 					CreatedBy:            waiver.CreatedBy,
 					CreatedByDisplayName: waiver.CreatedByDisplayName,
@@ -162,14 +166,8 @@ func NewListRuleWaiversCommand() *cobra.Command {
 					UpdatedBy:            waiver.UpdatedBy,
 					UpdatedByDisplayName: waiver.UpdatedByDisplayName,
 				}
-				if waiver.ResourceTag != nil {
-					row.ResourceTag = *waiver.ResourceTag
-				} else if *waiver.WildcardMode {
-					row.ResourceTag = "*"
-				} else {
-					row.ResourceTag = ""
-				}
 				rows = append(rows, row)
+
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -195,7 +193,6 @@ func NewListRuleWaiversCommand() *cobra.Command {
 		"ResourceType",
 		"ResourceProvider",
 		"ResourceTag",
-		"WildcardMode",
 	}
 
 	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for ID, Name, and Rule ID")
