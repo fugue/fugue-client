@@ -15,7 +15,7 @@ import (
 func NewTriggerScanCommand() *cobra.Command {
 
 	var wait bool
-	var scanFailureExitCode int64
+	var scanFailureExitCode int
 
 	cmd := &cobra.Command{
 		Use:   "scan [environment_id]",
@@ -103,13 +103,13 @@ func NewTriggerScanCommand() *cobra.Command {
 			}
 
 			if(wait && scan.Status == "ERROR") {
-				os.Exit(int(scanFailureExitCode))
+				os.Exit(scanFailureExitCode)
 			}
 		},
 	}
 
 	cmd.Flags().BoolVar(&wait, "wait", false, "Wait for scan to complete")
-	cmd.Flags().Int64Var(&scanFailureExitCode, "scan-failure-exit-code", 0, "Sets the exit code to raise when a scan fails. Default is 0. Used with the wait flag")
+	cmd.Flags().IntVar(&scanFailureExitCode, "scan-failure-exit-code", 0, "Sets the exit code to raise when a scan fails. Default is 0. Used with the wait flag")
 
 	return cmd
 }
