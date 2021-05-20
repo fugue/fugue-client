@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/fugue/fugue-client/client/scans"
@@ -15,6 +16,7 @@ import (
 func NewTriggerScanCommand() *cobra.Command {
 
 	var wait bool
+	var scanFailureExitCode int
 
 	cmd := &cobra.Command{
 		Use:   "scan [environment_id]",
@@ -100,10 +102,15 @@ func NewTriggerScanCommand() *cobra.Command {
 			for _, tableRow := range table {
 				fmt.Println(tableRow)
 			}
+
+			if(wait && scan.Status == "ERROR") {
+				os.Exit(int(scanFailureExitCode))
+			}
 		},
 	}
 
 	cmd.Flags().BoolVar(&wait, "wait", false, "Wait for scan to complete")
+	cmd.Flags().IntVar(&scanFailureExitCode, "scan-failure-exit-code", 0, "Sets the exit code to raise when a scan fails. Default is 0. Used with the wait flag")
 
 	return cmd
 }
