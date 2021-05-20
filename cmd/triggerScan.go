@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 	"os"
+	"time"
+
 	"github.com/fugue/fugue-client/client/scans"
 	"github.com/fugue/fugue-client/format"
 	"github.com/fugue/fugue-client/models"
@@ -103,7 +104,7 @@ func NewTriggerScanCommand() *cobra.Command {
 			}
 
 			if(wait && scan.Status == "ERROR") {
-				os.Exit(scanFailureExitCode)
+				os.Exit(int(scanFailureExitCode))
 			}
 		},
 	}
