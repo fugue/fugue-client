@@ -15,9 +15,6 @@ import (
 // swagger:model ProviderOptionsGoogle
 type ProviderOptionsGoogle struct {
 
-	// creds file
-	CredsFile string `json:"creds_file,omitempty"`
-
 	// project id
 	ProjectID string `json:"project_id,omitempty"`
 

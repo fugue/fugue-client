@@ -36,6 +36,9 @@ type CreateRuleWaiverInput struct {
 	// Required: true
 	ResourceProvider *string `json:"resource_provider"`
 
+	// resource tag
+	ResourceTag string `json:"resource_tag,omitempty"`
+
 	// resource type
 	// Required: true
 	ResourceType *string `json:"resource_type"`

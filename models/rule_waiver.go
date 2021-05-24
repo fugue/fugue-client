@@ -52,6 +52,10 @@ type RuleWaiver struct {
 	// Required: true
 	ResourceProvider *string `json:"resource_provider"`
 
+	// resource tag
+	// Required: true
+	ResourceTag *string `json:"resource_tag"`
+
 	// resource type
 	// Required: true
 	ResourceType *string `json:"resource_type"`
@@ -97,6 +101,10 @@ func (m *RuleWaiver) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateResourceProvider(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateResourceTag(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -153,6 +161,15 @@ func (m *RuleWaiver) validateResourceID(formats strfmt.Registry) error {
 func (m *RuleWaiver) validateResourceProvider(formats strfmt.Registry) error {
 
 	if err := validate.Required("resource_provider", "body", m.ResourceProvider); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *RuleWaiver) validateResourceTag(formats strfmt.Registry) error {
+
+	if err := validate.Required("resource_tag", "body", m.ResourceTag); err != nil {
 		return err
 	}
 

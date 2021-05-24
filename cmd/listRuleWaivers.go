@@ -20,6 +20,7 @@ type listRuleWaiversOptions struct {
 	ResourceIDFilter       string
 	ResourceProviderFilter string
 	ResourceTypeFilter     string
+	ResourceTagFilter      string
 	Offset                 int64
 	MaxItems               int64
 	OrderBy                string
@@ -37,6 +38,7 @@ type listRuleWaiversViewItem struct {
 	ResourceID           string
 	ResourceProvider     string
 	ResourceType         string
+	ResourceTag          string
 	CreatedAt            string
 	CreatedBy            string
 	CreatedByDisplayName string
@@ -131,9 +133,7 @@ func NewListRuleWaiversCommand() *cobra.Command {
 				}
 				resp, err := client.RuleWaivers.ListRuleWaivers(params, auth)
 				CheckErr(err)
-				for _, waiver := range resp.Payload.Items {
-					waivers = append(waivers, waiver)
-				}
+				waivers = append(waivers, resp.Payload.Items...)
 				if opts.FetchAll && resp.Payload.IsTruncated {
 					offset = resp.Payload.NextOffset
 					continue
@@ -143,23 +143,31 @@ func NewListRuleWaiversCommand() *cobra.Command {
 
 			var rows []interface{}
 			for _, waiver := range waivers {
-				rows = append(rows, listRuleWaiversViewItem{
+
+				resourceTag := "-"
+				if waiver.ResourceTag != nil {
+					resourceTag = *waiver.ResourceTag
+				}
+				row := listRuleWaiversViewItem{
 					ID:                   *waiver.ID,
 					Name:                 *waiver.Name,
-					Comment:              *&waiver.Comment,
+					Comment:              waiver.Comment,
 					EnvironmentID:        *waiver.EnvironmentID,
-					EnvironmentName:      *&waiver.EnvironmentName,
+					EnvironmentName:      waiver.EnvironmentName,
 					RuleID:               *waiver.RuleID,
 					ResourceID:           *waiver.ResourceID,
 					ResourceType:         *waiver.ResourceType,
 					ResourceProvider:     *waiver.ResourceProvider,
+					ResourceTag:          resourceTag,
 					CreatedAt:            format.Unix(waiver.CreatedAt),
 					CreatedBy:            waiver.CreatedBy,
 					CreatedByDisplayName: waiver.CreatedByDisplayName,
 					UpdatedAt:            format.Unix(waiver.UpdatedAt),
 					UpdatedBy:            waiver.UpdatedBy,
 					UpdatedByDisplayName: waiver.UpdatedByDisplayName,
-				})
+				}
+				rows = append(rows, row)
+
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -184,6 +192,7 @@ func NewListRuleWaiversCommand() *cobra.Command {
 		"ResourceID",
 		"ResourceType",
 		"ResourceProvider",
+		"ResourceTag",
 	}
 
 	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for ID, Name, and Rule ID")
