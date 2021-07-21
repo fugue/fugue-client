@@ -61,9 +61,7 @@ func NewListInvitesCommand() *cobra.Command {
 				params.Email = &opts.Email
 				resp, err := client.Invites.ListInvites(params, auth)
 				CheckErr(err)
-				for _, invite := range resp.Payload.Items {
-					invitesList = append(invitesList, invite)
-				}
+				invitesList = append(invitesList, resp.Payload.Items...)
 				if opts.FetchAll && resp.Payload.IsTruncated {
 					offset = resp.Payload.NextOffset
 					continue

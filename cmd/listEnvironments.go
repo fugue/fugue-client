@@ -115,9 +115,7 @@ func NewListEnvironmentsCommand() *cobra.Command {
 				}
 				resp, err := client.Environments.ListEnvironments(params, auth)
 				CheckErr(err)
-				for _, env := range resp.Payload.Items {
-					envs = append(envs, env)
-				}
+				envs = append(envs, resp.Payload.Items...)
 				if opts.FetchAll && resp.Payload.IsTruncated {
 					offset = resp.Payload.NextOffset
 					continue

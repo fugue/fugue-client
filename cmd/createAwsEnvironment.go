@@ -153,7 +153,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 
 			if opts.Region == "" && len(opts.Regions) == 0 {
 				if opts.Provider != "aws" && opts.Provider != "aws_govcloud" {
-					return fmt.Errorf("Regions not specified. Please specify a provider: aws or aws_govcloud")
+					return fmt.Errorf("regions not specified. Please specify a provider: aws or aws_govcloud")
 				}
 				opts.Regions = []string{"*"}
 			} else if opts.Region != "" {
@@ -173,7 +173,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				}
 				opts.Regions = regions
 			} else {
-				return fmt.Errorf("Unknown error: %s", args)
+				return fmt.Errorf("unknown error: %s", args)
 			}
 			return nil
 		},

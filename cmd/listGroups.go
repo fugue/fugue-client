@@ -62,9 +62,7 @@ func NewListGroupsCommand() *cobra.Command {
 				}
 				resp, err := client.Groups.ListGroups(params, auth)
 				CheckErr(err)
-				for _, group := range resp.Payload.Items {
-					groupsList = append(groupsList, group)
-				}
+				groupsList = append(groupsList, resp.Payload.Items...)
 				if opts.FetchAll && resp.Payload.IsTruncated {
 					offset = resp.Payload.NextOffset
 					continue
