@@ -25,7 +25,7 @@ type Families struct {
 	IsTruncated bool `json:"is_truncated,omitempty"`
 
 	// items
-	Items []*Family `json:"items"`
+	Items []*FamilyList `json:"items"`
 
 	// next offset
 	NextOffset int64 `json:"next_offset,omitempty"`
