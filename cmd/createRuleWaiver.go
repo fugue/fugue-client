@@ -59,8 +59,8 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 			waiver := resp.Payload
 
 			var item Item
-			if waiver.ResourceTag != nil {
-				item = Item{"RESOURCE_TAG", *waiver.ResourceTag}
+			if waiver.ResourceTag != "" {
+				item = Item{"RESOURCE_TAG", waiver.ResourceTag}
 			} else {
 				item = Item{"RESOURCE_TAG", "-"}
 			}

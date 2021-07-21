@@ -145,8 +145,8 @@ func NewListRuleWaiversCommand() *cobra.Command {
 			for _, waiver := range waivers {
 
 				resourceTag := "-"
-				if waiver.ResourceTag != nil {
-					resourceTag = *waiver.ResourceTag
+				if waiver.ResourceTag != "" {
+					resourceTag = waiver.ResourceTag
 				}
 				row := listRuleWaiversViewItem{
 					ID:                   *waiver.ID,
