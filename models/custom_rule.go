@@ -34,6 +34,9 @@ type CustomRule struct {
 	// Description of the custom rule.
 	Description string `json:"description,omitempty"`
 
+	// Families to which the custom rule belongs.
+	Families []string `json:"families"`
+
 	// ID of the custom rule.
 	ID string `json:"id,omitempty"`
 

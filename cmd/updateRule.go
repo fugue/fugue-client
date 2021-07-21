@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 
@@ -19,6 +20,7 @@ type updateRuleOptions struct {
 	Severity     string
 	ResourceType string
 	RuleText     string
+	Families     []string
 }
 
 // NewUpdateRuleCommand returns a command that updates a custom rule
@@ -54,6 +56,8 @@ func NewUpdateRuleCommand() *cobra.Command {
 					params.Rule.ResourceType = opts.ResourceType
 				case "text":
 					params.Rule.RuleText = opts.RuleText
+				case "families":
+					params.Rule.Families = opts.Families
 				}
 			})
 
@@ -75,6 +79,12 @@ func NewUpdateRuleCommand() *cobra.Command {
 				Item{"STATUS", rule.Status},
 			}
 
+			families := strings.Join(rule.Families[:], ",")
+			if len(families) > 64 {
+				families = families[:61] + "..."
+			}
+			items = append(items, Item{"FAMILIES", families})
+
 			table, err := format.Table(format.TableOpts{
 				Rows:       items,
 				Columns:    []string{"Attribute", "Value"},
@@ -93,6 +103,7 @@ func NewUpdateRuleCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Severity, "severity", "", "Severity")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "", "Resource type")
 	cmd.Flags().StringVar(&opts.RuleText, "text", "", "Rule text")
+	cmd.Flags().StringSliceVar(&opts.Families, "families", nil, "Families")
 
 	return cmd
 }

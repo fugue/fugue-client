@@ -21,3 +21,5 @@ swagger.yaml
 fugue-client
 fugue-darwin-amd64
 fugue-linux-amd64
+.env
+
