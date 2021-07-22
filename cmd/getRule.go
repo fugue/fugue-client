@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/format"
@@ -45,6 +46,13 @@ func NewGetRuleCommand() *cobra.Command {
 				Item{"SEVERITY", rule.Severity},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"STATUS", rule.Status},
+				Item{"FAMILIES", strings.Join(rule.Families[:], ",")},
+				Item{"CREATED_AT", format.Unix(rule.CreatedAt)},
+				Item{"CREATED_BY", rule.CreatedBy},
+				Item{"CREATED_BY_DISPLAY_NAME", rule.CreatedByDisplayName},
+				Item{"UPDATED_AT", format.Unix(rule.UpdatedAt)},
+				Item{"UPDATED_BY", rule.UpdatedBy},
+				Item{"UPDATED_BY_DISPLAY_NAME", rule.UpdatedByDisplayName},
 			}
 
 			table, err := format.Table(format.TableOpts{

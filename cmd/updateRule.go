@@ -77,10 +77,14 @@ func NewUpdateRuleCommand() *cobra.Command {
 				Item{"SEVERITY", rule.Severity},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"STATUS", rule.Status},
+				Item{"FAMILIES", strings.Join(rule.Families[:], ",")},
+				Item{"CREATED_AT", format.Unix(rule.CreatedAt)},
+				Item{"CREATED_BY", rule.CreatedBy},
+				Item{"CREATED_BY_DISPLAY_NAME", rule.CreatedByDisplayName},
+				Item{"UPDATED_AT", format.Unix(rule.UpdatedAt)},
+				Item{"UPDATED_BY", rule.UpdatedBy},
+				Item{"UPDATED_BY_DISPLAY_NAME", rule.UpdatedByDisplayName},
 			}
-
-			families := strings.Join(rule.Families[:], ",")
-			items = append(items, Item{"FAMILIES", families})
 
 			table, err := format.Table(format.TableOpts{
 				Rows:       items,

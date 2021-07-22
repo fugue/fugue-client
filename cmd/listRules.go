@@ -71,11 +71,11 @@ func NewListRulesCommand() *cobra.Command {
 					ResourceType: rule.ResourceType,
 					RuleText:     rule.RuleText,
 					Status:       rule.Status,
+					Families:     families,
 					CreatedAt:    format.Unix(rule.CreatedAt),
 					CreatedBy:    rule.CreatedBy,
 					UpdatedAt:    format.Unix(rule.UpdatedAt),
 					UpdatedBy:    rule.UpdatedBy,
-					Families:     families,
 				})
 			}
 
