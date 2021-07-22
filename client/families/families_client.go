@@ -27,7 +27,7 @@ type Client struct {
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateFamily(params *CreateFamilyParams, authInfo runtime.ClientAuthInfoWriter) (*CreateFamilyOK, error)
+	CreateFamily(params *CreateFamilyParams, authInfo runtime.ClientAuthInfoWriter) (*CreateFamilyCreated, error)
 
 	DeleteFamily(params *DeleteFamilyParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteFamilyNoContent, error)
 
@@ -46,7 +46,7 @@ type ClientService interface {
   Create a new custom compliance family.
 
 */
-func (a *Client) CreateFamily(params *CreateFamilyParams, authInfo runtime.ClientAuthInfoWriter) (*CreateFamilyOK, error) {
+func (a *Client) CreateFamily(params *CreateFamilyParams, authInfo runtime.ClientAuthInfoWriter) (*CreateFamilyCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateFamilyParams()
@@ -68,7 +68,7 @@ func (a *Client) CreateFamily(params *CreateFamilyParams, authInfo runtime.Clien
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*CreateFamilyOK)
+	success, ok := result.(*CreateFamilyCreated)
 	if ok {
 		return success, nil
 	}

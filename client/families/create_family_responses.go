@@ -23,8 +23,8 @@ type CreateFamilyReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *CreateFamilyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewCreateFamilyOK()
+	case 201:
+		result := NewCreateFamilyCreated()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -59,28 +59,28 @@ func (o *CreateFamilyReader) ReadResponse(response runtime.ClientResponse, consu
 	}
 }
 
-// NewCreateFamilyOK creates a CreateFamilyOK with default headers values
-func NewCreateFamilyOK() *CreateFamilyOK {
-	return &CreateFamilyOK{}
+// NewCreateFamilyCreated creates a CreateFamilyCreated with default headers values
+func NewCreateFamilyCreated() *CreateFamilyCreated {
+	return &CreateFamilyCreated{}
 }
 
-/*CreateFamilyOK handles this case with default header values.
+/*CreateFamilyCreated handles this case with default header values.
 
 The newly-created custom compliance family.
 */
-type CreateFamilyOK struct {
+type CreateFamilyCreated struct {
 	Payload *models.Family
 }
 
-func (o *CreateFamilyOK) Error() string {
-	return fmt.Sprintf("[POST /families][%d] createFamilyOK  %+v", 200, o.Payload)
+func (o *CreateFamilyCreated) Error() string {
+	return fmt.Sprintf("[POST /families][%d] createFamilyCreated  %+v", 201, o.Payload)
 }
 
-func (o *CreateFamilyOK) GetPayload() *models.Family {
+func (o *CreateFamilyCreated) GetPayload() *models.Family {
 	return o.Payload
 }
 
-func (o *CreateFamilyOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *CreateFamilyCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.Family)
 

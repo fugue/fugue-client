@@ -37,7 +37,7 @@ func NewGetFamilyCommand() *cobra.Command {
 				Item{"DESCRIPTION", family.Description},
 				Item{"PROVIDERS", providers},
 				Item{"RECOMMENDED", family.Recommended},
-				Item{"RULE IDS", ruleIDs},
+				Item{"RULE_IDS", ruleIDs},
 			}
 
 			table, err := format.Table(format.TableOpts{
