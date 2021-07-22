@@ -69,20 +69,20 @@ func NewCreateFamilyCreated() *CreateFamilyCreated {
 The newly-created custom compliance family.
 */
 type CreateFamilyCreated struct {
-	Payload *models.Family
+	Payload *models.FamilyWithRules
 }
 
 func (o *CreateFamilyCreated) Error() string {
 	return fmt.Sprintf("[POST /families][%d] createFamilyCreated  %+v", 201, o.Payload)
 }
 
-func (o *CreateFamilyCreated) GetPayload() *models.Family {
+func (o *CreateFamilyCreated) GetPayload() *models.FamilyWithRules {
 	return o.Payload
 }
 
 func (o *CreateFamilyCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.Family)
+	o.Payload = new(models.FamilyWithRules)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

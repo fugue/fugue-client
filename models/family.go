@@ -43,9 +43,6 @@ type Family struct {
 	// If the family is recommended for all new environments
 	Recommended bool `json:"recommended,omitempty"`
 
-	// List of rule ids associated with family
-	RuleIds []string `json:"rule_ids"`
-
 	// The origin of this family
 	// Enum: [FUGUE CUSTOM]
 	Source string `json:"source,omitempty"`

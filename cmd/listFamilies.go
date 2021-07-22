@@ -12,12 +12,19 @@ import (
 )
 
 type listFamiliesOptions struct {
-	Columns        []string
-	Offset         int64
-	MaxItems       int64
-	OrderBy        string
-	OrderDirection string
-	FetchAll       bool
+	Columns           []string
+	IDFilter          string
+	NameFilter        string
+	DescriptionFilter string
+	SourceFilter      string
+	ProvidersFilter   string
+	RecommendedFilter string
+	SearchQuery       string
+	Offset            int64
+	MaxItems          int64
+	OrderBy           string
+	OrderDirection    string
+	FetchAll          bool
 }
 
 type listFamiliesViewItem struct {
@@ -59,7 +66,30 @@ func NewListFamiliesCommand() *cobra.Command {
 
 			searchParams := []string{}
 
-			var fams []*models.FamilyList
+			// Search query filter
+			if opts.SearchQuery != "" {
+				searchParams = append(searchParams, opts.SearchQuery)
+			}
+			if opts.IDFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("id:%s", opts.IDFilter))
+			}
+			if opts.NameFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("name:%s", opts.NameFilter))
+			}
+			if opts.DescriptionFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("description:%s", opts.DescriptionFilter))
+			}
+			if opts.SourceFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("source:%s", opts.SourceFilter))
+			}
+			if opts.ProvidersFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("providers:%s", opts.ProvidersFilter))
+			}
+			if opts.RecommendedFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("recommended:%s", opts.RecommendedFilter))
+			}
+
+			var familiesList []*models.Family
 			offset := opts.Offset
 			for {
 
@@ -81,7 +111,7 @@ func NewListFamiliesCommand() *cobra.Command {
 				resp, err := client.Families.ListFamilies(params, auth)
 				CheckErr(err)
 
-				fams = append(fams, resp.Payload.Items...)
+				familiesList = append(familiesList, resp.Payload.Items...)
 
 				if opts.FetchAll && resp.Payload.IsTruncated {
 					offset = resp.Payload.NextOffset
@@ -91,7 +121,7 @@ func NewListFamiliesCommand() *cobra.Command {
 			}
 
 			var rows []interface{}
-			for _, family := range fams {
+			for _, family := range familiesList {
 
 				description := family.Description
 				if len(description) > 32 {
@@ -139,6 +169,14 @@ func NewListFamiliesCommand() *cobra.Command {
 		"Providers",
 		"Recommended",
 	}
+
+	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for ID, Name, etc...")
+	cmd.Flags().StringVar(&opts.IDFilter, "id", "", "ID filter (substring match, including provider account identifiers)")
+	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
+	cmd.Flags().StringVar(&opts.DescriptionFilter, "description", "", "Description filter (substring match)")
+	cmd.Flags().StringVar(&opts.SourceFilter, "source", "", "Source filter (substring match)")
+	cmd.Flags().StringVar(&opts.ProvidersFilter, "providers", "", "Providers filter (substring match)")
+	cmd.Flags().StringVar(&opts.RecommendedFilter, "recommended", "", "Recommended filter (substring match)")
 
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")
 	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset into results")

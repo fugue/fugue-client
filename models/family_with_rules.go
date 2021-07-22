@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// FamilyList A family
+// FamilyWithRules A family with rule IDs
 //
-// swagger:model FamilyList
-type FamilyList struct {
+// swagger:model FamilyWithRules
+type FamilyWithRules struct {
 
 	// The date and time the rule was created.
 	CreatedAt int64 `json:"created_at,omitempty"`
@@ -43,6 +43,9 @@ type FamilyList struct {
 	// If the family is recommended for all new environments
 	Recommended bool `json:"recommended,omitempty"`
 
+	// List of rule ids associated with family
+	RuleIds []string `json:"rule_ids"`
+
 	// The origin of this family
 	// Enum: [FUGUE CUSTOM]
 	Source string `json:"source,omitempty"`
@@ -57,8 +60,8 @@ type FamilyList struct {
 	UpdatedByDisplayName string `json:"updated_by_display_name,omitempty"`
 }
 
-// Validate validates this family list
-func (m *FamilyList) Validate(formats strfmt.Registry) error {
+// Validate validates this family with rules
+func (m *FamilyWithRules) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateSource(formats); err != nil {
@@ -71,7 +74,7 @@ func (m *FamilyList) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var familyListTypeSourcePropEnum []interface{}
+var familyWithRulesTypeSourcePropEnum []interface{}
 
 func init() {
 	var res []string
@@ -79,28 +82,28 @@ func init() {
 		panic(err)
 	}
 	for _, v := range res {
-		familyListTypeSourcePropEnum = append(familyListTypeSourcePropEnum, v)
+		familyWithRulesTypeSourcePropEnum = append(familyWithRulesTypeSourcePropEnum, v)
 	}
 }
 
 const (
 
-	// FamilyListSourceFUGUE captures enum value "FUGUE"
-	FamilyListSourceFUGUE string = "FUGUE"
+	// FamilyWithRulesSourceFUGUE captures enum value "FUGUE"
+	FamilyWithRulesSourceFUGUE string = "FUGUE"
 
-	// FamilyListSourceCUSTOM captures enum value "CUSTOM"
-	FamilyListSourceCUSTOM string = "CUSTOM"
+	// FamilyWithRulesSourceCUSTOM captures enum value "CUSTOM"
+	FamilyWithRulesSourceCUSTOM string = "CUSTOM"
 )
 
 // prop value enum
-func (m *FamilyList) validateSourceEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, familyListTypeSourcePropEnum); err != nil {
+func (m *FamilyWithRules) validateSourceEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, familyWithRulesTypeSourcePropEnum); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m *FamilyList) validateSource(formats strfmt.Registry) error {
+func (m *FamilyWithRules) validateSource(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Source) { // not required
 		return nil
@@ -115,7 +118,7 @@ func (m *FamilyList) validateSource(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *FamilyList) MarshalBinary() ([]byte, error) {
+func (m *FamilyWithRules) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -123,8 +126,8 @@ func (m *FamilyList) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *FamilyList) UnmarshalBinary(b []byte) error {
-	var res FamilyList
+func (m *FamilyWithRules) UnmarshalBinary(b []byte) error {
+	var res FamilyWithRules
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
