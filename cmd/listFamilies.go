@@ -42,7 +42,7 @@ func NewListFamiliesCommand() *cobra.Command {
 		Use:     "families",
 		Short:   "Lists details for multiple families",
 		Long:    `Lists details for multiple families`,
-		Aliases: []string{"fams", "fam"},
+		Aliases: []string{"family"},
 		Run: func(cmd *cobra.Command, args []string) {
 
 			client, auth := getClient()

@@ -38,6 +38,12 @@ func NewGetFamilyCommand() *cobra.Command {
 				Item{"PROVIDERS", providers},
 				Item{"RECOMMENDED", family.Recommended},
 				Item{"RULE_IDS", ruleIDs},
+				Item{"CREATED_AT", format.Unix(family.CreatedAt)},
+				Item{"CREATED_BY", family.CreatedBy},
+				Item{"CREATED_BY_DISPLAY_NAME", family.CreatedByDisplayName},
+				Item{"UPDATED_AT", format.Unix(family.UpdatedAt)},
+				Item{"UPDATED_BY", family.UpdatedBy},
+				Item{"UPDATED_BY_DISPLAY_NAME", family.UpdatedByDisplayName},
 			}
 
 			table, err := format.Table(format.TableOpts{

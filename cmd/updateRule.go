@@ -80,9 +80,6 @@ func NewUpdateRuleCommand() *cobra.Command {
 			}
 
 			families := strings.Join(rule.Families[:], ",")
-			if len(families) > 64 {
-				families = families[:61] + "..."
-			}
 			items = append(items, Item{"FAMILIES", families})
 
 			table, err := format.Table(format.TableOpts{
