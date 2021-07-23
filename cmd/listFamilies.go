@@ -170,13 +170,13 @@ func NewListFamiliesCommand() *cobra.Command {
 		"Recommended",
 	}
 
-	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for ID, Name, etc...")
-	cmd.Flags().StringVar(&opts.IDFilter, "id", "", "ID filter (substring match, including provider account identifiers)")
+	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for Id, Name, Description, Provider, Source and Recommended")
+	cmd.Flags().StringVar(&opts.IDFilter, "id", "", "ID filter (substring match, case insensitive)")
 	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
-	cmd.Flags().StringVar(&opts.DescriptionFilter, "description", "", "Description filter (substring match)")
-	cmd.Flags().StringVar(&opts.SourceFilter, "source", "", "Source filter (substring match)")
-	cmd.Flags().StringVar(&opts.ProvidersFilter, "providers", "", "Providers filter (substring match)")
-	cmd.Flags().StringVar(&opts.RecommendedFilter, "recommended", "", "Recommended filter (substring match)")
+	cmd.Flags().StringVar(&opts.DescriptionFilter, "description", "", "Description filter (substring match, case insensitive)")
+	cmd.Flags().StringVar(&opts.SourceFilter, "source", "", "Source filter (substring match, case insensitive)")
+	cmd.Flags().StringVar(&opts.ProvidersFilter, "providers", "", "Providers filter (substring match, case insensitive)")
+	cmd.Flags().StringVar(&opts.RecommendedFilter, "recommended", "", "Recommended filter (substring match, case insensitive)")
 
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")
 	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset into results")
