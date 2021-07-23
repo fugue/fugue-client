@@ -58,18 +58,13 @@ func NewListRulesCommand() *cobra.Command {
 					description = description[:29] + "..."
 				}
 
-				families := []string{}
+				familiesShort := []string{}
 				for _, family := range rule.Families {
-					if format.IsValidUUID(family) {
-						families = append(families, family[:7]+"-")
-					} else {
-						families = append(families, family)
-					}
+					familiesShort = append(familiesShort, format.ShortenValidUUID(family))
 				}
-
-				familiesStr := strings.Join(families, ",")
-				if len(familiesStr) > 64 {
-					familiesStr = familiesStr[:61] + "..."
+				families := strings.Join(familiesShort, ",")
+				if len(families) > 32 {
+					families = families[:29] + "..."
 				}
 
 				rows = append(rows, listRulesViewItem{
@@ -81,7 +76,7 @@ func NewListRulesCommand() *cobra.Command {
 					ResourceType: rule.ResourceType,
 					RuleText:     rule.RuleText,
 					Status:       rule.Status,
-					Families:     familiesStr,
+					Families:     families,
 					CreatedAt:    format.Unix(rule.CreatedAt),
 					CreatedBy:    rule.CreatedBy,
 					UpdatedAt:    format.Unix(rule.UpdatedAt),
