@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/format"
@@ -54,13 +53,14 @@ func NewCreateRuleCommand() *cobra.Command {
 			rule := resp.Payload
 
 			items := []interface{}{
+				Item{"RULE_ID", rule.ID},
 				Item{"NAME", rule.Name},
 				Item{"DESCRIPTION", rule.Description},
 				Item{"PROVIDER", rule.Provider},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"SEVERITY", rule.Severity},
 				Item{"STATUS", rule.Status},
-				Item{"FAMILIES", strings.Join(rule.Families[:], ",")},
+				Item{"FAMILIES", "-"}, // Family is always created without families
 				Item{"CREATED_AT", format.Unix(rule.CreatedAt)},
 				Item{"CREATED_BY", rule.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", rule.CreatedByDisplayName},

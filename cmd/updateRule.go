@@ -70,6 +70,11 @@ func NewUpdateRuleCommand() *cobra.Command {
 
 			rule := resp.Payload
 
+			families := strings.Join(rule.Families[:], ",")
+			if len(families) <= 0 {
+				families = "-"
+			}
+
 			items := []interface{}{
 				Item{"NAME", rule.Name},
 				Item{"DESCRIPTION", rule.Description},
@@ -77,7 +82,7 @@ func NewUpdateRuleCommand() *cobra.Command {
 				Item{"SEVERITY", rule.Severity},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"STATUS", rule.Status},
-				Item{"FAMILIES", strings.Join(rule.Families[:], ",")},
+				Item{"FAMILIES", families},
 				Item{"CREATED_AT", format.Unix(rule.CreatedAt)},
 				Item{"CREATED_BY", rule.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", rule.CreatedByDisplayName},

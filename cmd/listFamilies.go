@@ -83,7 +83,7 @@ func NewListFamiliesCommand() *cobra.Command {
 				searchParams = append(searchParams, fmt.Sprintf("source:%s", opts.SourceFilter))
 			}
 			if opts.ProvidersFilter != "" {
-				searchParams = append(searchParams, fmt.Sprintf("providers:%s", opts.ProvidersFilter))
+				searchParams = append(searchParams, fmt.Sprintf("provider:%s", opts.ProvidersFilter))
 			}
 			if opts.RecommendedFilter != "" {
 				searchParams = append(searchParams, fmt.Sprintf("recommended:%s", opts.RecommendedFilter))
