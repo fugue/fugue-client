@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/fugue/fugue-client/client/invites"
 	"github.com/fugue/fugue-client/format"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 // NewGetInviteCommand returns a command that retrieves invite details

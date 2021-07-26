@@ -70,7 +70,7 @@ func NewUpdateRuleCommand() *cobra.Command {
 
 			rule := resp.Payload
 
-			families := strings.Join(rule.Families[:], ",")
+			families := strings.Join(rule.Families[:], ", ")
 			if len(families) <= 0 {
 				families = "-"
 			}

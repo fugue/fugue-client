@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/fugue/fugue-client/client/users"
 	"github.com/fugue/fugue-client/format"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 // NewGetUserCommand returns a command that retrieves user details

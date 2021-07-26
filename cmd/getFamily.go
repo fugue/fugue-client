@@ -28,8 +28,8 @@ func NewGetFamilyCommand() *cobra.Command {
 
 			family := resp.Payload
 
-			providers := strings.Join(family.Providers[:], ",")
-			ruleIDs := strings.Join(family.RuleIds[:], ",")
+			providers := strings.Join(family.Providers[:], ", ")
+			ruleIDs := strings.Join(family.RuleIds[:], ", ")
 
 			items := []interface{}{
 				Item{"NAME", family.Name},

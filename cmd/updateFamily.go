@@ -63,7 +63,7 @@ func NewUpdateFamilyCommand() *cobra.Command {
 
 			family := resp.Payload
 
-			ruleIDs := strings.Join(family.RuleIds[:], ",")
+			ruleIDs := strings.Join(family.RuleIds[:], ", ")
 			items := []interface{}{
 				Item{"NAME", family.Name},
 				Item{"DESCRIPTION", family.Description},
