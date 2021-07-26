@@ -22,7 +22,7 @@ type UpdateFamilyInput struct {
 	Name string `json:"name,omitempty"`
 
 	// If the family is recommended for all new environments
-	Recommended bool `json:"recommended,omitempty"`
+	Recommended *bool `json:"recommended,omitempty"`
 
 	// List of rule ids to associate with family
 	RuleIds []string `json:"rule_ids"`

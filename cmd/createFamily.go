@@ -32,7 +32,7 @@ func NewCreateFamilyCommand() *cobra.Command {
 			params.Family = &models.CreateFamilyInput{
 				Name:        opts.Name,
 				Description: opts.Description,
-				Recommended: opts.Recommended,
+				Recommended: &opts.Recommended,
 				RuleIds:     opts.RuleIDs,
 			}
 

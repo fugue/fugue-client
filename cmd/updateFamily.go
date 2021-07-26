@@ -48,7 +48,7 @@ func NewUpdateFamilyCommand() *cobra.Command {
 				case "description":
 					params.Family.Description = opts.Description
 				case "recommended":
-					params.Family.Recommended = opts.Recommended
+					params.Family.Recommended = &opts.Recommended
 				case "rule-ids":
 					params.Family.RuleIds = opts.RuleIDs
 				}
