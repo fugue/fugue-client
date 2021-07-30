@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fugue/fugue-client/client/families"
 	"github.com/fugue/fugue-client/format"
@@ -48,19 +49,26 @@ func NewCreateFamilyCommand() *cobra.Command {
 
 			family := resp.Payload
 
-			var item Item
+			var itemRules Item
 			if len(family.RuleIds) > 0 {
-				item = Item{"RULE_IDS", family.RuleIds}
+				itemRules = Item{"RULE_IDS", strings.Join(family.RuleIds[:], ", ")}
 			} else {
-				item = Item{"RULE_IDS", "-"}
+				itemRules = Item{"RULE_IDS", "-"}
+			}
+			var itemProviders Item
+			if len(family.Providers) > 0 {
+				itemProviders = Item{"PROVIDERS", strings.Join(family.Providers[:], ", ")}
+			} else {
+				itemProviders = Item{"PROVIDERS", "-"}
 			}
 
 			items := []interface{}{
 				Item{"FAMILY_ID", family.ID},
 				Item{"NAME", family.Name},
 				Item{"DESCRIPTION", family.Description},
+				itemProviders,
 				Item{"RECOMMENDED", family.Recommended},
-				item,
+				itemRules,
 				Item{"CREATED_AT", format.Unix(family.CreatedAt)},
 				Item{"CREATED_BY", family.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", family.CreatedByDisplayName},

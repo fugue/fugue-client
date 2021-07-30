@@ -63,12 +63,25 @@ func NewUpdateFamilyCommand() *cobra.Command {
 
 			family := resp.Payload
 
-			ruleIDs := strings.Join(family.RuleIds[:], ", ")
+			var itemRules Item
+			if len(family.RuleIds) > 0 {
+				itemRules = Item{"RULE_IDS", strings.Join(family.RuleIds[:], ", ")}
+			} else {
+				itemRules = Item{"RULE_IDS", "-"}
+			}
+			var itemProviders Item
+			if len(family.Providers) > 0 {
+				itemProviders = Item{"PROVIDERS", strings.Join(family.Providers[:], ", ")}
+			} else {
+				itemProviders = Item{"PROVIDERS", "-"}
+			}
+
 			items := []interface{}{
 				Item{"NAME", family.Name},
 				Item{"DESCRIPTION", family.Description},
+				itemProviders,
 				Item{"RECOMMENDED", family.Recommended},
-				Item{"RULE_IDS", ruleIDs},
+				itemRules,
 				Item{"CREATED_AT", format.Unix(family.CreatedAt)},
 				Item{"CREATED_BY", family.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", family.CreatedByDisplayName},

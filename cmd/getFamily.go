@@ -28,16 +28,26 @@ func NewGetFamilyCommand() *cobra.Command {
 
 			family := resp.Payload
 
-			providers := strings.Join(family.Providers[:], ", ")
-			ruleIDs := strings.Join(family.RuleIds[:], ", ")
+			var itemRules Item
+			if len(family.RuleIds) > 0 {
+				itemRules = Item{"RULE_IDS", strings.Join(family.RuleIds[:], ", ")}
+			} else {
+				itemRules = Item{"RULE_IDS", "-"}
+			}
+			var itemProviders Item
+			if len(family.Providers) > 0 {
+				itemProviders = Item{"PROVIDERS", strings.Join(family.Providers[:], ", ")}
+			} else {
+				itemProviders = Item{"PROVIDERS", "-"}
+			}
 
 			items := []interface{}{
 				Item{"NAME", family.Name},
-				Item{"SOURCE", family.Source},
 				Item{"DESCRIPTION", family.Description},
-				Item{"PROVIDERS", providers},
+				Item{"SOURCE", family.Source},
+				itemProviders,
 				Item{"RECOMMENDED", family.Recommended},
-				Item{"RULE_IDS", ruleIDs},
+				itemRules,
 				Item{"CREATED_AT", format.Unix(family.CreatedAt)},
 				Item{"CREATED_BY", family.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", family.CreatedByDisplayName},
