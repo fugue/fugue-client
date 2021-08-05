@@ -56,7 +56,7 @@ func NewGetEnvironmentCommand() *cobra.Command {
 				lastScanID = lsResp.Payload.Items[0].ID
 			}
 
-			families := strings.Join(env.ComplianceFamilies, ",")
+			families := strings.Join(env.ComplianceFamilies, ", ")
 			if families == "" {
 				families = "-"
 			}
@@ -87,14 +87,14 @@ func NewGetEnvironmentCommand() *cobra.Command {
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
-					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ", ")})
 				}
 			case "aws_govcloud":
 				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.AwsGovcloud.RoleArn})
 				if env.ProviderOptions.AwsGovcloud.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
 				} else if len(env.ProviderOptions.AwsGovcloud.Regions) > 0 {
-					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ",")})
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ", ")})
 				}
 			case "azure":
 				items = append(items, Item{"SUBSCRIPTION_ID", env.ProviderOptions.Azure.SubscriptionID})
@@ -105,9 +105,10 @@ func NewGetEnvironmentCommand() *cobra.Command {
 			}
 
 			table, err := format.Table(format.TableOpts{
-				Rows:       items,
-				Columns:    []string{"Attribute", "Value"},
-				ShowHeader: true,
+				Rows:         items,
+				Columns:      []string{"Attribute", "Value"},
+				ShowHeader:   true,
+				MaxCellWidth: 70,
 			})
 			CheckErr(err)
 

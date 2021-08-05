@@ -62,9 +62,7 @@ func NewListUsersCommand() *cobra.Command {
 				params.Email = &opts.Email
 				resp, err := client.Users.ListUsers(params, auth)
 				CheckErr(err)
-				for _, user := range resp.Payload.Items {
-					usersList = append(usersList, user)
-				}
+				usersList = append(usersList, resp.Payload.Items...)
 				if opts.FetchAll && resp.Payload.IsTruncated {
 					offset = resp.Payload.NextOffset
 					continue

@@ -1,3 +1,4 @@
+//lint:file-ignore U1000 Ignore all unused code
 package cmd
 
 import (
@@ -7,7 +8,6 @@ import (
 	"os"
 
 	"github.com/fugue/fugue-client/client"
-	apiclient "github.com/fugue/fugue-client/client"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
@@ -48,11 +48,11 @@ func getClient() (*client.Fugue, runtime.ClientAuthInfoWriter) {
 	base := getEnvWithDefault("FUGUE_API_BASE", DefaultBase)
 
 	transport := httptransport.New(host, base, []string{"https"})
-	client := apiclient.New(transport, strfmt.Default)
+	apiclient := client.New(transport, strfmt.Default)
 
 	auth := httptransport.BasicAuth(clientID, clientSecret)
 
-	return client, auth
+	return apiclient, auth
 }
 
 func showResponse(obj interface{}) {

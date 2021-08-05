@@ -43,8 +43,8 @@ func NewGetRuleWaiverCommand() *cobra.Command {
 			}
 
 			var item Item
-			if waiver.ResourceTag != nil {
-				item = Item{"RESOURCE_TAG", *waiver.ResourceTag}
+			if waiver.ResourceTag != "" {
+				item = Item{"RESOURCE_TAG", waiver.ResourceTag}
 			} else {
 				item = Item{"RESOURCE_TAG", "-"}
 			}
@@ -56,7 +56,7 @@ func NewGetRuleWaiverCommand() *cobra.Command {
 				Item{"ENVIRONMENT_NAME", waiver.EnvironmentName},
 				Item{"RULE_ID", *waiver.RuleID},
 				Item{"RULE_DESCRIPTION", waiver.RuleDescription},
-				Item{"RULE_COMPLIANCE_MAPPING", strings.Join(controls, ",")},
+				Item{"RULE_COMPLIANCE_MAPPING", strings.Join(controls, ", ")},
 				Item{"RESOURCE_ID", *waiver.ResourceID},
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},

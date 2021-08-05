@@ -53,18 +53,27 @@ func NewCreateRuleCommand() *cobra.Command {
 			rule := resp.Payload
 
 			items := []interface{}{
+				Item{"RULE_ID", rule.ID},
 				Item{"NAME", rule.Name},
 				Item{"DESCRIPTION", rule.Description},
 				Item{"PROVIDER", rule.Provider},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"SEVERITY", rule.Severity},
 				Item{"STATUS", rule.Status},
+				Item{"FAMILIES", "-"}, // Family is always created without families
+				Item{"CREATED_AT", format.Unix(rule.CreatedAt)},
+				Item{"CREATED_BY", rule.CreatedBy},
+				Item{"CREATED_BY_DISPLAY_NAME", rule.CreatedByDisplayName},
+				Item{"UPDATED_AT", format.Unix(rule.UpdatedAt)},
+				Item{"UPDATED_BY", rule.UpdatedBy},
+				Item{"UPDATED_BY_DISPLAY_NAME", rule.UpdatedByDisplayName},
 			}
 
 			table, err := format.Table(format.TableOpts{
-				Rows:       items,
-				Columns:    []string{"Attribute", "Value"},
-				ShowHeader: true,
+				Rows:         items,
+				Columns:      []string{"Attribute", "Value"},
+				ShowHeader:   true,
+				MaxCellWidth: 70,
 			})
 			CheckErr(err)
 

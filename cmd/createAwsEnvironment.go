@@ -103,7 +103,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 
 			env := resp.Payload
 
-			families := strings.Join(env.ComplianceFamilies, ",")
+			families := strings.Join(env.ComplianceFamilies, ", ")
 			if families == "" {
 				families = "-"
 			}
@@ -127,21 +127,22 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.Aws.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
-					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ",")})
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.Aws.Regions, ", ")})
 				}
 			case "aws_govcloud":
 				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.AwsGovcloud.RoleArn})
 				if env.ProviderOptions.Aws.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
 				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
-					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ",")})
+					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ", ")})
 				}
 			}
 
 			table, err := format.Table(format.TableOpts{
-				Rows:       items,
-				Columns:    []string{"Attribute", "Value"},
-				ShowHeader: true,
+				Rows:         items,
+				Columns:      []string{"Attribute", "Value"},
+				ShowHeader:   true,
+				MaxCellWidth: 70,
 			})
 			CheckErr(err)
 
@@ -153,7 +154,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 
 			if opts.Region == "" && len(opts.Regions) == 0 {
 				if opts.Provider != "aws" && opts.Provider != "aws_govcloud" {
-					return fmt.Errorf("Regions not specified. Please specify a provider: aws or aws_govcloud")
+					return fmt.Errorf("regions not specified. Please specify a provider: aws or aws_govcloud")
 				}
 				opts.Regions = []string{"*"}
 			} else if opts.Region != "" {
@@ -173,7 +174,7 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				}
 				opts.Regions = regions
 			} else {
-				return fmt.Errorf("Unknown error: %s", args)
+				return fmt.Errorf("unknown error: %s", args)
 			}
 			return nil
 		},

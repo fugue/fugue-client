@@ -66,7 +66,7 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 			CheckErr(err)
 			env := resp.Payload
 
-			families := strings.Join(env.ComplianceFamilies, ",")
+			families := strings.Join(env.ComplianceFamilies, ", ")
 
 			items := []interface{}{
 				Item{"ENVIRONMENT_ID", env.ID},
@@ -84,9 +84,10 @@ func NewCreateAzureEnvironmentCommand() *cobra.Command {
 			}
 
 			table, err := format.Table(format.TableOpts{
-				Rows:       items,
-				Columns:    []string{"Attribute", "Value"},
-				ShowHeader: true,
+				Rows:         items,
+				Columns:      []string{"Attribute", "Value"},
+				ShowHeader:   true,
+				MaxCellWidth: 70,
 			})
 			CheckErr(err)
 

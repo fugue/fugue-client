@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/format"
@@ -21,6 +22,7 @@ type listRulesViewItem struct {
 	ResourceType string
 	RuleText     string
 	Status       string
+	Families     string
 	CreatedAt    string
 	CreatedBy    string
 	UpdatedAt    string
@@ -55,6 +57,16 @@ func NewListRulesCommand() *cobra.Command {
 				if len(description) > 32 {
 					description = description[:29] + "..."
 				}
+
+				familiesShort := []string{}
+				for _, family := range rule.Families {
+					familiesShort = append(familiesShort, format.ShortenValidUUID(family))
+				}
+				families := strings.Join(familiesShort, ",")
+				if len(families) > 32 {
+					families = families[:29] + "..."
+				}
+
 				rows = append(rows, listRulesViewItem{
 					ID:           rule.ID,
 					Name:         rule.Name,
@@ -64,6 +76,7 @@ func NewListRulesCommand() *cobra.Command {
 					ResourceType: rule.ResourceType,
 					RuleText:     rule.RuleText,
 					Status:       rule.Status,
+					Families:     families,
 					CreatedAt:    format.Unix(rule.CreatedAt),
 					CreatedBy:    rule.CreatedBy,
 					UpdatedAt:    format.Unix(rule.UpdatedAt),
@@ -92,6 +105,7 @@ func NewListRulesCommand() *cobra.Command {
 		"ResourceType",
 		"Status",
 		"Description",
+		"Families",
 	}
 
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")

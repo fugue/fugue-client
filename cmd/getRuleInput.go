@@ -9,10 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type getRuleInputOptions struct {
-	ScanID string
-}
-
 func getRuleInput(opts testRuleOptions) error {
 	client, auth := getClient()
 

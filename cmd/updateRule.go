@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 
@@ -19,6 +20,7 @@ type updateRuleOptions struct {
 	Severity     string
 	ResourceType string
 	RuleText     string
+	Families     []string
 }
 
 // NewUpdateRuleCommand returns a command that updates a custom rule
@@ -54,6 +56,8 @@ func NewUpdateRuleCommand() *cobra.Command {
 					params.Rule.ResourceType = opts.ResourceType
 				case "text":
 					params.Rule.RuleText = opts.RuleText
+				case "families":
+					params.Rule.Families = opts.Families
 				}
 			})
 
@@ -66,6 +70,11 @@ func NewUpdateRuleCommand() *cobra.Command {
 
 			rule := resp.Payload
 
+			families := strings.Join(rule.Families[:], ", ")
+			if len(families) <= 0 {
+				families = "-"
+			}
+
 			items := []interface{}{
 				Item{"NAME", rule.Name},
 				Item{"DESCRIPTION", rule.Description},
@@ -73,12 +82,20 @@ func NewUpdateRuleCommand() *cobra.Command {
 				Item{"SEVERITY", rule.Severity},
 				Item{"RESOURCE_TYPE", rule.ResourceType},
 				Item{"STATUS", rule.Status},
+				Item{"FAMILIES", families},
+				Item{"CREATED_AT", format.Unix(rule.CreatedAt)},
+				Item{"CREATED_BY", rule.CreatedBy},
+				Item{"CREATED_BY_DISPLAY_NAME", rule.CreatedByDisplayName},
+				Item{"UPDATED_AT", format.Unix(rule.UpdatedAt)},
+				Item{"UPDATED_BY", rule.UpdatedBy},
+				Item{"UPDATED_BY_DISPLAY_NAME", rule.UpdatedByDisplayName},
 			}
 
 			table, err := format.Table(format.TableOpts{
-				Rows:       items,
-				Columns:    []string{"Attribute", "Value"},
-				ShowHeader: true,
+				Rows:         items,
+				Columns:      []string{"Attribute", "Value"},
+				ShowHeader:   true,
+				MaxCellWidth: 70,
 			})
 			CheckErr(err)
 
@@ -93,6 +110,7 @@ func NewUpdateRuleCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Severity, "severity", "", "Severity")
 	cmd.Flags().StringVar(&opts.ResourceType, "resource-type", "", "Resource type")
 	cmd.Flags().StringVar(&opts.RuleText, "text", "", "Rule text")
+	cmd.Flags().StringSliceVar(&opts.Families, "families", nil, "Families")
 
 	return cmd
 }
