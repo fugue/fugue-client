@@ -11,10 +11,11 @@ import (
 )
 
 type createFamilyOptions struct {
-	Name        string
-	Description string
-	Recommended bool
-	RuleIDs     []string
+	Name          string
+	Description   string
+	Recommended   bool
+	AlwaysEnabled bool
+	RuleIDs       []string
 }
 
 // NewCreateFamilyCommand returns a command that creates a family
@@ -31,10 +32,11 @@ func NewCreateFamilyCommand() *cobra.Command {
 
 			params := families.NewCreateFamilyParams()
 			params.Family = &models.CreateFamilyInput{
-				Name:        opts.Name,
-				Description: opts.Description,
-				Recommended: &opts.Recommended,
-				RuleIds:     opts.RuleIDs,
+				Name:          opts.Name,
+				Description:   opts.Description,
+				Recommended:   &opts.Recommended,
+				AlwaysEnabled: &opts.AlwaysEnabled,
+				RuleIds:       opts.RuleIDs,
 			}
 
 			resp, err := client.Families.CreateFamily(params, auth)
@@ -68,6 +70,7 @@ func NewCreateFamilyCommand() *cobra.Command {
 				Item{"DESCRIPTION", family.Description},
 				itemProviders,
 				Item{"RECOMMENDED", family.Recommended},
+				Item{"ALWAYS_ENABLED", family.AlwaysEnabled},
 				itemRules,
 				Item{"CREATED_AT", format.Unix(family.CreatedAt)},
 				Item{"CREATED_BY", family.CreatedBy},
@@ -94,6 +97,7 @@ func NewCreateFamilyCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Family name")
 	cmd.Flags().StringVar(&opts.Description, "description", "", "Description")
 	cmd.Flags().BoolVar(&opts.Recommended, "recommended", true, "If the family is recommended for all new environments")
+	cmd.Flags().BoolVar(&opts.AlwaysEnabled, "always-enabled", false, "If the family will automatically be enabled on all environments within the tenant")
 	cmd.Flags().StringSliceVar(&opts.RuleIDs, "rule-ids", []string{}, "List of rule IDs to associate with the family (e.g. FG_R00217,<UUID Custom Rule ID>)")
 
 	cmd.MarkFlagRequired("name")

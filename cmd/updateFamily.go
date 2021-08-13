@@ -14,10 +14,11 @@ import (
 )
 
 type updateFamilyOptions struct {
-	Name        string
-	Description string
-	Recommended bool
-	RuleIDs     []string
+	Name          string
+	Description   string
+	Recommended   bool
+	AlwaysEnabled bool
+	RuleIDs       []string
 }
 
 // NewUpdateFamilyCommand returns a command that updates a custom family
@@ -49,6 +50,8 @@ func NewUpdateFamilyCommand() *cobra.Command {
 					params.Family.Description = opts.Description
 				case "recommended":
 					params.Family.Recommended = &opts.Recommended
+				case "always-enabled":
+					params.Family.AlwaysEnabled = &opts.AlwaysEnabled
 				case "rule-ids":
 					params.Family.RuleIds = opts.RuleIDs
 				}
@@ -81,6 +84,7 @@ func NewUpdateFamilyCommand() *cobra.Command {
 				Item{"DESCRIPTION", family.Description},
 				itemProviders,
 				Item{"RECOMMENDED", family.Recommended},
+				Item{"ALWAYS_ENABLED", family.AlwaysEnabled},
 				itemRules,
 				Item{"CREATED_AT", format.Unix(family.CreatedAt)},
 				Item{"CREATED_BY", family.CreatedBy},
@@ -107,6 +111,7 @@ func NewUpdateFamilyCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Family name")
 	cmd.Flags().StringVar(&opts.Description, "description", "", "Description")
 	cmd.Flags().BoolVar(&opts.Recommended, "recommended", true, "If the family is recommended for all new environments")
+	cmd.Flags().BoolVar(&opts.AlwaysEnabled, "always-enabled", false, "If the family will automatically be enabled on all environments within the tenant")
 	cmd.Flags().StringSliceVar(&opts.RuleIDs, "rule-ids", []string{}, "List of rule IDs to associate with the family (e.g. FG_R00217,<UUID Custom Rule ID>)")
 
 	return cmd

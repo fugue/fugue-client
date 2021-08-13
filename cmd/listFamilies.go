@@ -12,32 +12,34 @@ import (
 )
 
 type listFamiliesOptions struct {
-	Columns           []string
-	IDFilter          string
-	NameFilter        string
-	DescriptionFilter string
-	SourceFilter      string
-	ProvidersFilter   string
-	RecommendedFilter string
-	SearchQuery       string
-	Offset            int64
-	MaxItems          int64
-	OrderBy           string
-	OrderDirection    string
-	FetchAll          bool
+	Columns             []string
+	IDFilter            string
+	NameFilter          string
+	DescriptionFilter   string
+	SourceFilter        string
+	ProvidersFilter     string
+	RecommendedFilter   string
+	AlwaysEnabledFilter string
+	SearchQuery         string
+	Offset              int64
+	MaxItems            int64
+	OrderBy             string
+	OrderDirection      string
+	FetchAll            bool
 }
 
 type listFamiliesViewItem struct {
-	ID          string
-	Name        string
-	Source      string
-	Description string
-	Providers   string
-	Recommended bool
-	CreatedAt   string
-	CreatedBy   string
-	UpdatedAt   string
-	UpdatedBy   string
+	ID            string
+	Name          string
+	Source        string
+	Description   string
+	Providers     string
+	Recommended   bool
+	AlwaysEnabled bool
+	CreatedAt     string
+	CreatedBy     string
+	UpdatedAt     string
+	UpdatedBy     string
 }
 
 // NewListFamiliesCommand returns a command that lists families in Fugue
@@ -88,6 +90,9 @@ func NewListFamiliesCommand() *cobra.Command {
 			if opts.RecommendedFilter != "" {
 				searchParams = append(searchParams, fmt.Sprintf("recommended:%s", opts.RecommendedFilter))
 			}
+			if opts.AlwaysEnabledFilter != "" {
+				searchParams = append(searchParams, fmt.Sprintf("always-enabled:%s", opts.AlwaysEnabledFilter))
+			}
 
 			var familiesList []*models.Family
 			offset := opts.Offset
@@ -134,16 +139,17 @@ func NewListFamiliesCommand() *cobra.Command {
 
 				rows = append(rows, listFamiliesViewItem{
 
-					ID:          family.ID,
-					Name:        family.Name,
-					Source:      family.Source,
-					Description: description,
-					Providers:   providers,
-					Recommended: family.Recommended,
-					CreatedAt:   format.Unix(family.CreatedAt),
-					CreatedBy:   family.CreatedBy,
-					UpdatedAt:   format.Unix(family.UpdatedAt),
-					UpdatedBy:   family.UpdatedBy,
+					ID:            family.ID,
+					Name:          family.Name,
+					Source:        family.Source,
+					Description:   description,
+					Providers:     providers,
+					Recommended:   family.Recommended,
+					AlwaysEnabled: family.AlwaysEnabled,
+					CreatedAt:     format.Unix(family.CreatedAt),
+					CreatedBy:     family.CreatedBy,
+					UpdatedAt:     format.Unix(family.UpdatedAt),
+					UpdatedBy:     family.UpdatedBy,
 				})
 
 			}
@@ -168,6 +174,7 @@ func NewListFamiliesCommand() *cobra.Command {
 		"Description",
 		"Providers",
 		"Recommended",
+		"AlwaysEnabled",
 	}
 
 	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for Id, Name, Description, Provider, Source and Recommended")
@@ -177,6 +184,7 @@ func NewListFamiliesCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.SourceFilter, "source", "", "Source filter (substring match, case insensitive)")
 	cmd.Flags().StringVar(&opts.ProvidersFilter, "providers", "", "Providers filter (substring match, case insensitive)")
 	cmd.Flags().StringVar(&opts.RecommendedFilter, "recommended", "", "Recommended filter (substring match, case insensitive)")
+	cmd.Flags().StringVar(&opts.AlwaysEnabledFilter, "always-enabled", "", "AlwaysEnabled filter (substring match, case insensitive)")
 
 	cmd.Flags().StringSliceVar(&opts.Columns, "columns", defaultCols, "Columns to show")
 	cmd.Flags().Int64Var(&opts.Offset, "offset", 0, "Offset into results")
