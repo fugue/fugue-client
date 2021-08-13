@@ -91,7 +91,7 @@ func NewListFamiliesCommand() *cobra.Command {
 				searchParams = append(searchParams, fmt.Sprintf("recommended:%s", opts.RecommendedFilter))
 			}
 			if opts.AlwaysEnabledFilter != "" {
-				searchParams = append(searchParams, fmt.Sprintf("always-enabled:%s", opts.AlwaysEnabledFilter))
+				searchParams = append(searchParams, fmt.Sprintf("always_enabled:%s", opts.AlwaysEnabledFilter))
 			}
 
 			var familiesList []*models.Family
@@ -177,7 +177,7 @@ func NewListFamiliesCommand() *cobra.Command {
 		"AlwaysEnabled",
 	}
 
-	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for Id, Name, Description, Provider, Source and Recommended")
+	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for Id, Name, Description, Provider, Source, Recommended and AlwaysEnabled")
 	cmd.Flags().StringVar(&opts.IDFilter, "id", "", "ID filter (substring match, case sensitive)")
 	cmd.Flags().StringVar(&opts.NameFilter, "name", "", "Name filter (substring match, case insensitive)")
 	cmd.Flags().StringVar(&opts.DescriptionFilter, "description", "", "Description filter (substring match, case insensitive)")
