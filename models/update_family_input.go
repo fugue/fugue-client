@@ -15,6 +15,9 @@ import (
 // swagger:model UpdateFamilyInput
 type UpdateFamilyInput struct {
 
+	// If the family will automatically be enabled on all environments within the tenant
+	AlwaysEnabled *bool `json:"always_enabled,omitempty"`
+
 	// Description of the family
 	Description string `json:"description,omitempty"`
 

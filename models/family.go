@@ -19,6 +19,9 @@ import (
 // swagger:model Family
 type Family struct {
 
+	// If the family will automatically be enabled on all environments within the tenant
+	AlwaysEnabled bool `json:"always_enabled,omitempty"`
+
 	// The date and time the rule was created.
 	CreatedAt int64 `json:"created_at,omitempty"`
 
@@ -46,6 +49,9 @@ type Family struct {
 	// The origin of this family
 	// Enum: [FUGUE CUSTOM]
 	Source string `json:"source,omitempty"`
+
+	// ID of the tenant
+	TenantID string `json:"tenant_id,omitempty"`
 
 	// The date and time the rule was last updated.
 	UpdatedAt int64 `json:"updated_at,omitempty"`

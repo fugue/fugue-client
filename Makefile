@@ -67,6 +67,8 @@ gen: $(SWAGGER)
 	sed -i "" "s/float64/int64/g" $(INVITE_SRC)
 	sed -i "" "s/Recommended bool/Recommended *bool/g" $(UPDATE_FAMILY_SRC)
 	sed -i "" "s/Recommended bool/Recommended *bool/g" $(CREATE_FAMILY_SRC)
+	sed -i "" "s/AlwaysEnabled bool/AlwaysEnabled *bool/g" $(UPDATE_FAMILY_SRC)
+	sed -i "" "s/AlwaysEnabled bool/AlwaysEnabled *bool/g" $(CREATE_FAMILY_SRC)
 
 .PHONY: test
 test:

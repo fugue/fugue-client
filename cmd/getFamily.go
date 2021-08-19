@@ -47,6 +47,7 @@ func NewGetFamilyCommand() *cobra.Command {
 				Item{"SOURCE", family.Source},
 				itemProviders,
 				Item{"RECOMMENDED", family.Recommended},
+				Item{"ALWAYS_ENABLED", family.AlwaysEnabled},
 				itemRules,
 				Item{"CREATED_AT", format.Unix(family.CreatedAt)},
 				Item{"CREATED_BY", family.CreatedBy},
