@@ -7,7 +7,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.14
     environment:
       GOMODULE111=on
     working_directory: /go/src/github.com/fugue/fugue-client

@@ -12,8 +12,16 @@ import (
 	"strings"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
+	"github.com/fugue/fugue-client/client/families"
 	"github.com/fugue/fugue-client/models"
+	"github.com/fugue/regula/pkg/regotools/metadoc"
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+)
+
+var (
+	targetRuleFamilies string
 )
 
 type regoFile struct {
@@ -116,6 +124,44 @@ func loadRego(path string) (*regoFile, error) {
 	return &rego, err
 }
 
+var familyToUUIDCache map[string]string = nil
+
+func familyToUUID(family string) (string, bool) {
+	if familyToUUIDCache == nil {
+		client, auth := getClient()
+		familyToUUIDCache = make(map[string]string)
+
+		isTruncated := true
+		currentOffset := int64(0)
+		maxItems := int64(10)
+		for isTruncated {
+			params := families.NewListFamiliesParams()
+			params.Offset = &currentOffset
+			params.MaxItems = &maxItems
+
+			if famList, err := client.Families.ListFamilies(params, auth); err == nil {
+				for _, famInfo := range famList.Payload.Items {
+					if !(famInfo.Source == "CUSTOM" || famInfo.ID == "Custom") {
+						continue
+					}
+					familyToUUIDCache[famInfo.Name] = famInfo.ID
+				}
+
+				isTruncated = famList.Payload.IsTruncated
+				currentOffset = famList.Payload.NextOffset
+			} else {
+				logrus.Fatalf("Error fetching families: %s\n", err)
+			}
+		}
+	}
+
+	if uuid, ok := familyToUUIDCache[family]; ok {
+		return uuid, true
+	} else {
+		return "", false
+	}
+}
+
 // NewSyncRulesCommand returns a command that watches a directory for changes
 // to rego files
 func NewSyncRulesCommand() *cobra.Command {
@@ -140,6 +186,11 @@ func NewSyncRulesCommand() *cobra.Command {
 				return nil
 			}
 
+			var targetFamilies []string = nil
+			if targetRuleFamilies != "" {
+				targetFamilies = strings.Split(targetRuleFamilies, ",")
+			}
+
 			updateRule := func(path string) error {
 
 				rego, err := loadRego(path)
@@ -149,6 +200,30 @@ func NewSyncRulesCommand() *cobra.Command {
 				}
 				if rego == nil {
 					return nil
+				}
+
+				var ruleFamilies []string = nil
+
+				// We want to allow people to override the families specified in the
+				// __rego_metadoc__ block using the command line.
+				if len(targetFamilies) == 0 {
+					md, err := metadoc.RegoMetaFromPath(path)
+					if err != nil {
+						log.Fatal(err)
+					}
+					for _, family := range md.Families {
+						if _, err := uuid.Parse(family); err == nil {
+							ruleFamilies = append(ruleFamilies, family)
+						} else {
+							if familyUUID, ok := familyToUUID(family); !ok {
+								log.Fatalf("Unable to find family '%s' (referenced in '%s').", family, path)
+							} else {
+								ruleFamilies = append(ruleFamilies, familyUUID)
+							}
+						}
+					}
+				} else {
+					ruleFamilies = targetFamilies
 				}
 
 				existingRule := getRuleByName(rego.Name)
@@ -163,7 +238,22 @@ func NewSyncRulesCommand() *cobra.Command {
 						Severity:     rego.Severity,
 						RuleText:     rego.Text,
 					}
-					client.CustomRules.CreateCustomRule(params, auth)
+
+					created, err := client.CustomRules.CreateCustomRule(params, auth)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					if ruleFamilies != nil {
+						famParams := custom_rules.NewUpdateCustomRuleParams()
+						famParams.RuleID = created.Payload.ID
+						famParams.Rule = &models.UpdateCustomRuleInput{
+							Families: ruleFamilies,
+						}
+						if _, err := client.CustomRules.UpdateCustomRule(famParams, auth); err != nil {
+							log.Fatal(err)
+						}
+					}
 				} else {
 					fmt.Println("Updating rule", rego.Name)
 					params := custom_rules.NewUpdateCustomRuleParams()
@@ -173,8 +263,11 @@ func NewSyncRulesCommand() *cobra.Command {
 						ResourceType: rego.ResourceType,
 						Severity:     rego.Severity,
 						RuleText:     rego.Text,
+						Families:     ruleFamilies,
 					}
-					client.CustomRules.UpdateCustomRule(params, auth)
+					if _, err := client.CustomRules.UpdateCustomRule(params, auth); err != nil {
+						log.Fatal(err)
+					}
 				}
 				return nil
 			}
@@ -189,6 +282,7 @@ func NewSyncRulesCommand() *cobra.Command {
 			}
 		},
 	}
+	cmd.Flags().StringVarP(&targetRuleFamilies, "target-rule-family", "", "", "Comma separated list of UUID of families")
 	return cmd
 }
 
