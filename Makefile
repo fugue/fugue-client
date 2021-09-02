@@ -35,24 +35,33 @@ $(BINARY)-darwin-amd64: $(SOURCES)
 $(BINARY).exe: $(SOURCES)
 	GOOS=windows GOARCH=386 $(GO) build $(LD_FLAGS) -o $@
 
+.PHONY: help
+help: ## Show this help
+	@egrep '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
 .PHONY: release
+release: ## Create release binaries
 release: $(BINARY)-linux-amd64 $(BINARY)-darwin-amd64 $(BINARY).exe
 
 .PHONY: build
+build: ## Build native binary
 build: $(BINARY)
 
 .PHONY: install
+install: ## Insall binary to $GOPATH/bin
 install: $(BINARY)
 	cp $(BINARY) $(GOPATH)/bin/
 
-$(SWAGGER):
+$(SWAGGER): ## Download Swagger definitions from web
 	wget -q -O $(SWAGGER) $(SWAGGER_URL)
 
 .PHONY: validate
+validate: ## Validate Swagger definitions
 validate: $(SWAGGER)
 	swagger validate $(SWAGGER)
 
 .PHONY: gen
+gen: ## Generate Go Swagger interface
 gen: $(SWAGGER)
 	# go-swagger: https://goswagger.io/
 	$(GOSWAGGER) generate client -f $(SWAGGER)
@@ -71,11 +80,12 @@ gen: $(SWAGGER)
 	sed -i "" "s/AlwaysEnabled bool/AlwaysEnabled *bool/g" $(CREATE_FAMILY_SRC)
 
 .PHONY: test
+test: ## Run tests
 test:
 	$(GO) test -test.v ./...
 
 .PHONY: clean
-clean:
+clean: ## Remove generated executables
 	rm -f $(BINARY)
 	rm -f $(BINARY)-linux-amd64
 	rm -f $(BINARY)-darwin-amd64
