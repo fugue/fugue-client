@@ -31,6 +31,7 @@ type regoFile struct {
 	Description  string
 	Severity     string
 	Text         string
+	Meta         metadoc.RegoMeta
 }
 
 func (rego *regoFile) ParseText() error {
@@ -76,6 +77,25 @@ func (rego *regoFile) ParseText() error {
 	rego.ResourceType = getHeader("Resource-Type")
 	rego.Description = getHeader("Description")
 	rego.Severity = getHeader("Severity")
+
+	if md, err := metadoc.RegoMetaFromString(rego.Text); err == nil {
+		rego.Meta = *md
+
+		if rego.Meta.Provider != "" {
+			rego.Provider = rego.Meta.Provider
+		}
+		if rego.Meta.ResourceType != "" {
+			rego.ResourceType = rego.Meta.ResourceType
+		}
+		if rego.Meta.Description != "" {
+			rego.Description = rego.Meta.Description
+		}
+		if rego.Meta.Severity != "" {
+			rego.Severity = rego.Meta.Severity
+		}
+	} else {
+		return err
+	}
 
 	// Throw errors if things are missing.
 	if rego.ResourceType == "" {

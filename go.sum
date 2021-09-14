@@ -272,6 +272,8 @@ github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWo
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/fugue/regula v1.3.3-0.20210913151108-62a24084ced7 h1:VsGXA3cjSck9IDtuFZ3oCHsTsvGi8WFN7lja0aAii2Y=
 github.com/fugue/regula v1.3.3-0.20210913151108-62a24084ced7/go.mod h1:pnB6KC++s30MKMEBydivIFOvLuDzDn+bEOflqZ7U2Rw=
+github.com/fugue/regula v1.3.3-0.20210915131409-5c6ddce3aa6a h1:h+zSZmOfjHZPF458dC9z4LEFAyFfzsCYxfhX1byw0FA=
+github.com/fugue/regula v1.3.3-0.20210915131409-5c6ddce3aa6a/go.mod h1:pnB6KC++s30MKMEBydivIFOvLuDzDn+bEOflqZ7U2Rw=
 github.com/fullstorydev/grpcurl v1.6.0/go.mod h1:ZQ+ayqbKMJNhzLmbpCiurTVlaK2M/3nqZCxaQ2Ze/sM=
 github.com/fzipp/gocyclo v0.3.1/go.mod h1:DJHO6AUmbdqj2ET4Z9iArSuwWgYDRryYt2wASxc7x3E=
 github.com/gammazero/deque v0.0.0-20180920172122-f6adf94963e4/go.mod h1:GeIq9qoE43YdGnDXURnmKTnGg15pQz4mYkXSTChbneI=
