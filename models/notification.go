@@ -43,7 +43,7 @@ type Notification struct {
 	TopicArn string `json:"topic_arn,omitempty"`
 
 	// AWS The date and time the notification was last updated.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// UpdatedAt
 
 	// Principal that last updated the notification.
 	UpdatedBy string `json:"updated_by,omitempty"`
