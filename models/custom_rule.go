@@ -65,6 +65,9 @@ type CustomRule struct {
 	// Enum: [ENABLED DISABLED INVALID]
 	Status string `json:"status,omitempty"`
 
+	// Terraform resource type corresponding to resource_type.
+	TfResourceType string `json:"tf_resource_type,omitempty"`
+
 	// The date and time the rule was last updated.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 

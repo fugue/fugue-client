@@ -16,6 +16,7 @@ CREATE_ENV_SRC=models/create_environment_input.go
 INVITE_SRC=models/invite.go
 UPDATE_FAMILY_SRC=models/update_family_input.go
 CREATE_FAMILY_SRC=models/create_family_input.go
+NOTIFICATION_SRC=models/notification.go
 
 GOSWAGGER=docker run --rm -it \
 	--volume $(shell pwd):/fugue-client \
@@ -69,6 +70,7 @@ gen: $(SWAGGER)
 	sed -i "" "s/Recommended bool/Recommended *bool/g" $(CREATE_FAMILY_SRC)
 	sed -i "" "s/AlwaysEnabled bool/AlwaysEnabled *bool/g" $(UPDATE_FAMILY_SRC)
 	sed -i "" "s/AlwaysEnabled bool/AlwaysEnabled *bool/g" $(CREATE_FAMILY_SRC)
+	sed -i "" 's|CreatedAt int64 `json:"created_at,omitempty"`|// CreatedAt int64 `json:"created_at,omitempty"`|g' $(NOTIFICATION_SRC)
 
 .PHONY: test
 test:

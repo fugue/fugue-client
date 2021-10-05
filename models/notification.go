@@ -16,7 +16,7 @@ import (
 type Notification struct {
 
 	// The date and time the notification was created.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Principal the created the notification.
 	CreatedBy string `json:"created_by,omitempty"`
