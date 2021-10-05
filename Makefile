@@ -70,7 +70,8 @@ gen: $(SWAGGER)
 	sed -i "" "s/Recommended bool/Recommended *bool/g" $(CREATE_FAMILY_SRC)
 	sed -i "" "s/AlwaysEnabled bool/AlwaysEnabled *bool/g" $(UPDATE_FAMILY_SRC)
 	sed -i "" "s/AlwaysEnabled bool/AlwaysEnabled *bool/g" $(CREATE_FAMILY_SRC)
-	sed -i "" 's|CreatedAt int64 `json:"created_at,omitempty"`|// CreatedAt int64 `json:"created_at,omitempty"`|g' $(NOTIFICATION_SRC)
+	sed -i "" 's|CreatedAt [^ ]*|// CreatedAt|g' $(NOTIFICATION_SRC)
+	sed -i "" 's|Environments [^ ]*|// Environments|g' $(NOTIFICATION_SRC)
 
 .PHONY: test
 test:
