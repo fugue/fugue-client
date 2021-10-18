@@ -2,15 +2,17 @@ package cmd
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseRego(t *testing.T) {
 	tests := []struct {
-		name        string
-		rego        *regoFile
-		expProvider string
-		expResource string
-		expSeverity string
+		name         string
+		rego         *regoFile
+		expProviders []string
+		expResource  string
+		expSeverity  string
 	}{
 		{
 			"single-aws",
@@ -22,7 +24,7 @@ func TestParseRego(t *testing.T) {
 # Description: fake
 deny{}`,
 			},
-			"AWS",
+			[]string{"AWS"},
 			"AWS.EC2.Instance",
 			"Low",
 		},
@@ -36,7 +38,7 @@ deny{}`,
 # Severity: Medium
 deny{}`,
 			},
-			"AWS",
+			[]string{"AWS"},
 			"MULTIPLE",
 			"Medium",
 		},
@@ -50,7 +52,7 @@ deny{}`,
 # Severity: High
 deny{}`,
 			},
-			"AWS_GOVCLOUD",
+			[]string{"AWS_GOVCLOUD"},
 			"AWS.EC2.Instance",
 			"High",
 		},
@@ -64,7 +66,7 @@ deny{}`,
 # Severity: Critical
 deny{}`,
 			},
-			"AWS_GOVCLOUD",
+			[]string{"AWS_GOVCLOUD"},
 			"MULTIPLE",
 			"Critical",
 		},
@@ -78,7 +80,7 @@ deny{}`,
 # Severity: Informational
 deny{}`,
 			},
-			"Azure",
+			[]string{"Azure"},
 			"Azure.Compute.VirtualMachine",
 			"Informational",
 		},
@@ -92,7 +94,7 @@ deny{}`,
 # Severity: Low
 deny{}`,
 			},
-			"Azure",
+			[]string{"Azure"},
 			"MULTIPLE",
 			"Low",
 		},
@@ -108,7 +110,7 @@ allow {
   input.server_side_encryption_configuration[_].rule[_][_][_].sse_algorithm = _
 }`,
 			},
-			"AWS_GOVCLOUD",
+			[]string{"AWS_GOVCLOUD"},
 			"AWS.S3.Bucket",
 			"Medium",
 		},
@@ -121,7 +123,7 @@ allow {
 # Description: fake
 deny{}`,
 			},
-			"AWS",
+			[]string{"AWS"},
 			"AWS.EC2.Instance",
 			"High",
 		},
@@ -134,15 +136,9 @@ deny{}`,
 			if err != nil {
 				t.Errorf("Error in parseRego %s", err.Error())
 			}
-			if tt.rego.Provider != tt.expProvider {
-				t.Errorf("Expected %s, actual %s", tt.expProvider, tt.rego.Provider)
-			}
-			if tt.rego.ResourceType != tt.expResource {
-				t.Errorf("Expected %s, actual %s", tt.expResource, tt.rego.ResourceType)
-			}
-			if tt.rego.Severity != tt.expSeverity {
-				t.Errorf("Expected %s, actual %s", tt.expSeverity, tt.rego.Severity)
-			}
+			assert.Equal(t, tt.expProviders, tt.rego.Providers)
+			assert.Equal(t, tt.expResource, tt.rego.ResourceType)
+			assert.Equal(t, tt.expSeverity, tt.rego.Severity)
 		})
 	}
 }
