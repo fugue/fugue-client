@@ -26,7 +26,7 @@ var (
 
 type regoFile struct {
 	Name         string
-	Provider     string
+	Providers    []string
 	ResourceType string
 	Description  string
 	Severity     string
@@ -73,7 +73,9 @@ func (rego *regoFile) ParseText() error {
 		return ""
 	}
 
-	rego.Provider = getHeader("Provider")
+	if provider := getHeader("Provider"); provider != "" {
+		rego.Providers = []string{provider}
+	}
 	rego.ResourceType = getHeader("Resource-Type")
 	rego.Description = getHeader("Description")
 	rego.Severity = getHeader("Severity")
@@ -81,8 +83,8 @@ func (rego *regoFile) ParseText() error {
 	if md, err := metadoc.RegoMetaFromString(rego.Text); err == nil {
 		rego.Meta = *md
 
-		if rego.Meta.Provider != "" {
-			rego.Provider = rego.Meta.Provider
+		if len(rego.Meta.Providers) > 0 {
+			rego.Providers = rego.Meta.Providers
 		}
 		if rego.Meta.ResourceType != "" {
 			rego.ResourceType = rego.Meta.ResourceType
@@ -104,8 +106,8 @@ func (rego *regoFile) ParseText() error {
 	if rego.Description == "" {
 		return errors.New("expected a description by the header \"Description\"")
 	}
-	if rego.Provider == "" {
-		return errors.New("expected a provider by the header \"Provider\"")
+	if len(rego.Providers) == 0 {
+		return errors.New("expected a provider by the header \"Provider\" or a providers metadoc entry")
 	}
 	if rego.Severity == "" {
 		rego.Severity = "High"
@@ -254,7 +256,7 @@ func NewSyncRulesCommand() *cobra.Command {
 						Name:         rego.Name,
 						Description:  rego.Description,
 						ResourceType: rego.ResourceType,
-						Provider:     rego.Provider,
+						Providers:    rego.Providers,
 						Severity:     rego.Severity,
 						RuleText:     rego.Text,
 					}
