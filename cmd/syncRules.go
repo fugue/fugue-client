@@ -290,6 +290,7 @@ func NewSyncRulesCommand() *cobra.Command {
 					params.Rule = &models.UpdateCustomRuleInput{
 						Description:  rego.Description,
 						ResourceType: rego.ResourceType,
+						Providers:    rego.Providers,
 						Severity:     rego.Severity,
 						RuleText:     rego.Text,
 						Families:     ruleFamilies,
