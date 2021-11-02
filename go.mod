@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/fatih/structs v1.1.0
-	github.com/fugue/regula v1.6.1-0.20211018170057-4b4cb4a15d1a
+	github.com/fugue/regula v1.6.1-0.20211102142320-8ddf7beaa70a
 	github.com/go-openapi/errors v0.19.6
 	github.com/go-openapi/runtime v0.19.29
 	github.com/go-openapi/strfmt v0.19.5
