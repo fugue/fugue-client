@@ -26,89 +26,98 @@ var (
 
 type regoFile struct {
 	Name         string
-	Provider     string
+	Providers    []string
 	ResourceType string
 	Description  string
 	Severity     string
 	Text         string
-	Meta         metadoc.RegoMeta
 }
 
 func (rego *regoFile) ParseText() error {
-	// Extract the header block from the first comment block.
-	headerText := ""
-	inFirstCommentBlock := false
-	for _, line := range strings.Split(rego.Text, "\n") {
-		if strings.HasPrefix(line, "#") {
-			if !inFirstCommentBlock && headerText == "" {
-				inFirstCommentBlock = true
-			}
-			if inFirstCommentBlock {
-				headerText += strings.TrimSpace(strings.TrimPrefix(line, "#"))
-				headerText += "\r\n"
-			}
-		} else {
-			inFirstCommentBlock = false
-		}
-	}
-
-	// Parse the HTTP headers in `headerText`.
-	reader := bufio.NewReader(strings.NewReader(headerText + "\r\n"))
-	tp := textproto.NewReader(reader)
-	headers := make(map[string][]string)
-	mimeHeader, err := tp.ReadMIMEHeader()
+	md, err := metadoc.RegoMetaFromString(rego.Text)
 	if err != nil {
-		log.Fatal(err)
-	} else {
-		headers = http.Header(mimeHeader)
-	}
-
-	// Helper to obtain a specific header.
-	getHeader := func(name string) string {
-		if arr, ok := headers[name]; ok {
-			if len(arr) > 0 {
-				return arr[0]
-			}
-		}
-		return ""
-	}
-
-	rego.Provider = getHeader("Provider")
-	rego.ResourceType = getHeader("Resource-Type")
-	rego.Description = getHeader("Description")
-	rego.Severity = getHeader("Severity")
-
-	if md, err := metadoc.RegoMetaFromString(rego.Text); err == nil {
-		rego.Meta = *md
-
-		if rego.Meta.Provider != "" {
-			rego.Provider = rego.Meta.Provider
-		}
-		if rego.Meta.ResourceType != "" {
-			rego.ResourceType = rego.Meta.ResourceType
-		}
-		if rego.Meta.Description != "" {
-			rego.Description = rego.Meta.Description
-		}
-		if rego.Meta.Severity != "" {
-			rego.Severity = rego.Meta.Severity
-		}
-	} else {
 		return err
 	}
 
-	// Throw errors if things are missing.
-	if rego.ResourceType == "" {
-		return errors.New("expected a resource type by the header \"Resource-Type\"")
-	}
-	if rego.Description == "" {
-		return errors.New("expected a description by the header \"Description\"")
-	}
-	if rego.Provider == "" {
-		return errors.New("expected a provider by the header \"Provider\"")
-	}
-	if rego.Severity == "" {
-		rego.Severity = "High"
+	if md.HasMetadoc() {
+		rego.Name = md.Title
+		rego.Providers = md.Providers
+		rego.ResourceType = md.ResourceType
+		rego.Description = md.Description
+		rego.Severity = md.Severity
+		if rego.Name == "" {
+			return errors.New("expected a 'title' entry in the __rego__metadoc__")
+		}
+		if rego.ResourceType == "" {
+			return errors.New("expected a resource_type in the rule")
+		}
+		if rego.Description == "" {
+			return errors.New("expected a 'description' entry in the __rego__metadoc__")
+		}
+		if len(rego.Providers) == 0 {
+			return errors.New("expected a 'custom.providers' entry in the __rego__metadoc__")
+		}
+		if rego.Severity == "" {
+			rego.Severity = "High"
+		}
+	} else {
+		// Extract the header block from the first comment block.
+		headerText := ""
+		inFirstCommentBlock := false
+		for _, line := range strings.Split(rego.Text, "\n") {
+			if strings.HasPrefix(line, "#") {
+				if !inFirstCommentBlock && headerText == "" {
+					inFirstCommentBlock = true
+				}
+				if inFirstCommentBlock {
+					headerText += strings.TrimSpace(strings.TrimPrefix(line, "#"))
+					headerText += "\r\n"
+				}
+			} else {
+				inFirstCommentBlock = false
+			}
+		}
+
+		// Parse the HTTP headers in `headerText`.
+		reader := bufio.NewReader(strings.NewReader(headerText + "\r\n"))
+		tp := textproto.NewReader(reader)
+		headers := make(map[string][]string)
+		mimeHeader, err := tp.ReadMIMEHeader()
+		if err != nil {
+			log.Fatalf("Could not find a metadoc entry or HTTP style headers: %s", err)
+		} else {
+			headers = http.Header(mimeHeader)
+		}
+
+		// Helper to obtain a specific header.
+		getHeader := func(name string) string {
+			if arr, ok := headers[name]; ok {
+				if len(arr) > 0 {
+					return arr[0]
+				}
+			}
+			return ""
+		}
+
+		if provider := getHeader("Provider"); provider != "" {
+			rego.Providers = []string{provider}
+		}
+		rego.ResourceType = getHeader("Resource-Type")
+		rego.Description = getHeader("Description")
+		rego.Severity = getHeader("Severity")
+
+		if rego.ResourceType == "" {
+			return errors.New("expected a resource type by the header \"Resource-Type\"")
+		}
+		if rego.Description == "" {
+			return errors.New("expected a description by the header \"Description\"")
+		}
+		if len(rego.Providers) == 0 {
+			return errors.New("expected a provider by the header \"Provider\"")
+		}
+		if rego.Severity == "" {
+			rego.Severity = "High"
+		}
 	}
 
 	return nil
@@ -225,7 +234,7 @@ func NewSyncRulesCommand() *cobra.Command {
 				var ruleFamilies []string = nil
 
 				// We want to allow people to override the families specified in the
-				// __rego_metadoc__ block using the command line.
+				// __rego__metadoc__ block using the command line.
 				if len(targetFamilies) == 0 {
 					md, err := metadoc.RegoMetaFromPath(path)
 					if err != nil {
@@ -254,7 +263,7 @@ func NewSyncRulesCommand() *cobra.Command {
 						Name:         rego.Name,
 						Description:  rego.Description,
 						ResourceType: rego.ResourceType,
-						Provider:     rego.Provider,
+						Providers:    rego.Providers,
 						Severity:     rego.Severity,
 						RuleText:     rego.Text,
 					}
@@ -281,6 +290,7 @@ func NewSyncRulesCommand() *cobra.Command {
 					params.Rule = &models.UpdateCustomRuleInput{
 						Description:  rego.Description,
 						ResourceType: rego.ResourceType,
+						Providers:    rego.Providers,
 						Severity:     rego.Severity,
 						RuleText:     rego.Text,
 						Families:     ruleFamilies,
