@@ -240,16 +240,20 @@ func NewSyncRulesCommand() *cobra.Command {
 					if err != nil {
 						log.Fatal(err)
 					}
-					for _, family := range md.Families {
-						if _, err := uuid.Parse(family); err == nil {
-							ruleFamilies = append(ruleFamilies, family)
-						} else {
-							if familyUUID, ok := familyToUUID(family); !ok {
-								log.Fatalf("Unable to find family '%s' (referenced in '%s').", family, path)
+					if len(md.Families) != 0 {
+						for _, family := range md.Families {
+							if _, err := uuid.Parse(family); err == nil {
+								ruleFamilies = append(ruleFamilies, family)
 							} else {
-								ruleFamilies = append(ruleFamilies, familyUUID)
+								if familyUUID, ok := familyToUUID(family); !ok {
+									log.Fatalf("Unable to find family '%s' (referenced in '%s').", family, path)
+								} else {
+									ruleFamilies = append(ruleFamilies, familyUUID)
+								}
 							}
 						}
+					} else {
+						ruleFamilies = make([]string, 0)
 					}
 				} else {
 					ruleFamilies = targetFamilies
