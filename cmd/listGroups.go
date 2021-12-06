@@ -22,6 +22,7 @@ type listGroupsViewItem struct {
 	Name         string
 	Environments string
 	Users        int
+	ApiClients   int
 	Policy       string
 }
 
@@ -75,21 +76,23 @@ func NewListGroupsCommand() *cobra.Command {
 				numEnvironments := len(group.Environments)
 				environments := fmt.Sprintf("%v", numEnvironments)
 
-				if group.ID == "default-admin-group" {
+				if _, ok := group.Environments["*"]; ok {
 					environments = "*"
 				}
+
 				rows = append(rows, listGroupsViewItem{
 					ID:           group.ID,
 					Name:         group.Name,
 					Policy:       group.Policy,
 					Environments: environments,
 					Users:        len(group.Users),
+					ApiClients:   len(group.APIClients),
 				})
 			}
 
 			table, err := format.Table(format.TableOpts{
 				Rows:       rows,
-				Columns:    []string{"ID", "Name", "Policy", "Environments", "Users"},
+				Columns:    []string{"ID", "Name", "Policy", "Environments", "Users", "ApiClients"},
 				ShowHeader: true,
 			})
 			CheckErr(err)

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/client/groups"
 	"github.com/fugue/fugue-client/format"
 	"github.com/fugue/fugue-client/models"
@@ -35,26 +34,7 @@ func NewCreateGroupCommand() *cobra.Command {
 			var environmentIDs []string
 
 			if opts.AllEnvironments {
-				// Fetch all environment IDs if AllEnvironments option is set
-				var offset int64
-				var maxItems int64
-				offset = 0
-				maxItems = 100
-				for {
-					params := environments.NewListEnvironmentsParams()
-					params.Offset = &offset
-					params.MaxItems = &maxItems
-					resp, err := client.Environments.ListEnvironments(params, auth)
-					CheckErr(err)
-					for _, env := range resp.Payload.Items {
-						environmentIDs = append(environmentIDs, env.ID)
-					}
-					if resp.Payload.IsTruncated {
-						offset = resp.Payload.NextOffset
-						continue
-					}
-					break
-				}
+				environmentIDs = []string{"*"}
 
 			} else {
 				environmentIDs = opts.EnvironmentIds
@@ -108,7 +88,7 @@ func NewCreateGroupCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.Name, "name", "", "Group name")
 	cmd.Flags().StringVar(&opts.Policy, "policy", "", "Fugue policy to use for the group")
 	cmd.Flags().StringSliceVar(&opts.EnvironmentIds, "environment-ids", []string{}, "Environments which this group should be able to access using the provided policy")
-	cmd.Flags().BoolVar(&opts.AllEnvironments, "all-environments", false, "Indicates that the group should be created with all current environments attached")
+	cmd.Flags().BoolVar(&opts.AllEnvironments, "all-environments", false, "Indicates that the group should be created with all environments (current and future) attached")
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("policy")
 
