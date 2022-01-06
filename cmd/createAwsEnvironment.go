@@ -131,9 +131,9 @@ func NewCreateAwsEnvironmentCommand() *cobra.Command {
 				}
 			case "aws_govcloud":
 				items = append(items, Item{"ROLE_ARN", env.ProviderOptions.AwsGovcloud.RoleArn})
-				if env.ProviderOptions.Aws.Region != "" {
+				if env.ProviderOptions.AwsGovcloud.Region != "" {
 					items = append(items, Item{"REGION", env.ProviderOptions.AwsGovcloud.Region})
-				} else if len(env.ProviderOptions.Aws.Regions) > 0 {
+				} else if len(env.ProviderOptions.AwsGovcloud.Regions) > 0 {
 					items = append(items, Item{"REGIONS", strings.Join(env.ProviderOptions.AwsGovcloud.Regions, ", ")})
 				}
 			}
