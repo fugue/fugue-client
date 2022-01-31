@@ -3,8 +3,10 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
+	"github.com/fugue/fugue-client/client/environments"
 	"github.com/fugue/fugue-client/client/scans"
 	"github.com/fugue/fugue-client/format"
 	"github.com/fugue/fugue-client/models"
@@ -26,9 +28,28 @@ func NewTriggerScanCommand() *cobra.Command {
 
 			client, auth := getClient()
 
-			createParams := scans.NewCreateScanParams()
-			createParams.EnvironmentID = args[0]
+			environmentID := args[0]
 
+			getEnvironmentParams := environments.NewGetEnvironmentParams()
+			getEnvironmentParams.EnvironmentID = environmentID
+			getEnvironmentResp, err := client.Environments.GetEnvironment(getEnvironmentParams, auth)
+			if err != nil {
+				switch respError := err.(type) {
+				case *runtime.APIError:
+					if respError.Code == 404 {
+						Fatal("Environment not found", DefaultErrorExitCode)
+					}
+					CheckErr(err)
+				default:
+					CheckErr(err)
+				}
+			}
+			if strings.ToLower(getEnvironmentResp.Payload.Provider) == "repository" {
+				Fatal("Repository environment scans should be started through regula", DefaultErrorExitCode)
+			}
+
+			createParams := scans.NewCreateScanParams()
+			createParams.EnvironmentID = environmentID
 			createResp, err := client.Scans.CreateScan(createParams, auth)
 			if err != nil {
 				switch respError := err.(type) {
@@ -103,7 +124,7 @@ func NewTriggerScanCommand() *cobra.Command {
 				fmt.Println(tableRow)
 			}
 
-			if(wait && scan.Status == "ERROR") {
+			if wait && scan.Status == "ERROR" {
 				os.Exit(int(scanFailureExitCode))
 			}
 		},
