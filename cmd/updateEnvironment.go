@@ -24,6 +24,8 @@ type updateEnvironmentOptions struct {
 	ScanScheduleEnabled    bool
 	Regions                []string
 	ServiceAccountEmail    string
+	URL                    string
+	Branch                 string
 }
 
 func getEnvironmentToUpdate(client *client.Fugue, auth runtime.ClientAuthInfoWriter, environmentID string) *models.EnvironmentWithSummary {
@@ -80,6 +82,19 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 				}
 			}
 
+			if opts.URL != "" || opts.Branch != "" {
+				env := getEnvironmentToUpdate(client, auth, params.EnvironmentID)
+				if env.Provider == "repository" {
+					params.Environment.ProviderOptions = &models.ProviderOptionsUpdateInput{}
+					params.Environment.ProviderOptions.Repository = &models.ProviderOptionsRepositoryUpdateInput{
+						URL:    env.ProviderOptions.Repository.URL,
+						Branch: env.ProviderOptions.Repository.Branch,
+					}
+				} else {
+					Fatal("Only repository environments support --url and --branch", 400)
+				}
+			}
+
 			// Using Visit here allows us to process only flags that were set
 			//
 			// Note that the generated Go models have `omitempty` set.  This
@@ -105,6 +120,10 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 					params.Environment.ScanScheduleEnabled = &opts.ScanScheduleEnabled
 				case "remediation":
 					params.Environment.Remediation = &opts.Remediation
+				case "url":
+					params.Environment.ProviderOptions.Repository.URL = opts.URL
+				case "branch":
+					params.Environment.ProviderOptions.Repository.Branch = opts.Branch
 				}
 			})
 
@@ -165,6 +184,9 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 			case "google":
 				items = append(items, Item{"PROJECT_ID", env.ProviderOptions.Google.ProjectID})
 				items = append(items, Item{"SERVICE_ACCOUNT_EMAIL", env.ProviderOptions.Google.ServiceAccountEmail})
+			case "repository":
+				items = append(items, Item{"URL", env.ProviderOptions.Repository.URL})
+				items = append(items, Item{"BRANCH", env.ProviderOptions.Repository.Branch})
 			}
 
 			table, err := format.Table(format.TableOpts{
@@ -191,6 +213,8 @@ func NewUpdateEnvironmentCommand() *cobra.Command {
 	cmd.Flags().StringSliceVar(&opts.SurveyResourceTypes, "survey-resource-types", nil, "Survey resource types")
 	cmd.Flags().StringSliceVar(&opts.Regions, "regions", nil, "AWS regions")
 	cmd.Flags().StringVar(&opts.ServiceAccountEmail, "service-account-email", "", "Google service account email")
+	cmd.Flags().StringVar(&opts.URL, "url", "", "URL for repository environment")
+	cmd.Flags().StringVar(&opts.Branch, "branch", "", "Repository environment branch")
 
 	return cmd
 }
