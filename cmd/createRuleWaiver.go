@@ -153,6 +153,14 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				item = Item{"RESOURCE_TAG", "-"}
 			}
 
+			var itemTime Item
+			if waiver.ExpiresAt != 0 {
+				t := time.Unix(waiver.ExpiresAt, 0)
+				itemTime = Item{"EXPIRES_AT", t.Format(time.RFC3339)}
+			} else {
+				itemTime = Item{"EXPIRES_AT", "-"}
+			}
+
 			items := []interface{}{
 				Item{"RULE_WAIVER_ID", *waiver.ID},
 				Item{"NAME", *waiver.Name},
@@ -164,6 +172,7 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},
 				item,
+				itemTime,
 				Item{"CREATED_AT", format.Unix(waiver.CreatedAt)},
 				Item{"CREATED_BY", waiver.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", waiver.CreatedByDisplayName},
@@ -196,7 +205,7 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
 
 	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "", "Expires at timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800')")
-	cmd.Flags().StringVar(&opts.ExpiresAtDuration, "expires-at-duration", "", "Expires at duration up to hours in ISO 8601 format (e.g. 'P3Y6M4DT12H')")
+	cmd.Flags().StringVar(&opts.ExpiresAtDuration, "expires-at-duration", "", "Expires at duration in ISO 8601 format (e.g. 'P3Y6M4DT12H') or '4d', 1d12h, etc.")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")
