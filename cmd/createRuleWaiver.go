@@ -210,8 +210,14 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	// resource-tag is optional in the API: if resource-tag == "", the CLI is not posting the resource-tag json field
 	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
 
-	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "", "Expires at in RFC3339 representation or Unix timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800')")
-	cmd.Flags().StringVar(&opts.ExpiresAtDuration, "expires-at-duration", "", "Expires at duration in ISO 8601 format (e.g. 'P3Y6M4DT12H') or '4d', 1d12h, etc.")
+	// Add to the documents:
+	// Only one of --expires-at and --expires-at-duration can be specified
+	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "",
+		"Expires at in RFC3339 representation or Unix timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800')")
+	// use ISO 8601 format for the duration (e.g. P1Y2M3DT4H5M6S) up to hours (e.g. PT1H)
+	// They can also drop the P and T (e.g. 1Y2M3DT4H) and it's case insensitive
+	cmd.Flags().StringVar(&opts.ExpiresAtDuration, "expires-at-duration", "",
+		"Expires at duration in ISO 8601 format (e.g. 'P3Y6M4DT12H') or '4d', 1d12h, etc.")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")
