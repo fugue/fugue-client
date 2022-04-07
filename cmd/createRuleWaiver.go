@@ -110,6 +110,12 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 
 			client, auth := getClient()
 
+			// Mutually exclusive flags
+			if opts.ExpiresAt != "" && opts.ExpiresAtDuration != "" {
+				err := errors.New("cannot specify both --expires-at and --expires-at-duration")
+				CheckErr(err)
+			}
+
 			duration, err := parseDuration(opts.ExpiresAtDuration)
 			CheckErr(err)
 
@@ -146,11 +152,11 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 
 			waiver := resp.Payload
 
-			var item Item
+			var itemTag Item
 			if waiver.ResourceTag != "" {
-				item = Item{"RESOURCE_TAG", waiver.ResourceTag}
+				itemTag = Item{"RESOURCE_TAG", waiver.ResourceTag}
 			} else {
-				item = Item{"RESOURCE_TAG", "-"}
+				itemTag = Item{"RESOURCE_TAG", "-"}
 			}
 
 			var itemTime Item
@@ -171,7 +177,7 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				Item{"RESOURCE_ID", *waiver.ResourceID},
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},
-				item,
+				itemTag,
 				itemTime,
 				Item{"CREATED_AT", format.Unix(waiver.CreatedAt)},
 				Item{"CREATED_BY", waiver.CreatedBy},
@@ -204,7 +210,7 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	// resource-tag is optional in the API: if resource-tag == "", the CLI is not posting the resource-tag json field
 	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
 
-	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "", "Expires at timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800')")
+	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "", "Expires at in RFC3339 representation or Unix timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800')")
 	cmd.Flags().StringVar(&opts.ExpiresAtDuration, "expires-at-duration", "", "Expires at duration in ISO 8601 format (e.g. 'P3Y6M4DT12H') or '4d', 1d12h, etc.")
 
 	cmd.MarkFlagRequired("name")
