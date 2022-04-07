@@ -15,16 +15,15 @@ import (
 )
 
 type createRuleWaiverOptions struct {
-	Name              string
-	Comment           string
-	EnvironmentID     string
-	RuleID            string
-	ResourceID        string
-	ResourceType      string
-	ResourceProvider  string
-	ResourceTag       string
-	ExpiresAt         string
-	ExpiresAtDuration string
+	Name             string
+	Comment          string
+	EnvironmentID    string
+	RuleID           string
+	ResourceID       string
+	ResourceType     string
+	ResourceProvider string
+	ResourceTag      string
+	ExpiresAt        string
 }
 
 // (?i) case insensitive
@@ -97,6 +96,27 @@ func parseExpiresAt(expiresAt string) (*time.Time, error) {
 	return &t, nil
 }
 
+func parseBothExpiresAt(expiresAt string) (*time.Time, *models.Duration, error) {
+
+	if expiresAt == "" {
+		return nil, nil, nil
+	}
+
+	var d *models.Duration = nil
+	t, err := parseExpiresAt(expiresAt)
+	if err != nil {
+		var err2 error
+		d, err2 = parseDuration(expiresAt)
+		if err2 != nil {
+			err = errors.Wrap(err, err2.Error())
+			return nil, nil, err
+		}
+
+	}
+
+	return t, d, nil
+}
+
 // NewCreateRuleWaiverCommand returns a command that creates a custom rule
 func NewCreateRuleWaiverCommand() *cobra.Command {
 
@@ -110,16 +130,7 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 
 			client, auth := getClient()
 
-			// Mutually exclusive flags
-			if opts.ExpiresAt != "" && opts.ExpiresAtDuration != "" {
-				err := errors.New("cannot specify both --expires-at and --expires-at-duration")
-				CheckErr(err)
-			}
-
-			duration, err := parseDuration(opts.ExpiresAtDuration)
-			CheckErr(err)
-
-			expiresAtPtr, err := parseExpiresAt(opts.ExpiresAt)
+			expiresAtPtr, duration, err := parseBothExpiresAt(opts.ExpiresAt)
 			CheckErr(err)
 			var expiresAt int64 = 0
 			if expiresAtPtr != nil {
@@ -211,13 +222,10 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
 
 	// Add to the documents:
-	// Only one of --expires-at and --expires-at-duration can be specified
-	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "",
-		"Expires at in RFC3339 representation or Unix timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800')")
 	// use ISO 8601 format for the duration (e.g. P1Y2M3DT4H5M6S) up to hours (e.g. PT1H)
 	// They can also drop the P and T (e.g. 1Y2M3DT4H) and it's case insensitive
-	cmd.Flags().StringVar(&opts.ExpiresAtDuration, "expires-at-duration", "",
-		"Expires at duration in ISO 8601 format (e.g. 'P3Y6M4DT12H') or '4d', 1d12h, etc.")
+	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "",
+		"Expires at in RFC3339 representation, Unix timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800') or at duration in ISO 8601 format (e.g. 'P3Y6M4DT12H') or '4d', 1d12h, etc.")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")

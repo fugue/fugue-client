@@ -99,3 +99,63 @@ func Test_parseExpiresAt(t *testing.T) {
 	}
 
 }
+
+func Test_parseBothExpiresAt(t *testing.T) {
+
+	tests := []struct {
+		input         string
+		wantTime      func() *time.Time
+		wantDuraction *models.Duration
+		err           bool
+	}{
+		{
+			input: "2019-01-01T00:00:00Z",
+			wantTime: func() *time.Time {
+				t := time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)
+				return &t
+			},
+			err: false,
+		},
+		{
+			input: "1649285903",
+			wantTime: func() *time.Time {
+				t := time.Date(2022, time.April, 6, 22, 58, 23, 0, time.UTC)
+				return &t
+			},
+			err: false,
+		},
+		{
+			input:         "p4y3m2w1d",
+			wantDuraction: &models.Duration{Years: 4, Months: 3, Weeks: 2, Days: 1},
+			err:           false,
+		},
+		{
+			input:         "4y3m2w1d",
+			wantDuraction: &models.Duration{Years: 4, Months: 3, Weeks: 2, Days: 1},
+			err:           false,
+		},
+		{
+			input:         "invalid",
+			wantTime:      func() *time.Time { return nil },
+			wantDuraction: nil,
+			err:           true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.input, func(t *testing.T) {
+			gotTime, gotDuration, err := parseBothExpiresAt(tc.input)
+			if gotTime != nil {
+				assert.Equal(t, tc.wantTime().Unix(), gotTime.Unix())
+			}
+			if gotDuration != nil {
+				assert.Equal(t, tc.wantDuraction, gotDuration)
+			}
+			if tc.err {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
