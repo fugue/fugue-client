@@ -14,7 +14,7 @@ import (
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/families"
 	"github.com/fugue/fugue-client/models"
-	"github.com/fugue/regula/pkg/regotools/metadoc"
+	"github.com/fugue/regula/v2/pkg/regotools/metadoc"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
