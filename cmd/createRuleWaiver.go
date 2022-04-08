@@ -42,7 +42,7 @@ func parseDuration(duration string) (*models.Duration, error) {
 	if durationPattern.MatchString(duration) {
 		match = durationPattern.FindStringSubmatch(duration)
 	} else {
-		return nil, errors.New("could not parse duration string")
+		return nil, errors.New("could not parse string as ISO8601 duration")
 	}
 
 	for i, name := range durationPattern.SubexpNames() {
@@ -70,7 +70,7 @@ func parseDuration(duration string) (*models.Duration, error) {
 		// case "minute":
 		// case "second":
 		default:
-			return nil, fmt.Errorf("unknown field %s", name)
+			return nil, fmt.Errorf("unknown field in duration %s", name)
 		}
 	}
 	return &d, nil
@@ -88,7 +88,7 @@ func parseExpiresAt(expiresAt string) (*time.Time, error) {
 		t, err2 := time.Parse(time.RFC3339, expiresAt)
 		if err2 != nil {
 			err = errors.Wrap(err, err2.Error())
-			return nil, err
+			return nil, fmt.Errorf("date must be in RFC3339 format or a Unix timestamp: %w", err)
 		}
 		return &t, nil
 	}
@@ -109,7 +109,7 @@ func parseBothExpiresAt(expiresAt string) (*time.Time, *models.Duration, error) 
 		d, err2 = parseDuration(expiresAt)
 		if err2 != nil {
 			err = errors.Wrap(err, err2.Error())
-			return nil, nil, err
+			return nil, nil, fmt.Errorf("invalid expires-at format: %w", err)
 		}
 
 	}
