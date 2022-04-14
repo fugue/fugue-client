@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/fugue/fugue-client/client/rule_waivers"
 	"github.com/fugue/fugue-client/format"
@@ -48,6 +49,13 @@ func NewGetRuleWaiverCommand() *cobra.Command {
 			} else {
 				item = Item{"RESOURCE_TAG", "-"}
 			}
+			var itemTime Item
+			if waiver.ExpiresAt != 0 {
+				t := time.Unix(waiver.ExpiresAt, 0)
+				itemTime = Item{"EXPIRES_AT", t.Format(time.RFC3339)}
+			} else {
+				itemTime = Item{"EXPIRES_AT", "-"}
+			}
 			items := []interface{}{
 				Item{"RULE_WAIVER_ID", *waiver.ID},
 				Item{"NAME", *waiver.Name},
@@ -61,6 +69,7 @@ func NewGetRuleWaiverCommand() *cobra.Command {
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},
 				item,
+				itemTime,
 				Item{"CREATED_AT", format.Unix(waiver.CreatedAt)},
 				Item{"CREATED_BY", waiver.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", waiver.CreatedByDisplayName},

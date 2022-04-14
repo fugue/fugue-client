@@ -39,6 +39,7 @@ type listRuleWaiversViewItem struct {
 	ResourceProvider     string
 	ResourceType         string
 	ResourceTag          string
+	ExpiresAt            string
 	CreatedAt            string
 	CreatedBy            string
 	CreatedByDisplayName string
@@ -148,6 +149,11 @@ func NewListRuleWaiversCommand() *cobra.Command {
 				if waiver.ResourceTag != "" {
 					resourceTag = waiver.ResourceTag
 				}
+				expiresAt := "-"
+				if waiver.ExpiresAt != 0 {
+					expiresAt = format.Unix(waiver.ExpiresAt)
+				}
+
 				row := listRuleWaiversViewItem{
 					ID:                   *waiver.ID,
 					Name:                 *waiver.Name,
@@ -159,6 +165,7 @@ func NewListRuleWaiversCommand() *cobra.Command {
 					ResourceType:         *waiver.ResourceType,
 					ResourceProvider:     *waiver.ResourceProvider,
 					ResourceTag:          resourceTag,
+					ExpiresAt:            expiresAt,
 					CreatedAt:            format.Unix(waiver.CreatedAt),
 					CreatedBy:            waiver.CreatedBy,
 					CreatedByDisplayName: waiver.CreatedByDisplayName,
@@ -193,6 +200,7 @@ func NewListRuleWaiversCommand() *cobra.Command {
 		"ResourceType",
 		"ResourceProvider",
 		"ResourceTag",
+		"ExpiresAt",
 	}
 
 	cmd.Flags().StringVar(&opts.SearchQuery, "search", "", "Combined filter for ID, Name, and Rule ID")

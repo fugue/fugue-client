@@ -2,11 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
+	"time"
 
 	"github.com/fugue/fugue-client/client/custom_rules"
 	"github.com/fugue/fugue-client/client/rule_waivers"
 	"github.com/fugue/fugue-client/format"
 	"github.com/fugue/fugue-client/models"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +23,98 @@ type createRuleWaiverOptions struct {
 	ResourceType     string
 	ResourceProvider string
 	ResourceTag      string
+	ExpiresAt        string
+}
+
+// (?i) case insensitive
+// Make the P and T optional (this is not standard!!!)
+var durationPattern = regexp.MustCompile(`(?i)^P?((?P<year>\d+)Y)?((?P<month>\d+)M)?((?P<week>\d+)W)?((?P<day>\d+)D)?(T?((?P<hour>\d+)H)?((?P<minute>\d+)M)?((?P<second>\d+)S)?)?$`)
+
+func parseDuration(duration string) (*models.Duration, error) {
+
+	if duration == "" {
+		return nil, nil
+	}
+
+	var match []string
+	var d models.Duration
+
+	if durationPattern.MatchString(duration) {
+		match = durationPattern.FindStringSubmatch(duration)
+	} else {
+		return nil, errors.New("could not parse string as ISO8601 duration")
+	}
+
+	for i, name := range durationPattern.SubexpNames() {
+		part := match[i]
+		if i == 0 || name == "" || part == "" {
+			continue
+		}
+
+		val, err := strconv.Atoi(part)
+		if err != nil {
+			return nil, err
+		}
+		v := int64(val)
+		switch name {
+		case "year":
+			d.Years = v
+		case "month":
+			d.Months = v
+		case "week":
+			d.Weeks = v
+		case "day":
+			d.Days = v
+		case "hour":
+			d.Hours = v
+		// case "minute":
+		// case "second":
+		default:
+			return nil, fmt.Errorf("unknown field in duration %s", name)
+		}
+	}
+	return &d, nil
+}
+
+func parseExpiresAt(expiresAt string) (*time.Time, error) {
+
+	if expiresAt == "" {
+		return nil, nil
+	}
+	// try timestamp first
+	expiresAtInt, err := strconv.ParseInt(expiresAt, 10, 64)
+	if err != nil {
+		// try RFC3339 format
+		t, err2 := time.Parse(time.RFC3339, expiresAt)
+		if err2 != nil {
+			err = errors.Wrap(err, err2.Error())
+			return nil, fmt.Errorf("date must be in RFC3339 format or a Unix timestamp: %w", err)
+		}
+		return &t, nil
+	}
+	t := time.Unix(expiresAtInt, 0)
+	return &t, nil
+}
+
+func parseBothExpiresAt(expiresAt string) (*time.Time, *models.Duration, error) {
+
+	if expiresAt == "" {
+		return nil, nil, nil
+	}
+
+	var d *models.Duration = nil
+	t, err := parseExpiresAt(expiresAt)
+	if err != nil {
+		var err2 error
+		d, err2 = parseDuration(expiresAt)
+		if err2 != nil {
+			err = errors.Wrap(err, err2.Error())
+			return nil, nil, fmt.Errorf("invalid expires-at format: %w", err)
+		}
+
+	}
+
+	return t, d, nil
 }
 
 // NewCreateRuleWaiverCommand returns a command that creates a custom rule
@@ -34,16 +130,25 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 
 			client, auth := getClient()
 
+			expiresAtPtr, duration, err := parseBothExpiresAt(opts.ExpiresAt)
+			CheckErr(err)
+			var expiresAt int64 = 0
+			if expiresAtPtr != nil {
+				expiresAt = expiresAtPtr.Unix()
+			}
+
 			params := rule_waivers.NewCreateRuleWaiverParams()
 			params.Input = &models.CreateRuleWaiverInput{
-				Name:             &opts.Name,
-				Comment:          opts.Comment,
-				EnvironmentID:    &opts.EnvironmentID,
-				RuleID:           &opts.RuleID,
-				ResourceID:       &opts.ResourceID,
-				ResourceType:     &opts.ResourceType,
-				ResourceProvider: &opts.ResourceProvider,
-				ResourceTag:      opts.ResourceTag,
+				Name:              &opts.Name,
+				Comment:           opts.Comment,
+				EnvironmentID:     &opts.EnvironmentID,
+				RuleID:            &opts.RuleID,
+				ResourceID:        &opts.ResourceID,
+				ResourceType:      &opts.ResourceType,
+				ResourceProvider:  &opts.ResourceProvider,
+				ResourceTag:       opts.ResourceTag,
+				ExpiresAt:         expiresAt,
+				ExpiresAtDuration: duration,
 			}
 
 			resp, err := client.RuleWaivers.CreateRuleWaiver(params, auth)
@@ -58,11 +163,19 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 
 			waiver := resp.Payload
 
-			var item Item
+			var itemTag Item
 			if waiver.ResourceTag != "" {
-				item = Item{"RESOURCE_TAG", waiver.ResourceTag}
+				itemTag = Item{"RESOURCE_TAG", waiver.ResourceTag}
 			} else {
-				item = Item{"RESOURCE_TAG", "-"}
+				itemTag = Item{"RESOURCE_TAG", "-"}
+			}
+
+			var itemTime Item
+			if waiver.ExpiresAt != 0 {
+				t := time.Unix(waiver.ExpiresAt, 0)
+				itemTime = Item{"EXPIRES_AT", t.Format(time.RFC3339)}
+			} else {
+				itemTime = Item{"EXPIRES_AT", "-"}
 			}
 
 			items := []interface{}{
@@ -75,7 +188,8 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 				Item{"RESOURCE_ID", *waiver.ResourceID},
 				Item{"RESOURCE_TYPE", *waiver.ResourceType},
 				Item{"RESOURCE_PROVIDER", *waiver.ResourceProvider},
-				item,
+				itemTag,
+				itemTime,
 				Item{"CREATED_AT", format.Unix(waiver.CreatedAt)},
 				Item{"CREATED_BY", waiver.CreatedBy},
 				Item{"CREATED_BY_DISPLAY_NAME", waiver.CreatedByDisplayName},
@@ -106,6 +220,12 @@ func NewCreateRuleWaiverCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.ResourceProvider, "resource-provider", "", "Resource Provider (e.g. aws.us-east-1, azure, '*')")
 	// resource-tag is optional in the API: if resource-tag == "", the CLI is not posting the resource-tag json field
 	cmd.Flags().StringVar(&opts.ResourceTag, "resource-tag", "", "Resource tag (e.g. 'env:prod', 'env:*', '*')")
+
+	// Add to the documents:
+	// use ISO 8601 format for the duration (e.g. P1Y2M3DT4H5M6S) up to hours (e.g. PT1H)
+	// They can also drop the P and T (e.g. 1Y2M3DT4H) and it's case insensitive
+	cmd.Flags().StringVar(&opts.ExpiresAt, "expires-at", "",
+		"Expires at in RFC3339 representation, Unix timestamp (e.g. '2020-01-01T00:00:00Z' or '1577836800') or at duration in ISO 8601 format (e.g. 'P3Y6M4DT12H') or '4d', 1d12h, etc.")
 
 	cmd.MarkFlagRequired("name")
 	cmd.MarkFlagRequired("rule-id")
