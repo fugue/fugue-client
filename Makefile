@@ -1,6 +1,7 @@
 
 GO=GO111MODULE=on go
 BINARY=fugue
+DOCKER_IMAGE=fugue/fugue-client
 VERSION=$(shell cat VERSION)
 SHORT_COMMIT=$(shell git rev-parse HEAD | cut -c 1-8)
 LD_FLAGS=-ldflags "-X main.version=$(VERSION) -X main.commit=$(SHORT_COMMIT) -extldflags '-static'"
@@ -42,6 +43,17 @@ help: ## Show this help
 .PHONY: release
 release: ## Create release binaries
 release: $(BINARY)-linux-amd64 $(BINARY)-darwin-amd64 $(BINARY).exe
+
+.PHONY: docker
+docker: ## Build and tag docker image
+docker: $(BINARY)-linux-amd64
+	docker build -t $(DOCKER_IMAGE):v$(VERSION) -t $(DOCKER_IMAGE):latest .
+
+.PHONY: docker-publish
+docker-publish: ## Publish docker image to Docker Hub
+docker-publish: docker
+	docker push $(DOCKER_IMAGE):v$(VERSION)
+	docker push $(DOCKER_IMAGE):latest
 
 .PHONY: build
 build: ## Build native binary
@@ -90,3 +102,4 @@ clean: ## Remove generated executables
 	rm -f $(BINARY)-linux-amd64
 	rm -f $(BINARY)-darwin-amd64
 	rm -f $(BINARY).exe
+	docker images $(DOCKER_IMAGE) --format '{{.Repository}}:{{.Tag}}' | xargs docker image rm
