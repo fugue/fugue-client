@@ -21,6 +21,7 @@ Detailed installation steps are below:
 - [macOS](#macos)
 - [Linux](#linux)
 - [Windows](#windows)
+- [Docker](#docker)
 
 You can also [build from source.](#build-from-source)
 
@@ -132,6 +133,19 @@ setx FUGUE_API_SECRET f7a89ac99cab9dd2948712345678901234567890
 ```
 fugue --version
 ```
+
+### Docker
+
+Regula is available as a Docker image on DockerHub [here](https://hub.docker.com/r/fugue/fugue-client).
+
+To use the Fugue client Docker image, run:
+
+```shell
+docker run --rm -it -e FUGUE_API_ID=<your API ID> -e FUGUE_API_SECRET=<your API secret> fugue/fugue-client
+```
+
+When integrating this in a CI pipeline, we recommend pinning the image to a specific version, e.g. `fugue/fugue-client:v0.19.1`. See the [tags page](https://hub.docker.com/r/fugue/fugue-client/tags) for the current list of available tags.
+
 
 ## Environment Variables
 
