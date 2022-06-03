@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/fatih/structs"
 	"strings"
 	"unicode"
+
+	"github.com/fatih/structs"
 )
 
 func getRowMaps(rows []interface{}) []map[string]interface{} {
@@ -60,14 +61,11 @@ func extractColumn(rows [][]string, column int) []string {
 }
 
 func columnWidths(rows [][]string, columnLabels []string, includeCols bool, maxCellLength int) []int {
-	if len(rows) == 0 {
-		return nil
-	}
 	columnCount := len(columnLabels)
 
 	widths := make([]int, columnCount)
 
-	if includeCols {
+	if includeCols || len(rows) == 0 {
 		for i, label := range columnLabels {
 			widths[i] = len(label)
 		}
@@ -115,10 +113,6 @@ type TableOpts struct {
 // Table builds a text table from the given data items and chosen columns.
 // It returns a list of rows that can be printed.
 func Table(opts TableOpts) ([]string, error) {
-
-	if len(opts.Rows) == 0 {
-		return nil, errors.New("No rows to display")
-	}
 	if len(opts.Columns) == 0 {
 		return nil, errors.New("No columns to display")
 	}
